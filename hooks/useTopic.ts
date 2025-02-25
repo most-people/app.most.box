@@ -12,12 +12,12 @@ export const useTopic = () => {
   const { pub, topics, setItem, pushItem } = useUserStore()
 
   const init = async () => {
-    const res = await window.most.get('topics')
-    if (res.ok) {
-      setItem('topics', res.data as Topic[])
-    } else {
-      setItem('topics', [])
-    }
+    // const res = await window.most.get('topics')
+    // if (res.ok) {
+    //   setItem('topics', res.data as Topic[])
+    // } else {
+    //   setItem('topics', [])
+    // }
   }
 
   const join = (name: string) => {
@@ -27,11 +27,11 @@ export const useTopic = () => {
         const timestamp = Date.now()
         const data: Topic = { name, timestamp }
         // 使用唯一键存储消息
-        window.most.put('topics', mp.getHash(name), JSON.stringify(data)).then((res) => {
-          if (res.ok) {
-            pushItem('topics', data)
-          }
-        })
+        // window.most.put('topics', mp.getHash(name), JSON.stringify(data)).then((res) => {
+        //   if (res.ok) {
+        //     pushItem('topics', data)
+        //   }
+        // })
       }
     }
     router.push({ pathname: '/topic/[topic]', params: { topic: name } })
@@ -43,14 +43,14 @@ export const useTopic = () => {
       if (topic) {
         // 使用唯一键删除消息
         const key = mp.getHash(name)
-        window.most.del('topics', key).then((res) => {
-          if (res.ok) {
-            setItem(
-              'topics',
-              topics.filter((e) => mp.getHash(e.name) !== key),
-            )
-          }
-        })
+        // window.most.del('topics', key).then((res) => {
+        //   if (res.ok) {
+        //     setItem(
+        //       'topics',
+        //       topics.filter((e) => mp.getHash(e.name) !== key),
+        //     )
+        //   }
+        // })
       }
     }
   }

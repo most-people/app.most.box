@@ -18,10 +18,6 @@ export default function Root({ children }: PropsWithChildren) {
         {/* 使用原始 CSS 样式作为应急方案，确保在暗模式下背景色不会闪烁 */}
         <style dangerouslySetInnerHTML={{ __html: responsiveBackground }} />
         {/* 在这里添加任何你想在 web 端全局可用的 <head> 元素... */}
-        <script src="/js/gun.js"></script>
-        <script src="/js/sea.js"></script>
-        <script src="/gun/peers.js"></script>
-        <script src="/gun/user.js"></script>
       </head>
       <body>{children}</body>
     </html>

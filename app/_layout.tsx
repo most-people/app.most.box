@@ -10,8 +10,7 @@ import { useEffect } from 'react'
 import { useUserStore } from '@/stores/userStore'
 import { Platform, useColorScheme } from 'react-native'
 import { Colors } from '@/constants/Colors'
-import { GunProvider } from '@/components/GunProvider'
-import { MostWallet } from '@/constants/MostWallet'
+import Dot from 'dot.most.box'
 import mp from '@/constants/mp'
 import asyncStorage from '@/stores/asyncStorage'
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -38,12 +37,12 @@ export default function RootLayout() {
       if (wallet) {
         setItem('wallet', wallet)
         if (Platform.OS === 'web') {
-          window.most.login(wallet.address, wallet.private_key).then((res) => {
-            console.log(res)
-            if (res.ok) {
-              setItem('pub', res.data)
-            }
-          })
+          // window.most.login(wallet.address, wallet.private_key).then((res) => {
+          //   console.log(res)
+          //   if (res.ok) {
+          //     setItem('pub', res.data)
+          //   }
+          // })
         }
       }
     }
@@ -65,7 +64,6 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={theme === 'light' ? light : dark}>
-      <GunProvider />
       <ToastProvider>
         <Stack screenOptions={{ headerShown: false, headerTitleAlign: 'center' }}>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />

@@ -18,7 +18,7 @@ export default function AboutPage() {
 
       <Link href="/about/paper">
         <ThemeText type="link">
-          IPFS + Filecoin + Fastify + Gun.js + Smart Contracts = Fully DApp
+          IPFS + Filecoin + Fastify + Dot.most.box + Smart Contracts = Fully DApp
         </ThemeText>
       </Link>
 

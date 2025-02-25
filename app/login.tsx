@@ -36,12 +36,12 @@ export default function LoginPage() {
         if (wallet) {
           setItem('wallet', wallet)
           if (Platform.OS === 'web') {
-            window.most.login(wallet.address, wallet.private_key).then((res) => {
-              console.log(res)
-              if (res.ok) {
-                setItem('pub', res.data)
-              }
-            })
+            // window.most.login(wallet.address, wallet.private_key).then((res) => {
+            //   console.log(res)
+            //   if (res.ok) {
+            //     setItem('pub', res.data)
+            //   }
+            // })
           }
         }
       }, 0)
