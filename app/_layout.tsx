@@ -10,7 +10,7 @@ import { useEffect } from 'react'
 import { useUserStore } from '@/stores/userStore'
 import { useColorScheme } from 'react-native'
 import { Colors } from '@/constants/Colors'
-import { type MostWallet } from 'dot.most.box'
+import { DotClient, type MostWallet } from 'dot.most.box'
 import mp from '@/constants/mp'
 import asyncStorage from '@/stores/asyncStorage'
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -36,24 +36,21 @@ export default function RootLayout() {
       const wallet = mp.verifyJWT(token, tokenSecret) as MostWallet | null
       if (wallet) {
         setItem('wallet', wallet)
-        // if (Platform.OS === 'web') {
-        //   window.most.login(wallet.address, wallet.private_key).then((res) => {
-        //     console.log(res)
-        //     if (res.ok) {
-        //       setItem('pub', res.data)
-        //     }
-        //   })
-        // }
       }
     }
+  }, [setItem])
+
+  const initDot = useCallback(() => {
+    setItem('dotClient', new DotClient('https://api.most.red'))
   }, [setItem])
 
   useEffect(() => {
     if (loaded) {
       SplashScreen.hideAsync()
       initWallet()
+      initDot()
     }
-  }, [initWallet, loaded])
+  }, [initDot, initWallet, loaded])
 
   if (!loaded) {
     return null

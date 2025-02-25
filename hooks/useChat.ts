@@ -1,5 +1,7 @@
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useState } from 'react'
+import Dot, { type DotMethods } from 'dot.most.box'
 import { useUserStore } from '@/stores/userStore'
+import { HDNodeWallet } from 'ethers'
 
 export interface Message {
   text: string
@@ -7,15 +9,34 @@ export interface Message {
   timestamp: number
 }
 
+const DotKey = 'messages'
+
 export const useChat = (topic: string) => {
-  // const { wallet, gun } = useUserStore()
-  // // 使用 useMemo 确保 chat 只初始化一次
-  // const chat = useMemo(() => {
-  //   if (gun) {
-  //     return gun.get('most.box/topic/' + topic)
-  //   }
-  // }, [topic, gun])
+  const { wallet, dotClient } = useUserStore()
+
+  const [chat, setChat] = useState<DotMethods | null>(null)
   const [messages, setMessages] = useState<Message[]>([])
+
+  // 使用 useEffect 确保 chat 只初始化一次
+  useEffect(() => {
+    if (topic && dotClient) {
+      const dotWallet = Dot.mostWallet(topic, '', 'I know loss mnemonic will lose my wallet.')
+      const signer = HDNodeWallet.fromPhrase(dotWallet.mnemonic)
+      dotClient.setSigner(signer)
+      const dot = dotClient.dot(dotWallet.address)
+      setChat(dot)
+      const callback = (data: any) => {
+        if (data) {
+          setMessages(data)
+        }
+      }
+      dot.on(DotKey, callback)
+      // 清理监听器，防止内存泄漏
+      return () => {
+        dot.off(`${dotWallet.address}/${DotKey}`, callback)
+      }
+    }
+  }, [topic, dotClient])
 
   // useEffect(() => {
   //   if (!chat) return
@@ -45,25 +66,23 @@ export const useChat = (topic: string) => {
   // }, [chat])
 
   const send = (text: string) => {
-    // if (wallet && chat) {
-    //   const timestamp = Date.now()
-    //   const newMessage = {
-    //     text,
-    //     address: wallet.address,
-    //     timestamp,
-    //   }
-    //   // 使用唯一键存储消息
-    //   chat.get(String(timestamp)).put(newMessage)
-    // }
+    if (wallet && chat) {
+      const timestamp = Date.now()
+      const newMessage = {
+        text,
+        address: wallet.address,
+        timestamp,
+      }
+      // 更新数据
+      chat.put(DotKey, [newMessage, ...messages])
+    }
   }
 
   const del = (timestamp: number) => {
-    // if (!chat) return
-    // // 更新 Gun 数据库
-    // chat.get(String(timestamp)).put(null)
-
-    // 更新本地状态
-    setMessages((prevMessages) => prevMessages.filter((msg) => msg.timestamp !== timestamp))
+    if (wallet && chat) {
+      // 更新数据
+      chat.put(DotKey, messages.filter((item) => item.timestamp !== timestamp))
+    }
   }
   return { messages, send, del }
 }
