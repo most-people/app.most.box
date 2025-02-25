@@ -1,10 +1,10 @@
 import CryptoJS from 'crypto-js'
 import { getRandomBytes } from 'expo-crypto'
-import { toUtf8Bytes, sha256, encodeBase64, decodeBase64, toUtf8String, ZeroAddress } from 'ethers'
+import { toUtf8Bytes, encodeBase64, decodeBase64, toUtf8String, ZeroAddress } from 'ethers'
 import asyncStorage from '@/stores/asyncStorage'
 import { createAvatar } from '@dicebear/core'
 import { botttsNeutral } from '@dicebear/collection'
-import { MostWallet, mostWallet } from '@/constants/MostWallet'
+import Dot, { type MostWallet } from 'dot.most.box'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import 'dayjs/locale/zh-cn'
@@ -141,7 +141,7 @@ const randomKeyBase64 = (bytes = 32) => {
 
 const login = (username: string, password: string): MostWallet | null => {
   const time = dayjs(0).add(1, 'day').unix()
-  const wallet = mostWallet(username, password)
+  const wallet = Dot.mostWallet(username, password)
   // 生成 32 字节（256 位）密钥
   const tokenSecret = randomKeyBase64(32)
   const token = createJWT(wallet, tokenSecret, time)
@@ -159,8 +159,6 @@ const login = (username: string, password: string): MostWallet | null => {
 }
 
 export default {
-  // 本地私钥
-  wallet: mostWallet,
   avatar,
   getHash,
   formatTime,

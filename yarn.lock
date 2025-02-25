@@ -3642,10 +3642,10 @@ dot-case@^3.0.4:
     no-case "^3.0.4"
     tslib "^2.0.3"
 
-dot.most.box@^0.0.8:
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/dot.most.box/-/dot.most.box-0.0.8.tgz#e47e42aaca027f30f05e293f8221d3b6cbac6d62"
-  integrity sha512-NnfPgnUKOeQeWruBZZgHsiJtHXyfKAqUHJtVRrhKTpWz7QHY7Y0MxJAfPqimVqYidp+SsND6iTSIpkbs+M8N9Q==
+dot.most.box@^0.0.9:
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/dot.most.box/-/dot.most.box-0.0.9.tgz#c4f6f11b1845850caf90c6591c0f5da2f06a4aef"
+  integrity sha512-/GW4/yEdpq0mq/rvtZHIHI03LEPwYHv/xjApwl9f4wVaQ7Ha4pu0fbv1xuX54z2OJ7eo/G++j1k/iuWJSGAqfg==
   dependencies:
     ethers "^6.13.5"
     tweetnacl "^1.0.3"

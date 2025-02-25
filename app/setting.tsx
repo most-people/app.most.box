@@ -2,7 +2,7 @@ import { DialogPrompt } from '@/components/Dialog'
 import PageView from '@/components/PageView'
 import { ThemeText, ThemeView } from '@/components/Theme'
 import { Colors } from '@/constants/Colors'
-import { mostDanger } from '@/constants/MostWallet'
+import Dot from 'dot.most.box'
 import { useUserStore } from '@/stores/userStore'
 import { useToast } from 'expo-toast'
 import { useRef, useState } from 'react'
@@ -19,9 +19,13 @@ export default function Web3Page() {
   const getMnemonic = (password: string) => {
     if (!password) return toast.show('密码不能为空')
     if (wallet) {
-      const danger = mostDanger(wallet.username, password)
+      const danger = Dot.mostWallet(
+        wallet.username,
+        password,
+        'I know loss mnemonic will lose my wallet.',
+      )
       if (danger.address === wallet.address) {
-        setMnemonic(danger.mnemonic?.phrase || '')
+        setMnemonic(danger.mnemonic)
         setShowMnemonic(true)
       } else {
         return toast.show('密码错误')
