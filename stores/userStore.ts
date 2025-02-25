@@ -1,8 +1,7 @@
-import { MostWallet } from '@/constants/MostWallet'
+import { type MostWallet } from 'dot.most.box'
 import { create, StoreApi } from 'zustand'
 import { router } from 'expo-router'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { type IGunInstance } from 'gun'
 
 export interface Topic {
   name: string
@@ -11,9 +10,7 @@ export interface Topic {
 
 interface UserStore {
   wallet?: MostWallet
-  pub: string
   theme: 'light' | 'dark'
-  gun?: IGunInstance<any>
   exit: () => void
   topics: Topic[]
 }
@@ -30,12 +27,9 @@ export const useUserStore = create<State>(
   (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
     wallet: undefined,
     theme: 'dark', // 默认为深色
-    pub: '',
-    gun: undefined,
     exit() {
       AsyncStorage.clear()
-      // window.most.leave()
-      set({ wallet: undefined, pub: '' })
+      set({ wallet: undefined })
       router.push('/login')
     },
     topics: [],

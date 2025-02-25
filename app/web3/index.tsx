@@ -6,7 +6,7 @@ import { TouchableOpacity } from 'react-native'
 import { Link } from 'expo-router'
 
 export default function Web3Page() {
-  const { wallet, pub } = useUserStore()
+  const { wallet } = useUserStore()
   const [showX25519, setShowX25519] = useState(false)
   return (
     <PageView title={'Web3'}>
@@ -19,8 +19,6 @@ export default function Web3Page() {
       </Link>
       <ThemeText type="subtitle">ETH 地址</ThemeText>
       <ThemeText>{wallet?.address}</ThemeText>
-      <ThemeText type="subtitle">Dot.most.box Pub</ThemeText>
-      <ThemeText>{pub}</ThemeText>
       <ThemeText type="subtitle">x25519 公钥</ThemeText>
       <ThemeText>{wallet?.public_key}</ThemeText>
       <ThemeText type="subtitle">x25519 私钥</ThemeText>

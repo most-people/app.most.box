@@ -23,7 +23,7 @@ export default function AboutPage() {
       </Link>
 
       <ThemeText type="subtitle">最后更新</ThemeText>
-      <ThemeText>2025-01-27 03:05:22</ThemeText>
+      <ThemeText>2025-02-25 17:56:00</ThemeText>
     </PageView>
   )
 }
