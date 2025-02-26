@@ -9,8 +9,10 @@ import Dot from 'dot.most.box'
 import PageView from '@/components/PageView'
 import { ThemeText, ThemeView } from '@/components/Theme'
 import { HDNodeWallet } from 'ethers'
+import { useToast } from 'expo-toast'
 
 export default function LoginPage() {
+  const toast = useToast()
   const { theme } = useUserStore()
   const styles = createStyles(theme)
 
@@ -32,38 +34,33 @@ export default function LoginPage() {
     }
   }, [username, password])
 
-  const customExport = () => {
-    // 密码 1-100 账号3
-    if (!username) return
-    const addresses = []
-    for (let i = 1; i <= 100; i++) {
-      const danger = Dot.mostWallet(
-        username,
-        String(i),
-        'I know loss mnemonic will lose my wallet.',
-      )
-      const wallet = HDNodeWallet.fromPhrase(danger.mnemonic, undefined, `m/44'/60'/0'/0/2`)
+  // const customExport = () => {
+  //   // 密码 1-100 账号 3
+  //   if (!username) return
+  //   const addresses = []
+  //   for (let i = 1; i <= 100; i++) {
+  //     const danger = Dot.mostWallet(
+  //       username,
+  //       String(i),
+  //       'I know loss mnemonic will lose my wallet.',
+  //     )
+  //     const wallet = HDNodeWallet.fromPhrase(danger.mnemonic, undefined, `m/44'/60'/0'/0/2`)
 
-      addresses.push({
-        index: i,
-        address: wallet.address,
-        privateKey: wallet.privateKey,
-      })
-    }
-    console.log('地址正序')
-    console.log(addresses.map((e) => e.address).join('\n'))
-    console.log('地址倒序')
-    console.log(
-      addresses
-        .map((e) => e.address)
-        .reverse()
-        .join('\n'),
-    )
-    console.log(addresses.map((e) => e.privateKey).join('\n'))
-  }
+  //     addresses.push({
+  //       index: i,
+  //       address: wallet.address,
+  //       privateKey: wallet.privateKey,
+  //     })
+  //   }
+  //   console.log(addresses.map((e) => e.address).join('\n'))
+  //   console.log(addresses.map((e) => e.privateKey).join('\n'))
+  // }
 
   const deriveAddress = () => {
-    if (!mnemonic) return
+    if (!mnemonic) {
+      toast.show('助记词为空')
+      return
+    }
 
     const addresses = []
     for (let i = 0; i < 100; i++) {
@@ -133,9 +130,9 @@ export default function LoginPage() {
         </ThemeView>
       )}
 
-      <TouchableOpacity onPress={customExport}>
+      {/* <TouchableOpacity onPress={customExport}>
         <ThemeText type="link">自定义导出</ThemeText>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
       <TouchableOpacity onPress={deriveAddress}>
         <ThemeText type="link">派生100个地址</ThemeText>

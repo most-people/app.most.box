@@ -20,20 +20,20 @@ export const useChat = (topic: string) => {
   // 使用 useEffect 确保 chat 只初始化一次
   useEffect(() => {
     if (topic && dotClient) {
-      const dotWallet = Dot.mostWallet(topic, '', 'I know loss mnemonic will lose my wallet.')
+      const dotWallet = Dot.mostWallet('most.box#' + topic, '', 'I know loss mnemonic will lose my wallet.')
       const signer = HDNodeWallet.fromPhrase(dotWallet.mnemonic)
       dotClient.setSigner(signer)
       const dot = dotClient.dot(dotWallet.address)
       setChat(dot)
-      const callback = (data: any) => {
+
+      dot.on(DotKey, (data: any) => {
         if (data) {
           setMessages(data)
         }
-      }
-      dot.on(DotKey, callback)
+      })
       // 清理监听器，防止内存泄漏
       return () => {
-        dot.off(`${dotWallet.address}/${DotKey}`, callback)
+        dot.off(DotKey)
       }
     }
   }, [topic, dotClient])
