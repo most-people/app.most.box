@@ -1,10 +1,10 @@
 import { Platform, StyleSheet, TouchableOpacity } from 'react-native'
 import PageTabView from '@/components/PageTabView'
 import { ThemeText, ThemeView } from '@/components/Theme'
-import { useTopic } from '@/hooks/useTopic'
 import { router, useLocalSearchParams, useRootNavigationState } from 'expo-router'
 import { useEffect } from 'react'
 import { isAddress } from 'ethers'
+import { useTopicStore } from '@/stores/topicStore'
 export default function ExploreScreen() {
   const params = useLocalSearchParams()
   const rootNavigationState = useRootNavigationState()
@@ -41,7 +41,7 @@ export default function ExploreScreen() {
       timestamp: 0,
     },
   ]
-  const topic = useTopic()
+  const topicStore = useTopicStore()
   return (
     <PageTabView title="探索">
       <ThemeView style={styles.titleContainer}>
@@ -54,7 +54,7 @@ export default function ExploreScreen() {
           key={i}
           style={{ flexDirection: 'row', gap: '10%', justifyContent: 'space-between' }}
         >
-          <TouchableOpacity style={{ flex: 1 }} onPress={() => topic.join(item.name)}>
+          <TouchableOpacity style={{ flex: 1 }} onPress={() => topicStore.join(item.name)}>
             <ThemeText type="link">#{item.name}</ThemeText>
           </TouchableOpacity>
         </ThemeView>

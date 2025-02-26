@@ -4,29 +4,20 @@ import { TouchableOpacity, View } from 'react-native'
 import { Icon } from '@/assets/icon'
 import { Colors } from '@/constants/Colors'
 import { ThemeText } from '@/components/Theme'
-import { useMemo, useRef } from 'react'
+import { useRef } from 'react'
 import { DialogPrompt } from '@/components/Dialog'
-import { Topic, useTopic } from '@/hooks/useTopic'
-import React from 'react'
+import { useTopicStore, type Topic } from '@/stores/topicStore'
 import { useUserStore } from '@/stores/userStore'
 
 export default function ChatScreen() {
-  const { theme, topics } = useUserStore()
-  const topic = useTopic()
+  const { theme } = useUserStore()
+  const topicStore = useTopicStore()
   const createTopicRef = useRef<any>()
   const open = () => {
     createTopicRef.current.openModal()
   }
 
-  const topicsFilter = useMemo(() => {
-    // 排序
-    const list = topics.sort((a, b) => b.timestamp - a.timestamp)
-    // 去重
-    const map = new Map<string, Topic>(list.map((e) => [e.name, e]))
-    return Array.from(map.values())
-  }, [topics])
-
-  const TopicItem = (item: Topic) => (
+  const TopicItem = ({ item }: { item: Topic }) => (
     <View style={{ flexDirection: 'row', gap: '10%', justifyContent: 'space-between' }}>
       <TouchableOpacity
         style={{ flex: 1 }}
@@ -35,7 +26,7 @@ export default function ChatScreen() {
         <ThemeText type="link">#{item.name}</ThemeText>
       </TouchableOpacity>
       {item.timestamp !== 0 && (
-        <TouchableOpacity onPress={() => topic.quit(item.name)}>
+        <TouchableOpacity onPress={() => topicStore.quit(item.name)}>
           <Icon.Exit style={{ width: 20, height: 20 }} fill={Colors[theme].border} />
         </TouchableOpacity>
       )}
@@ -50,7 +41,7 @@ export default function ChatScreen() {
         </TouchableOpacity>
       }
     >
-      {topicsFilter.length === 0 ? (
+      {topicStore.topics.length === 0 ? (
         <>
           <ThemeText>没有关注的话题？</ThemeText>
           <TouchableOpacity onPress={() => router.push('/')}>
@@ -60,10 +51,10 @@ export default function ChatScreen() {
       ) : (
         <ThemeText>话题</ThemeText>
       )}
-      {topicsFilter.map((item, i) => (
-        <TopicItem key={i} {...item} />
+      {topicStore.topics.map((item, i) => (
+        <TopicItem key={i} item={item} />
       ))}
-      <DialogPrompt ref={createTopicRef} title="加入话题" onConfirm={topic.join} />
+      <DialogPrompt ref={createTopicRef} title="加入话题" onConfirm={topicStore.join} />
     </PageTabView>
   )
 }

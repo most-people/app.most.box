@@ -35,14 +35,6 @@ export default function LoginPage() {
         const wallet = mp.login(username, password)
         if (wallet) {
           setItem('wallet', wallet)
-          if (Platform.OS === 'web') {
-            // window.most.login(wallet.address, wallet.private_key).then((res) => {
-            //   console.log(res)
-            //   if (res.ok) {
-            //     setItem('pub', res.data)
-            //   }
-            // })
-          }
         }
       }, 0)
     }
@@ -56,7 +48,7 @@ export default function LoginPage() {
     } else {
       navigation.reset({
         index: 0,
-        routes: [{ name: '(tabs)' as never }], // 将首页设置为目标页面，替换 'Home' 为你的首页路由名称
+        routes: [{ name: '(tabs)' as never }],
       })
     }
   }

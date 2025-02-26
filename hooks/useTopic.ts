@@ -1,5 +1,6 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useUserStore } from '@/stores/userStore'
+import { useTopicStore } from '@/stores/topicStore'
 import { router } from 'expo-router'
 import mp from '@/constants/mp'
 
@@ -9,8 +10,8 @@ export interface Topic {
 }
 
 export const useTopic = () => {
-  const { topics, setItem, pushItem, wallet, dotClient } = useUserStore()
-
+  const { wallet, dotClient } = useUserStore()
+  const { inited, topics } = useTopicStore()
   const init = async () => {
     // const res = await window.most.get('topics')
     // if (res.ok) {
@@ -22,17 +23,7 @@ export const useTopic = () => {
 
   const join = (name: string) => {
     // if (pub) {
-    //   // 检查是否已经存在，避免重复添加
-    //   if (!topics.some((e) => e.name === name)) {
-    //     const timestamp = Date.now()
-    //     const data: Topic = { name, timestamp }
-    //     // 使用唯一键存储消息
-    //     // window.most.put('topics', mp.getHash(name), JSON.stringify(data)).then((res) => {
-    //     //   if (res.ok) {
-    //     //     pushItem('topics', data)
-    //     //   }
-    //     // })
-    //   }
+
     // }
     router.push({ pathname: '/topic/[topic]', params: { topic: name } })
   }
@@ -65,15 +56,13 @@ export const useTopic = () => {
 
   // 使用 useEffect 确保 chat 只初始化一次
   useEffect(() => {
-    if (wallet && dotClient !== null) {
-      console.log('🌊', wallet)
-      console.log('🌊', dotClient)
+    if (inited) return
+    if (wallet && dotClient) {
       // const dotWallet = Dot.mostWallet('most.box#' + topic, '', 'I know loss mnemonic will lose my wallet.')
       // const signer = HDNodeWallet.fromPhrase(dotWallet.mnemonic)
       // dotClient.setSigner(signer)
       // const dot = dotClient.dot(dotWallet.address)
       // setChat(dot)
-
       // dot.on(DotKey, (data: any) => {
       //   if (data) {
       //     setMessages(data)
@@ -84,7 +73,7 @@ export const useTopic = () => {
       //   dot.off(DotKey)
       // }
     }
-  }, [wallet, dotClient])
+  }, [wallet, dotClient, inited])
 
   return { join, quit }
 }
