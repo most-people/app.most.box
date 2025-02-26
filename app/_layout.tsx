@@ -54,7 +54,7 @@ export default function RootLayout() {
   }, [initDot, initWallet, loaded])
 
   useEffect(() => {
-    if (wallet && dotClient) {
+    if (wallet?.mnemonic && dotClient) {
       const signer = HDNodeWallet.fromPhrase(wallet.mnemonic)
       const dot = dotClient.dot(wallet.address)
       dot.setSigner(signer)

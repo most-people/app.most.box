@@ -134,6 +134,17 @@ export default function TopicPage() {
                 setTimeout(() => setAutoHeight(h), 0)
               }
             }}
+            returnKeyType="send"
+            onKeyPress={(event) => {
+              if (Platform.OS === 'web') {
+                // @ts-ignore
+                if (!event.shiftKey && !event.ctrlKey && event.nativeEvent.key === 'Enter') {
+                  // 按下回车但不按Shift键时发送消息
+                  event.preventDefault()
+                  send()
+                }
+              }
+            }}
           />
           <TouchableOpacity style={styles.sendButton} onPress={send}>
             <Text style={styles.sendButtonText}>发送</Text>
