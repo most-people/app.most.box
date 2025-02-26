@@ -13,12 +13,13 @@ import { Colors } from '@/constants/Colors'
 import { DotClient, type MostWallet } from 'dot.most.box'
 import mp from '@/constants/mp'
 import asyncStorage from '@/stores/asyncStorage'
+import { HDNodeWallet } from 'ethers'
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync()
 
 export default function RootLayout() {
   const systemTheme = useColorScheme() ?? 'dark'
-  const { theme, setItem } = useUserStore()
+  const { theme, setItem, wallet, dotClient } = useUserStore()
 
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
@@ -51,6 +52,15 @@ export default function RootLayout() {
       initDot()
     }
   }, [initDot, initWallet, loaded])
+
+  useEffect(() => {
+    if (wallet && dotClient) {
+      const signer = HDNodeWallet.fromPhrase(wallet.mnemonic)
+      const dot = dotClient.dot(wallet.address)
+      dot.setSigner(signer)
+      setItem('dot', dot)
+    }
+  }, [setItem, wallet, dotClient])
 
   if (!loaded) {
     return null

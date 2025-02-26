@@ -26,18 +26,18 @@ export const useChat = (topic: string) => {
         'I know loss mnemonic will lose my wallet.',
       )
       const signer = HDNodeWallet.fromPhrase(dotWallet.mnemonic)
-      const dot = dotClient.dot(dotWallet.address)
-      dot.setSigner(signer)
-      setChat(dot)
+      const dotChat = dotClient.dot(dotWallet.address)
+      dotChat.setSigner(signer)
+      setChat(dotChat)
 
-      dot.on(DotKey, (data: any) => {
+      dotChat.on(DotKey, (data: any) => {
         if (data) {
           setMessages(data)
         }
       })
       // 清理监听器，防止内存泄漏
       return () => {
-        dot.off(DotKey)
+        dotChat.off(DotKey)
       }
     }
   }, [topic, dotClient])

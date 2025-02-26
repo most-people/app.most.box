@@ -1,4 +1,4 @@
-import { type DotClient, type MostWallet } from 'dot.most.box'
+import { type DotMethods, type DotClient, type MostWallet } from 'dot.most.box'
 import { create } from 'zustand'
 import { router } from 'expo-router'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -11,6 +11,7 @@ export interface Topic {
 interface UserStore {
   wallet?: MostWallet
   dotClient: DotClient | null
+  dot: DotMethods | null
   theme: 'light' | 'dark'
   exit: () => void
   topics: Topic[]
@@ -23,6 +24,7 @@ interface State extends UserStore {
 export const useUserStore = create<State>((set) => ({
   wallet: undefined,
   dotClient: null,
+  dot: null,
   theme: 'dark', // 默认为深色
   exit() {
     AsyncStorage.clear()

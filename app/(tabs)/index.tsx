@@ -5,7 +5,9 @@ import { router, useLocalSearchParams, useRootNavigationState } from 'expo-route
 import { useEffect } from 'react'
 import { isAddress } from 'ethers'
 import { useTopicStore } from '@/stores/topicStore'
+import { useUserStore } from '@/stores/userStore'
 export default function ExploreScreen() {
+  const { dot } = useUserStore()
   const params = useLocalSearchParams()
   const rootNavigationState = useRootNavigationState()
   useEffect(() => {
@@ -41,7 +43,12 @@ export default function ExploreScreen() {
       timestamp: 0,
     },
   ]
-  const topicStore = useTopicStore()
+  const { init, join } = useTopicStore()
+
+  useEffect(() => {
+    if (dot) init(dot)
+  }, [dot, init])
+
   return (
     <PageTabView title="探索">
       <ThemeView style={styles.titleContainer}>
@@ -54,7 +61,7 @@ export default function ExploreScreen() {
           key={i}
           style={{ flexDirection: 'row', gap: '10%', justifyContent: 'space-between' }}
         >
-          <TouchableOpacity style={{ flex: 1 }} onPress={() => topicStore.join(item.name)}>
+          <TouchableOpacity style={{ flex: 1 }} onPress={() => join(item.name)}>
             <ThemeText type="link">#{item.name}</ThemeText>
           </TouchableOpacity>
         </ThemeView>

@@ -1,5 +1,7 @@
+import { type DotMethods } from 'dot.most.box'
 import { router } from 'expo-router'
 import { create } from 'zustand'
+import { useUserStore } from '@/stores/userStore'
 
 export interface Topic {
   name: string
@@ -9,8 +11,9 @@ export interface Topic {
 interface TopicStore {
   inited: boolean
   topics: Topic[]
-  join: (topic: string) => void
-  quit: (topic: string) => void
+  join: (name: string) => void
+  quit: (name: string) => void
+  init: (dot: DotMethods) => void
 }
 
 interface State extends TopicStore {
@@ -37,21 +40,41 @@ export const useTopicStore = create<State>((set, get) => ({
         [key]: [value, ...prev],
       }
     }),
-  join(topic: string) {
-    // 检查是否已经存在，避免重复添加
-    console.log('🌊', topic, get().topics)
-
-    // if (!topics.some((e) => e.name === name)) {
-    //   const timestamp = Date.now()
-    //   const data: Topic = { name, timestamp }
-    //   // 使用唯一键存储消息
-    //   // window.most.put('topics', mp.getHash(name), JSON.stringify(data)).then((res) => {
-    //   //   if (res.ok) {
-    //   //     pushItem('topics', data)
-    //   //   }
-    //   // })
-    // }
-    router.push({ pathname: '/topic/[topic]', params: { topic } })
+  join(name: string) {
+    router.push({ pathname: '/topic/[topic]', params: { topic: name } })
+    // 检查登录
+    const dot = useUserStore.getState().dot
+    if (dot) {
+      // 检查是否已经存在，避免重复添加
+      const topics = get().topics
+      if (!topics.some((e) => e.name === name)) {
+        const timestamp = Date.now()
+        const data: Topic = { name, timestamp }
+        const list = get().topics
+        dot.put('topics', [data, ...list])
+      }
+    }
   },
-  quit(topic: string) {},
+  quit(name: string) {
+    // 检查登录
+    const dot = useUserStore.getState().dot
+    if (dot) {
+      // 检查是否已经删除，避免重复删除
+      const topics = get().topics
+      const filter = topics.filter((e) => e.name !== name)
+      if (filter.length < topics.length) {
+        dot.put('topics', filter)
+      }
+    }
+  },
+  init(dot: DotMethods) {
+    if (get().inited) return
+    set({ inited: true })
+    dot.on('topics', (data) => {
+      // 检查数据
+      if (Array.isArray(data) && data.every((item) => typeof item?.timestamp === 'number')) {
+        set({ topics: data })
+      }
+    })
+  },
 }))
