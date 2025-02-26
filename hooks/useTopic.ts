@@ -9,7 +9,7 @@ export interface Topic {
 }
 
 export const useTopic = () => {
-  const { topics, setItem, pushItem } = useUserStore()
+  const { topics, setItem, pushItem, wallet, dotClient } = useUserStore()
 
   const init = async () => {
     // const res = await window.most.get('topics')
@@ -62,6 +62,29 @@ export const useTopic = () => {
   //     setItem('topics', [])
   //   }
   // }, [pub])
+
+  // 使用 useEffect 确保 chat 只初始化一次
+  useEffect(() => {
+    if (wallet && dotClient !== null) {
+      console.log('🌊', wallet)
+      console.log('🌊', dotClient)
+      // const dotWallet = Dot.mostWallet('most.box#' + topic, '', 'I know loss mnemonic will lose my wallet.')
+      // const signer = HDNodeWallet.fromPhrase(dotWallet.mnemonic)
+      // dotClient.setSigner(signer)
+      // const dot = dotClient.dot(dotWallet.address)
+      // setChat(dot)
+
+      // dot.on(DotKey, (data: any) => {
+      //   if (data) {
+      //     setMessages(data)
+      //   }
+      // })
+      // // 清理监听器，防止内存泄漏
+      // return () => {
+      //   dot.off(DotKey)
+      // }
+    }
+  }, [wallet, dotClient])
 
   return { join, quit }
 }

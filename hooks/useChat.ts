@@ -22,8 +22,8 @@ export const useChat = (topic: string) => {
     if (topic && dotClient) {
       const dotWallet = Dot.mostWallet('most.box#' + topic, '', 'I know loss mnemonic will lose my wallet.')
       const signer = HDNodeWallet.fromPhrase(dotWallet.mnemonic)
-      dotClient.setSigner(signer)
       const dot = dotClient.dot(dotWallet.address)
+      dot.setSigner(signer)
       setChat(dot)
 
       dot.on(DotKey, (data: any) => {
@@ -37,33 +37,6 @@ export const useChat = (topic: string) => {
       }
     }
   }, [topic, dotClient])
-
-  // useEffect(() => {
-  //   if (!chat) return
-  //   const timestampSet = new Set()
-  //   // 监听所有子节点的变化
-  //   chat.map().on((data, key) => {
-  //     if (timestampSet.has(key)) return
-  //     if (data && key) {
-  //       if (data.address && data.text) {
-  //         if (!data.timestamp) {
-  //           data.timestamp = Number(key)
-  //         }
-  //         if (!timestampSet.has(data.timestamp)) {
-  //           timestampSet.add(String(data.timestamp))
-  //           setMessages((list) => [...list, data])
-  //         }
-  //       } else {
-  //         // chat.get(key).put(null)
-  //       }
-  //     }
-  //   })
-
-  //   // 清理监听器，防止内存泄漏
-  //   return () => {
-  //     chat.off()
-  //   }
-  // }, [chat])
 
   const send = (text: string) => {
     if (wallet && chat) {

@@ -33,7 +33,10 @@ export default function TopicPage() {
   const copy = useCopy()
 
   const send = () => {
-    if (!wallet) return router.push('/login')
+    if (!wallet) {
+      toast.show('请先登录')
+      return router.push('/login')
+    }
     if (message.trim()) {
       chat.send(message)
       setMessage('')
@@ -46,7 +49,10 @@ export default function TopicPage() {
   const [showDelete, setShowDelete] = useState(false)
   const [deleteItem, setDeleteItem] = useState<Message | undefined>(undefined)
   const deleteMessage = () => {
-    if (!wallet) return router.push('/login')
+    if (!wallet) {
+      toast.show('请先登录')
+      return router.push('/login')
+    }
     if (deleteItem) chat.del(deleteItem.timestamp)
   }
 
