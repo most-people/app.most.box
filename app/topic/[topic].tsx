@@ -127,6 +127,7 @@ export default function TopicPage() {
             onSubmitEditing={send}
             maxLength={300}
             multiline
+            submitBehavior="submit"
             onContentSizeChange={(event) => {
               // 内容高度变化时触发
               const h = event.nativeEvent.contentSize.height
