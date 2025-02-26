@@ -1,5 +1,5 @@
 import { router } from 'expo-router'
-import { create, StoreApi } from 'zustand'
+import { create } from 'zustand'
 
 export interface Topic {
   name: string

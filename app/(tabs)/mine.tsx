@@ -25,11 +25,10 @@ interface Tab {
   icon: ReactNode
 }
 export default function ProfileScreen() {
-  const { wallet, theme } = useUserStore()
+  const { wallet, theme, exit } = useUserStore()
   const toast = useToast()
   const copy = useCopy()
   const styles = createStyles(theme)
-  const exit = useUserStore((state) => state.exit)
   const insets = useSafeAreaInsets()
   // 动态计算头部高度
   const headerTop = Platform.OS === 'ios' ? insets.top : StatusBar.currentHeight || 0

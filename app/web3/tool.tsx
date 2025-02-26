@@ -8,11 +8,11 @@ import { useUserStore } from '@/stores/userStore'
 import Dot from 'dot.most.box'
 import PageView from '@/components/PageView'
 import { ThemeText, ThemeView } from '@/components/Theme'
-import { HDNodeWallet } from 'ethers'
-import { useToast } from 'expo-toast'
+// import { HDNodeWallet } from 'ethers'
+// import { useToast } from 'expo-toast'
 
 export default function LoginPage() {
-  const toast = useToast()
+  // const toast = useToast()
   const { theme } = useUserStore()
   const styles = createStyles(theme)
 
@@ -56,25 +56,25 @@ export default function LoginPage() {
   //   console.log(addresses.map((e) => e.privateKey).join('\n'))
   // }
 
-  const deriveAddress = () => {
-    if (!mnemonic) {
-      toast.show('助记词为空')
-      return
-    }
+  // const deriveAddress = () => {
+  //   if (!mnemonic) {
+  //     toast.show('助记词为空')
+  //     return
+  //   }
 
-    const addresses = []
-    for (let i = 0; i < 100; i++) {
-      const path = `m/44'/60'/0'/0/${i}`
-      const wallet = HDNodeWallet.fromPhrase(mnemonic, undefined, path)
-      addresses.push({
-        index: i,
-        address: wallet.address,
-        privateKey: wallet.privateKey,
-      })
-    }
-    console.log('派生地址')
-    console.log(addresses.map((e) => e.address).join('\n'))
-  }
+  //   const addresses = []
+  //   for (let i = 0; i < 100; i++) {
+  //     const path = `m/44'/60'/0'/0/${i}`
+  //     const wallet = HDNodeWallet.fromPhrase(mnemonic, undefined, path)
+  //     addresses.push({
+  //       index: i,
+  //       address: wallet.address,
+  //       privateKey: wallet.privateKey,
+  //     })
+  //   }
+  //   console.log('派生地址')
+  //   console.log(addresses.map((e) => e.address).join('\n'))
+  // }
 
   return (
     <PageView title={'Web3'}>
@@ -134,9 +134,9 @@ export default function LoginPage() {
         <ThemeText type="link">自定义导出</ThemeText>
       </TouchableOpacity> */}
 
-      <TouchableOpacity onPress={deriveAddress}>
+      {/* <TouchableOpacity onPress={deriveAddress}>
         <ThemeText type="link">派生100个地址</ThemeText>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </PageView>
   )
 }

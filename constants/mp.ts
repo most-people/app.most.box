@@ -141,7 +141,7 @@ const randomKeyBase64 = (bytes = 32) => {
 
 const login = (username: string, password: string): MostWallet | null => {
   const time = dayjs(0).add(1, 'day').unix()
-  const wallet = Dot.mostWallet(username, password)
+  const wallet = Dot.mostWallet(username, password, 'I know loss mnemonic will lose my wallet.')
   // 生成 32 字节（256 位）密钥
   const tokenSecret = randomKeyBase64(32)
   const token = createJWT(wallet, tokenSecret, time)
