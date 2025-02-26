@@ -58,6 +58,8 @@ export default function RootLayout() {
       const signer = HDNodeWallet.fromPhrase(wallet.mnemonic)
       const dot = dotClient.dot(wallet.address)
       dot.setSigner(signer)
+      dot.setPubKey(wallet.public_key)
+      dot.setPrivKey(wallet.private_key)
       setItem('dot', dot)
     }
   }, [setItem, wallet, dotClient])

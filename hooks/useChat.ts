@@ -28,6 +28,8 @@ export const useChat = (topic: string) => {
       const signer = HDNodeWallet.fromPhrase(dotWallet.mnemonic)
       const dotChat = dotClient.dot(dotWallet.address)
       dotChat.setSigner(signer)
+      dotChat.setPubKey(dotWallet.public_key)
+      dotChat.setPrivKey(dotWallet.private_key)
       setChat(dotChat)
 
       dotChat.on(DotKey, (data: any) => {

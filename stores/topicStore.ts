@@ -51,7 +51,7 @@ export const useTopicStore = create<State>((set, get) => ({
         const timestamp = Date.now()
         const data: Topic = { name, timestamp }
         const list = get().topics
-        dot.put('topics', [data, ...list])
+        dot.put('topics', [data, ...list], true)
       }
     }
   },
@@ -63,18 +63,22 @@ export const useTopicStore = create<State>((set, get) => ({
       const topics = get().topics
       const filter = topics.filter((e) => e.name !== name)
       if (filter.length < topics.length) {
-        dot.put('topics', filter)
+        dot.put('topics', filter, true)
       }
     }
   },
   init(dot: DotMethods) {
     if (get().inited) return
     set({ inited: true })
-    dot.on('topics', (data) => {
-      // 检查数据
-      if (Array.isArray(data) && data.every((item) => typeof item?.timestamp === 'number')) {
-        set({ topics: data })
-      }
-    })
+    dot.on(
+      'topics',
+      (data) => {
+        // 检查数据
+        if (Array.isArray(data) && data.every((item) => typeof item?.timestamp === 'number')) {
+          set({ topics: data })
+        }
+      },
+      { decrypt: true },
+    )
   },
 }))
