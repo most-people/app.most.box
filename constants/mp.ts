@@ -1,7 +1,14 @@
 import 'react-native-get-random-values'
 import nacl from 'tweetnacl'
-import CryptoJS from 'crypto-js'
-import { toUtf8Bytes, encodeBase64, decodeBase64, toUtf8String, ZeroAddress } from 'ethers'
+import {
+  toUtf8Bytes,
+  encodeBase64,
+  decodeBase64,
+  toUtf8String,
+  ZeroAddress,
+  computeHmac,
+  sha256,
+} from 'ethers'
 import asyncStorage from '@/stores/asyncStorage'
 import { createAvatar } from '@dicebear/core'
 import { botttsNeutral } from '@dicebear/collection'
@@ -13,6 +20,7 @@ import 'dayjs/locale/zh-cn'
 dayjs.extend(relativeTime)
 dayjs.locale('zh-cn')
 
+// 头像生成
 const avatar = (address = 'Most') => {
   return createAvatar(botttsNeutral, {
     seed: 'most.box@' + address,
@@ -20,11 +28,10 @@ const avatar = (address = 'Most') => {
     radius: 10,
   }).toString()
 }
-// 格式化时间
+
+// 时间格式化
 const formatTime = (time: string) => {
-  if (!time) {
-    return ''
-  }
+  if (!time) return ''
   const date = dayjs(Number(time))
   const hour = date.hour()
   // 判断当前时间段
@@ -69,93 +76,77 @@ const formatAddress = (address?: string) => {
 }
 
 // Base64 编码
-const enBase64 = (str: string) => {
-  // 将字符串转换为字节数组
-  const bytes = toUtf8Bytes(str)
-  // 将字节数组编码为 Base64 字符串
-  return encodeBase64(bytes)
-}
+const enBase64 = (str: string) => encodeBase64(toUtf8Bytes(str))
 
 // Base64 解码
-const deBase64 = (str: string) => {
-  // 解码 Base64
-  const bytes = decodeBase64(str)
-  // 将字节转换为 UTF-8 字符串
-  return toUtf8String(bytes)
-}
+const deBase64 = (str: string) => toUtf8String(decodeBase64(str))
 
-// 生成 JWT
+// JWT 生成
 const createJWT = (data: any, secret: string, exp = 60) => {
-  const header = {
-    alg: 'HS256',
-    typ: 'JWT',
+  const header = { alg: 'HS256', typ: 'JWT' }
+  const payload = {
+    exp: dayjs().add(exp, 'second').unix(),
+    data,
   }
-
-  const payload = { exp: dayjs().unix() + exp, data }
 
   const encodedHeader = enBase64(JSON.stringify(header))
   const encodedPayload = enBase64(JSON.stringify(payload))
+  const dataToSign = `${encodedHeader}.${encodedPayload}`
 
-  // 使用 HMAC-SHA256 签名
-  const signature = CryptoJS.HmacSHA256(
-    `${encodedHeader}.${encodedPayload}`,
-    CryptoJS.enc.Base64.parse(secret),
-  )
-  const encodedSignature = enBase64(signature.toString(CryptoJS.enc.Base64))
-  return `${encodedHeader}.${encodedPayload}.${encodedSignature}`
+  // HMAC-SHA256 签名
+  const signature = computeHmac('sha256', decodeBase64(secret), toUtf8Bytes(dataToSign))
+
+  return `${encodedHeader}.${encodedPayload}.${encodeBase64(signature)}`
 }
 
-// 验证 JWT
+// JWT 验证
 const verifyJWT = (token: string, secret: string) => {
   const parts = token.split('.')
-  if (parts.length !== 3) {
-    console.log('Invalid JWT format')
-    return null
-  }
+  if (parts.length !== 3) return null
 
   const [encodedHeader, encodedPayload, encodedSignature] = parts
-  const data = `${encodedHeader}.${encodedPayload}`
+  const dataToSign = `${encodedHeader}.${encodedPayload}`
 
-  // 验证签名
-  const signature = CryptoJS.HmacSHA256(data, CryptoJS.enc.Base64.parse(secret))
-  const validSignature = enBase64(signature.toString(CryptoJS.enc.Base64))
-
-  if (validSignature !== encodedSignature) {
-    console.log('Invalid signature')
-    return null
-  }
-
-  // 检查是否过期
-  const payload = JSON.parse(deBase64(encodedPayload))
-  const now = Math.floor(Date.now() / 1000)
-  if (payload.exp && now > payload.exp) {
-    console.log('Token has expired')
-    return null
-  }
-
-  return payload.data
-}
-
-const randomKeyBase64 = (bytes = 32) => {
-  const buffer = nacl.randomBytes(bytes)
-  return encodeBase64(buffer)
-}
-
-const login = (username: string, password: string): MostWallet | null => {
-  const time = dayjs(0).add(1, 'day').unix()
-  const wallet = mostWallet(username, password, 'I know loss mnemonic will lose my wallet.')
-  // 生成 32 字节（256 位）密钥
-  const tokenSecret = randomKeyBase64()
-  const token = createJWT(wallet, tokenSecret, time)
   try {
-    const data = verifyJWT(token, tokenSecret) as MostWallet | null
-    if (data?.address === wallet.address) {
+    // 计算签名
+    const calculatedSig = encodeBase64(
+      computeHmac('sha256', decodeBase64(secret), toUtf8Bytes(dataToSign)),
+    )
+
+    // 签名比对
+    if (calculatedSig !== encodedSignature) return null
+
+    // 解码载荷
+    const payload = JSON.parse(deBase64(encodedPayload))
+
+    // 检查过期时间
+    if (dayjs().unix() > payload.exp) return null
+
+    return payload.data
+  } catch (error) {
+    console.error('JWT 验证失败:', error)
+    return null
+  }
+}
+
+// 生成随机密钥
+const randomKeyBase64 = (bytes = 32) => encodeBase64(nacl.randomBytes(bytes))
+
+// 登录
+const login = (username: string, password: string): MostWallet | null => {
+  try {
+    const wallet = mostWallet(username, password, 'I know loss mnemonic will lose my wallet.')
+    const tokenSecret = randomKeyBase64()
+    const token = createJWT(wallet, tokenSecret, 24 * 60 * 60) // 24小时有效期
+
+    // 验证并存储
+    if (verifyJWT(token, tokenSecret)?.address === wallet.address) {
       asyncStorage.setItem('token', token)
       asyncStorage.setItem('tokenSecret', tokenSecret)
       return wallet
     }
-  } catch (error: any) {
-    console.log(error.message)
+  } catch (error) {
+    console.error('登录失败:', error)
   }
   return null
 }
