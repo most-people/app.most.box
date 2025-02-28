@@ -44,7 +44,7 @@ export default function TopicPage() {
     }
   }
 
-  const messages = chat.messages.sort((a, b) => b.timestamp - a.timestamp)
+  const messages = chat.messages.sort((a, b) => a.timestamp - b.timestamp)
 
   const [showDelete, setShowDelete] = useState(false)
   const [deleteItem, setDeleteItem] = useState<Message | undefined>(undefined)

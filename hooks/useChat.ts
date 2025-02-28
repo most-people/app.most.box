@@ -53,7 +53,7 @@ export const useChat = (topic: string) => {
         timestamp,
       }
       // 更新数据
-      chat.put(DotKey, [newMessage, ...messages])
+      chat.put(DotKey, [...messages, newMessage])
     }
   }
 
