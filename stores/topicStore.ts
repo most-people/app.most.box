@@ -14,6 +14,7 @@ interface TopicStore {
   join: (name: string) => void
   quit: (name: string) => void
   init: (dot: DotMethods) => void
+  exit: () => void
 }
 
 interface State extends TopicStore {
@@ -80,5 +81,8 @@ export const useTopicStore = create<State>((set, get) => ({
       },
       { decrypt: true },
     )
+  },
+  exit() {
+    set({ inited: false, topics: [] })
   },
 }))

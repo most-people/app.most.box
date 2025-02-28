@@ -1,5 +1,6 @@
+import 'react-native-get-random-values'
+import nacl from 'tweetnacl'
 import CryptoJS from 'crypto-js'
-import { getRandomBytes } from 'expo-crypto'
 import { toUtf8Bytes, encodeBase64, decodeBase64, toUtf8String, ZeroAddress } from 'ethers'
 import asyncStorage from '@/stores/asyncStorage'
 import { createAvatar } from '@dicebear/core'
@@ -8,6 +9,7 @@ import { type MostWallet, mostWallet } from 'dot.most.box'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import 'dayjs/locale/zh-cn'
+
 dayjs.extend(relativeTime)
 dayjs.locale('zh-cn')
 
@@ -135,7 +137,7 @@ const verifyJWT = (token: string, secret: string) => {
 }
 
 const randomKeyBase64 = (bytes = 32) => {
-  const buffer = getRandomBytes(bytes)
+  const buffer = nacl.randomBytes(bytes)
   return encodeBase64(buffer)
 }
 
@@ -143,7 +145,7 @@ const login = (username: string, password: string): MostWallet | null => {
   const time = dayjs(0).add(1, 'day').unix()
   const wallet = mostWallet(username, password, 'I know loss mnemonic will lose my wallet.')
   // 生成 32 字节（256 位）密钥
-  const tokenSecret = randomKeyBase64(32)
+  const tokenSecret = randomKeyBase64()
   const token = createJWT(wallet, tokenSecret, time)
   try {
     const data = verifyJWT(token, tokenSecret) as MostWallet | null

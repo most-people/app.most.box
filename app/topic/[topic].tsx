@@ -11,6 +11,7 @@ import {
   Platform,
   SafeAreaView,
 } from 'react-native'
+import Markdown from 'react-native-markdown-display'
 import { AppHeader } from '@/components/AppHeader'
 import { Icon } from '@/assets/icon'
 import { Colors } from '@/constants/Colors'
@@ -205,6 +206,8 @@ const createStyles = (theme: 'light' | 'dark') => {
     },
     messageText: {
       fontSize: 16,
+      // @ts-ignore
+      wordBreak: 'break-word',
     },
     safeArea: {
       backgroundColor: theme === 'dark' ? '#1E1E1E' : 'aliceblue',

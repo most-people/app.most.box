@@ -2,14 +2,24 @@ import { Platform, StyleSheet, TouchableOpacity } from 'react-native'
 import PageTabView from '@/components/PageTabView'
 import { ThemeText, ThemeView } from '@/components/Theme'
 import { router, useLocalSearchParams, useRootNavigationState } from 'expo-router'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { isAddress } from 'ethers'
 import { useTopicStore } from '@/stores/topicStore'
 import { useUserStore } from '@/stores/userStore'
+import { Colors } from '@/constants/Colors'
+import { Icon } from '@/assets/icon'
+import { DialogPrompt } from '@/components/Dialog'
+
 export default function ExploreScreen() {
-  const { dot } = useUserStore()
+  const { theme, dot } = useUserStore()
   const params = useLocalSearchParams()
   const rootNavigationState = useRootNavigationState()
+  const createTopicRef = useRef<any>()
+
+  const open = () => {
+    createTopicRef.current.openModal()
+  }
+
   useEffect(() => {
     // 确保 Root Layout 已挂载
     if (Platform.OS === 'web' && rootNavigationState?.key) {
@@ -50,22 +60,28 @@ export default function ExploreScreen() {
   }, [dot, init])
 
   return (
-    <PageTabView title="探索">
+    <PageTabView
+      title="探索"
+      rightContent={
+        <TouchableOpacity onPress={open}>
+          <Icon.Add width={20} height={20} fill={Colors[theme].text} />
+        </TouchableOpacity>
+      }
+    >
       <ThemeView style={styles.titleContainer}>
         <ThemeText type="title">Explore</ThemeText>
       </ThemeView>
-      <ThemeText>——开发中，之后会根据关注人数排序</ThemeText>
+      <ThemeText>——聊天室，人人都可以发言</ThemeText>
+      <TouchableOpacity onPress={open}>
+        <ThemeText type="link">加入</ThemeText>
+      </TouchableOpacity>
       <ThemeText>话题</ThemeText>
       {topics.map((item, i) => (
-        <ThemeView
-          key={i}
-          style={{ flexDirection: 'row', gap: '10%', justifyContent: 'space-between' }}
-        >
-          <TouchableOpacity style={{ flex: 1 }} onPress={() => join(item.name)}>
-            <ThemeText type="link">#{item.name}</ThemeText>
-          </TouchableOpacity>
-        </ThemeView>
+        <TouchableOpacity key={i} style={{ flex: 1 }} onPress={() => join(item.name)}>
+          <ThemeText type="link">#{item.name}</ThemeText>
+        </TouchableOpacity>
       ))}
+      <DialogPrompt ref={createTopicRef} title="加入话题" onConfirm={join} />
     </PageTabView>
   )
 }

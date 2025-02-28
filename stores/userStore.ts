@@ -2,6 +2,7 @@ import { type DotMethods, type DotClient, type MostWallet } from 'dot.most.box'
 import { create } from 'zustand'
 import { router } from 'expo-router'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useTopicStore } from './topicStore'
 
 export interface Topic {
   name: string
@@ -26,11 +27,13 @@ export const useUserStore = create<State>((set) => ({
   dotClient: null,
   dot: null,
   theme: 'dark', // 默认为深色
+  topics: [],
+  setItem: (key, value) => set((state) => ({ ...state, [key]: value })),
   exit() {
     AsyncStorage.clear()
     set({ wallet: undefined })
     router.push('/login')
+    // topic store
+    useTopicStore.getState().exit()
   },
-  topics: [],
-  setItem: (key, value) => set((state) => ({ ...state, [key]: value })),
 }))
