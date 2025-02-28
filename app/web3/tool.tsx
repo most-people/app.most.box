@@ -5,7 +5,7 @@ import QRCode from 'react-native-qrcode-svg'
 import { useEffect, useState } from 'react'
 import { StyleSheet, TextInput, TouchableOpacity } from 'react-native'
 import { useUserStore } from '@/stores/userStore'
-import Dot from 'dot.most.box'
+import { mostWallet } from 'dot.most.box'
 import PageView from '@/components/PageView'
 import { ThemeText, ThemeView } from '@/components/Theme'
 // import { HDNodeWallet } from 'ethers'
@@ -25,7 +25,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (username && password) {
-      const danger = Dot.mostWallet(username, password, 'I know loss mnemonic will lose my wallet.')
+      const danger = mostWallet(username, password, 'I know loss mnemonic will lose my wallet.')
       setAddress(danger.address)
       setMnemonic(danger.mnemonic)
     } else {
@@ -78,7 +78,7 @@ export default function LoginPage() {
 
   return (
     <PageView title={'Web3'}>
-      <SvgXml xml={mp.avatar(Dot.mostWallet(username, password).address)} style={styles.avatar} />
+      <SvgXml xml={mp.avatar(mostWallet(username, password).address)} style={styles.avatar} />
 
       <ThemeText style={styles.title}>账户查询</ThemeText>
 

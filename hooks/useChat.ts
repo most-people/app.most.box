@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import Dot, { type DotMethods } from 'dot.most.box'
+import { mostWallet, type DotMethods } from 'dot.most.box'
 import { useUserStore } from '@/stores/userStore'
 import { HDNodeWallet } from 'ethers'
 
@@ -20,7 +20,7 @@ export const useChat = (topic: string) => {
   // 使用 useEffect 确保 chat 只初始化一次
   useEffect(() => {
     if (topic && dotClient) {
-      const dotWallet = Dot.mostWallet(
+      const dotWallet = mostWallet(
         'most.box#' + topic,
         '',
         'I know loss mnemonic will lose my wallet.',

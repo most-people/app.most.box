@@ -13,7 +13,7 @@ import {
 } from 'react-native'
 import { Link, useNavigation, useRouter } from 'expo-router'
 import { useUserStore } from '@/stores/userStore'
-import Dot from 'dot.most.box'
+import { mostWallet } from 'dot.most.box'
 
 export default function LoginPage() {
   const navigation = useNavigation()
@@ -62,7 +62,7 @@ export default function LoginPage() {
         <ThemeText type="link">游客</ThemeText>
       </TouchableOpacity>
 
-      <SvgXml xml={mp.avatar(Dot.mostWallet(username, password).address)} style={styles.avatar} />
+      <SvgXml xml={mp.avatar(mostWallet(username, password).address)} style={styles.avatar} />
 
       <Text style={styles.title}>欢迎登录</Text>
 
