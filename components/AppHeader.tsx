@@ -13,7 +13,7 @@ interface AppHeaderProps {
   rightContent?: ReactNode // 插槽，传入右侧自定义内容
 }
 export const AppHeader = ({ title, leftContent, rightContent }: AppHeaderProps) => {
-  const { theme } = useUserStore()
+  const theme = useUserStore((state) => state.theme)
   const navigation = useNavigation()
   const insets = useSafeAreaInsets()
 

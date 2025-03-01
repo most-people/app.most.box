@@ -10,8 +10,14 @@ import { useTopicStore, type Topic } from '@/stores/topicStore'
 import { useUserStore } from '@/stores/userStore'
 
 export default function ChatScreen() {
-  const { theme, dot } = useUserStore()
-  const { topics, quit, join, init } = useTopicStore()
+  const theme = useUserStore((state) => state.theme)
+  const dot = useUserStore((state) => state.dot)
+
+  const topics = useTopicStore((state) => state.topics)
+  const quit = useTopicStore((state) => state.quit)
+  const join = useTopicStore((state) => state.join)
+  const init = useTopicStore((state) => state.init)
+
   const createTopicRef = useRef<any>()
   const open = () => {
     createTopicRef.current.openModal()

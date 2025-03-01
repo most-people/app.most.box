@@ -26,8 +26,11 @@ interface Tab {
   icon: ReactNode
 }
 export default function ProfileScreen() {
-  const { wallet, theme, exit } = useUserStore()
-  const { reload } = useTopicStore()
+  const theme = useUserStore((state) => state.theme)
+  const wallet = useUserStore((state) => state.wallet)
+  const exit = useUserStore((state) => state.exit)
+  const resetTopic = useTopicStore((state) => state.reset)
+
   const toast = useToast()
   const copy = useCopy()
   const styles = createStyles(theme)
@@ -57,7 +60,7 @@ export default function ProfileScreen() {
 
   const quit = () => {
     exit()
-    reload()
+    resetTopic()
   }
 
   return (

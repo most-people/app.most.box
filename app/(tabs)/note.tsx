@@ -8,7 +8,7 @@ import { useUserStore } from '@/stores/userStore'
 import dayjs from 'dayjs'
 export default function NoteScreen() {
   const notes = useNoteStore((state) => state.notes)
-  const { theme } = useUserStore()
+  const theme = useUserStore((state) => state.theme)
   const toast = useToast()
 
   const upload = async () => {

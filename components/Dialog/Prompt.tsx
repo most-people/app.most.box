@@ -14,7 +14,7 @@ interface DialogPromptProps {
 const DialogPrompt = forwardRef(({ onConfirm, title }: DialogPromptProps, ref) => {
   const [modalVisible, setModalVisible] = useState(false)
   const [inputText, setInputText] = useState('')
-  const { theme } = useUserStore()
+  const theme = useUserStore((state) => state.theme)
   const styles = createStyles(theme)
 
   // 暴露控制方法

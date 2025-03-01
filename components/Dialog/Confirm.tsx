@@ -24,7 +24,7 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
     onClose()
   }
 
-  const { theme } = useUserStore()
+  const theme = useUserStore((state) => state.theme)
 
   const styles = createStyles(theme)
 

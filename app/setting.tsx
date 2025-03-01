@@ -9,7 +9,10 @@ import { useRef, useState } from 'react'
 import { Switch, TouchableOpacity, StyleSheet } from 'react-native'
 
 export default function Web3Page() {
-  const { wallet, theme, setItem } = useUserStore()
+  const theme = useUserStore((state) => state.theme)
+  const setItem = useUserStore((state) => state.setItem)
+  const wallet = useUserStore((state) => state.wallet)
+
   const styles = createStyles(theme)
   const [showMnemonic, setShowMnemonic] = useState(false)
   const [mnemonic, setMnemonic] = useState('')

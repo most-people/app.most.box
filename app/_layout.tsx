@@ -19,7 +19,10 @@ SplashScreen.preventAutoHideAsync()
 
 export default function RootLayout() {
   const systemTheme = useColorScheme() ?? 'dark'
-  const { theme, setItem, wallet, dotClient } = useUserStore()
+  const theme = useUserStore((state) => state.theme)
+  const setItem = useUserStore((state) => state.setItem)
+  const wallet = useUserStore((state) => state.wallet)
+  const dotClient = useUserStore((state) => state.dotClient)
 
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),

@@ -11,7 +11,6 @@ import {
   Platform,
   SafeAreaView,
 } from 'react-native'
-import Markdown from 'react-native-markdown-display'
 import { AppHeader } from '@/components/AppHeader'
 import { Icon } from '@/assets/icon'
 import { Colors } from '@/constants/Colors'
@@ -29,7 +28,8 @@ export default function TopicPage() {
   const topicName = params.topic as string
   const [message, setMessage] = useState('')
   const chat = useChat(topicName)
-  const { wallet, theme } = useUserStore()
+  const wallet = useUserStore((state) => state.wallet)
+  const theme = useUserStore((state) => state.theme)
   const styles = createStyles(theme)
   const copy = useCopy()
 

@@ -9,7 +9,7 @@ type ThemeProps = TextProps & {
 }
 
 const ThemeText = ({ style, type = 'default', ...rest }: ThemeProps) => {
-  const { theme } = useUserStore()
+  const theme = useUserStore((state) => state.theme)
 
   return (
     <Text

@@ -12,7 +12,8 @@ export interface Message {
 const DotKey = 'messages'
 
 export const useChat = (topic: string) => {
-  const { wallet, dotClient } = useUserStore()
+  const wallet = useUserStore((state) => state.wallet)
+  const dotClient = useUserStore((state) => state.dotClient)
 
   const [chat, setChat] = useState<DotMethods | null>(null)
   const [messages, setMessages] = useState<Message[]>([])
@@ -50,6 +51,13 @@ export const useChat = (topic: string) => {
     }
   }, [topic, dotClient])
 
+  // 自动加入话题
+  useEffect(() => {
+    if (topic && wallet && dotClient) {
+      console.log('🌊', topic, wallet, dotClient)
+    }
+  }, [topic, wallet, dotClient])
+
   const send = (text: string) => {
     if (wallet && chat) {
       const timestamp = Date.now()
@@ -72,5 +80,6 @@ export const useChat = (topic: string) => {
       )
     }
   }
+
   return { messages, send, del }
 }

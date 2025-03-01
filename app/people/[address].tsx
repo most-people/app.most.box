@@ -11,7 +11,7 @@ export default function TopicPage() {
   const params = useLocalSearchParams()
   const copy = useCopy()
   const address = params.address as string
-  const { theme } = useUserStore()
+  const theme = useUserStore((state) => state.theme)
   const styles = createStyles(theme)
   return (
     <PageView title={mp.formatAddress(address)}>

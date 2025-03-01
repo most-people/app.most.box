@@ -6,7 +6,7 @@ import { TouchableOpacity } from 'react-native'
 import { Link } from 'expo-router'
 
 export default function Web3Page() {
-  const { wallet } = useUserStore()
+  const wallet = useUserStore((state) => state.wallet)
   const [showX25519, setShowX25519] = useState(false)
   return (
     <PageView title={'Web3'}>

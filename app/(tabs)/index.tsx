@@ -11,7 +11,8 @@ import { Icon } from '@/assets/icon'
 import { DialogPrompt } from '@/components/Dialog'
 
 export default function ExploreScreen() {
-  const { theme, dot } = useUserStore()
+  const theme = useUserStore((state) => state.theme)
+  const dot = useUserStore((state) => state.dot)
   const params = useLocalSearchParams()
   const rootNavigationState = useRootNavigationState()
   const createTopicRef = useRef<any>()
@@ -53,7 +54,9 @@ export default function ExploreScreen() {
       timestamp: 0,
     },
   ]
-  const { init, join } = useTopicStore()
+
+  const join = useTopicStore((state) => state.join)
+  const init = useTopicStore((state) => state.init)
 
   useEffect(() => {
     if (dot) init(dot)

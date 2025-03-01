@@ -18,7 +18,8 @@ import { mostWallet } from 'dot.most.box'
 export default function LoginPage() {
   const navigation = useNavigation()
   const router = useRouter()
-  const { setItem, theme } = useUserStore()
+  const theme = useUserStore((state) => state.theme)
+  const setItem = useUserStore((state) => state.setItem)
   const styles = createStyles(theme)
 
   const [username, setUsername] = useState('')

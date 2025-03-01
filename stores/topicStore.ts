@@ -15,7 +15,7 @@ interface TopicStore {
   join: (name: string) => void
   quit: (name: string) => void
   init: (dot: DotMethods) => void
-  reload: () => void
+  reset: () => void
 }
 
 interface State extends TopicStore {
@@ -86,7 +86,7 @@ export const useTopicStore = create<State>((set, get) => ({
       { decrypt: true },
     )
   },
-  reload() {
+  reset() {
     set({ inited: false, topics: [] })
   },
 }))

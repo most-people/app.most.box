@@ -13,7 +13,7 @@ import { ThemeText, ThemeView } from '@/components/Theme'
 
 export default function LoginPage() {
   // const toast = useToast()
-  const { theme } = useUserStore()
+  const theme = useUserStore((state) => state.theme)
   const styles = createStyles(theme)
 
   const [username, setUsername] = useState('')
