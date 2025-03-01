@@ -2,6 +2,7 @@ import { type DotMethods } from 'dot.most.box'
 import { router } from 'expo-router'
 import { create } from 'zustand'
 import { useUserStore } from '@/stores/userStore'
+import { startTransition } from 'react'
 
 export interface Topic {
   name: string
@@ -14,7 +15,7 @@ interface TopicStore {
   join: (name: string) => void
   quit: (name: string) => void
   init: (dot: DotMethods) => void
-  exit: () => void
+  reload: () => void
 }
 
 interface State extends TopicStore {
@@ -78,14 +79,14 @@ export const useTopicStore = create<State>((set, get) => ({
         if (timestamp > t) {
           // 检查数据
           if (Array.isArray(data) && data.every((item) => typeof item?.timestamp === 'number')) {
-            set({ topics: data })
+            startTransition(() => set({ topics: data }))
           }
         }
       },
       { decrypt: true },
     )
   },
-  exit() {
+  reload() {
     set({ inited: false, topics: [] })
   },
 }))

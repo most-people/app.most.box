@@ -18,6 +18,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { SvgXml } from 'react-native-svg'
 import { useToast } from 'expo-toast'
 import { useCopy } from '@/hooks/useCopy'
+import { useTopicStore } from '@/stores/topicStore'
 
 interface Tab {
   name: string
@@ -26,6 +27,7 @@ interface Tab {
 }
 export default function ProfileScreen() {
   const { wallet, theme, exit } = useUserStore()
+  const { reload } = useTopicStore()
   const toast = useToast()
   const copy = useCopy()
   const styles = createStyles(theme)
@@ -52,6 +54,11 @@ export default function ProfileScreen() {
   ]
 
   const address = wallet?.address || mp.ZeroAddress
+
+  const quit = () => {
+    exit()
+    reload()
+  }
 
   return (
     <ScrollView style={[styles.container, { paddingTop: headerTop }]}>
@@ -104,7 +111,7 @@ export default function ProfileScreen() {
       </View>
 
       {/* 设置 */}
-      <TouchableOpacity style={styles.menuItem} onPress={exit}>
+      <TouchableOpacity style={styles.menuItem} onPress={quit}>
         <Icon.Exit style={styles.icon} fill={Colors[theme].color} />
         <Text style={styles.menuText}>{wallet ? '退出账户' : '去登录'}</Text>
         <Icon.Arrow color={Colors[theme].primary} />

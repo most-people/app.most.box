@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { startTransition, useEffect, useState } from 'react'
 import { mostWallet, type DotMethods } from 'dot.most.box'
 import { useUserStore } from '@/stores/userStore'
 import { HDNodeWallet } from 'ethers'
@@ -38,7 +38,7 @@ export const useChat = (topic: string) => {
           if (data) {
             // 检查数据
             if (Array.isArray(data) && data.every((item) => typeof item?.timestamp === 'number')) {
-              setMessages(data)
+              startTransition(() => setMessages(data))
             }
           }
         }
