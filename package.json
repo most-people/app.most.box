@@ -8,7 +8,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "build": "expo export && cp _redirects dist",
-    "eas-build": "eas build",
+    "eas-build": "npx eas build",
     "preview": "npx serve dist -p 2024",
     "yarn": "yarn",
     "lint": "expo lint"
@@ -57,7 +57,7 @@
     "axios": "^1.8.1",
     "buffer": "^6.0.3",
     "dayjs": "^1.11.13",
-    "dot.most.box": "^0.2.0",
+    "dot.most.box": "^0.2.1",
     "ethers": "^6.13.5",
     "expo-clipboard": "~7.0.1",
     "expo-toast": "^1.0.3",

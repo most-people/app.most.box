@@ -32,9 +32,15 @@ export const useChat = (topic: string) => {
       dotChat.setPrivKey(dotWallet.private_key)
       setChat(dotChat)
 
-      dotChat.on(DotKey, (data: any) => {
-        if (data) {
-          setMessages(data)
+      let t = 0
+      dotChat.on(DotKey, (data, timestamp) => {
+        if (timestamp > t) {
+          if (data) {
+            // 检查数据
+            if (Array.isArray(data) && data.every((item) => typeof item?.timestamp === 'number')) {
+              setMessages(data)
+            }
+          }
         }
       })
       // 清理监听器，防止内存泄漏

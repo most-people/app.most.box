@@ -42,7 +42,7 @@ export default function RootLayout() {
   }, [setItem])
 
   const initDot = useCallback(() => {
-    setItem('dotClient', new DotClient(['https://api.most.red']))
+    setItem('dotClient', new DotClient(['https://api.most.red', 'https://www.icewall.fun']))
   }, [setItem])
 
   useEffect(() => {

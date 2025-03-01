@@ -71,12 +71,15 @@ export const useTopicStore = create<State>((set, get) => ({
   init(dot: DotMethods) {
     if (get().inited) return
     set({ inited: true })
+    let t = 0
     dot.on(
       'topics',
-      (data) => {
-        // 检查数据
-        if (Array.isArray(data) && data.every((item) => typeof item?.timestamp === 'number')) {
-          set({ topics: data })
+      (data, timestamp) => {
+        if (timestamp > t) {
+          // 检查数据
+          if (Array.isArray(data) && data.every((item) => typeof item?.timestamp === 'number')) {
+            set({ topics: data })
+          }
         }
       },
       { decrypt: true },
