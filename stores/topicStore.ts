@@ -79,6 +79,7 @@ export const useTopicStore = create<State>((set, get) => ({
       'topics',
       (data, timestamp) => {
         if (timestamp > t) {
+          t = timestamp
           // 检查数据
           if (Array.isArray(data) && data.every((item) => typeof item?.timestamp === 'number')) {
             startTransition(() => set({ topics: data }))

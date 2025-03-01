@@ -36,6 +36,7 @@ export const useChat = (topic: string) => {
       let t = 0
       dotChat.on(DotKey, (data, timestamp) => {
         if (timestamp > t) {
+          t = timestamp
           if (data) {
             // 检查数据
             if (Array.isArray(data) && data.every((item) => typeof item?.timestamp === 'number')) {
