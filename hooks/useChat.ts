@@ -51,13 +51,6 @@ export const useChat = (topic: string) => {
     }
   }, [topic, dotClient])
 
-  // 自动加入话题
-  useEffect(() => {
-    if (topic && wallet && dotClient) {
-      console.log('🌊', topic, wallet, dotClient)
-    }
-  }, [topic, wallet, dotClient])
-
   const send = (text: string) => {
     if (wallet && chat) {
       const timestamp = Date.now()

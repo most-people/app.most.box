@@ -43,6 +43,8 @@ export const useTopicStore = create<State>((set, get) => ({
       }
     }),
   join(name: string) {
+    if (!name) return
+
     router.push({ pathname: '/topic/[topic]', params: { topic: name } })
     // 检查登录
     const dot = useUserStore.getState().dot
