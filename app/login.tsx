@@ -2,7 +2,7 @@ import { ThemeText } from '@/components/Theme'
 import { Colors } from '@/constants/Colors'
 import mp from '@/constants/mp'
 import { SvgXml } from 'react-native-svg'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   StyleSheet,
   Text,
@@ -13,12 +13,13 @@ import {
 } from 'react-native'
 import { Link, useNavigation, useRouter } from 'expo-router'
 import { useUserStore } from '@/stores/userStore'
-import { mostWallet } from 'dot.most.box'
+import { type MostWallet, mostWallet } from 'dot.most.box'
 
 export default function LoginPage() {
   const navigation = useNavigation()
   const router = useRouter()
   const theme = useUserStore((state) => state.theme)
+  const dot = useUserStore((state) => state.dot)
   const setItem = useUserStore((state) => state.setItem)
   const styles = createStyles(theme)
 

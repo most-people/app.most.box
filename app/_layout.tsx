@@ -65,6 +65,10 @@ export default function RootLayout() {
       dot.setPubKey(wallet.public_key)
       dot.setPrivKey(wallet.private_key)
       setItem('dot', dot)
+      dot.put('mine', {
+        username: wallet.username,
+        public_key: wallet.public_key,
+      })
     }
   }, [setItem, wallet, dotClient])
 
