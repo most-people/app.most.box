@@ -65,9 +65,15 @@ export default function RootLayout() {
       dot.setPubKey(wallet.public_key)
       dot.setPrivKey(wallet.private_key)
       setItem('dot', dot)
-      dot.put('info', {
-        username: wallet.username,
-        public_key: wallet.public_key,
+      dot.on('info', (info) => {
+        if (info?.username === wallet.username && info?.public_key === wallet.public_key) {
+          // dot.off('info')
+        } else {
+          dot.put('info', {
+            username: wallet.username,
+            public_key: wallet.public_key,
+          })
+        }
       })
     }
   }, [setItem, wallet, dotClient])

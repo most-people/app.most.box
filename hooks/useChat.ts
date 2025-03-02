@@ -1,7 +1,6 @@
 import { startTransition, useEffect, useState } from 'react'
-import { type DotMethods } from 'dot.most.box'
+import { type DotMethods, mostEncode, mostDecode } from 'dot.most.box'
 import { useUserStore } from '@/stores/userStore'
-import { HDNodeWallet } from 'ethers'
 
 export interface Message {
   text: string
@@ -28,30 +27,46 @@ export const useChat = (address: string) => {
   const [you, setYou] = useState<You | null>(null)
   const [youDot, setYouDot] = useState<DotMethods | null>(null)
 
-  // 使用 useEffect 确保 chat 只初始化一次
   useEffect(() => {
     if (dot && you && youDot && wallet) {
-      let t1 = 0
+      // 监听消息
+      let t = 0
       dot.on(you.address, (data, timestamp) => {
-        if (timestamp > t1) {
-          t1 = timestamp
+        if (timestamp > t) {
+          t = timestamp
           // 检查数据
-          if (Array.isArray(data) && data.every((item) => typeof item?.timestamp === 'number')) {
-            startTransition(() => setMyMessages(data))
+          try {
+            data = JSON.parse(mostDecode(data, you.public_key, wallet.private_key))
+            if (Array.isArray(data) && data.every((item) => typeof item?.timestamp === 'number')) {
+              startTransition(() => setMyMessages(data))
+            }
+          } catch (error) {
+            console.error('Error parsing JSON:', error)
           }
         }
       })
 
-      let t2 = 0
-      youDot.on(wallet.address, (data, timestamp) => {
-        if (timestamp > t2) {
-          t2 = timestamp
-          // 检查数据
-          if (Array.isArray(data) && data.every((item) => typeof item?.timestamp === 'number')) {
-            startTransition(() => setYouMessages(data))
+      // 判断是否是自己
+      if (you.address !== wallet.address) {
+        let t = 0
+        youDot.on(wallet.address, (data, timestamp) => {
+          if (timestamp > t) {
+            t = timestamp
+            // 检查数据
+            try {
+              data = JSON.parse(mostDecode(data, you.public_key, wallet.private_key))
+              if (
+                Array.isArray(data) &&
+                data.every((item) => typeof item?.timestamp === 'number')
+              ) {
+                startTransition(() => setYouMessages(data))
+              }
+            } catch (error) {
+              console.error('Error parsing JSON:', error)
+            }
           }
-        }
-      })
+        })
+      }
 
       // 清理监听器，防止内存泄漏
       return () => {
@@ -86,7 +101,7 @@ export const useChat = (address: string) => {
   }, [address, dotClient])
 
   const send = (text: string) => {
-    if (wallet && dot) {
+    if (wallet && dot && you) {
       const timestamp = Date.now()
       const newMessage = {
         text,
@@ -94,17 +109,16 @@ export const useChat = (address: string) => {
         timestamp,
       }
       // 更新数据
-      dot.put(address, [...myMessages, newMessage])
+      const data = JSON.stringify([...myMessages, newMessage])
+      dot.put(address, mostEncode(data, you.public_key, wallet.private_key))
     }
   }
 
   const del = (timestamp: number) => {
-    if (wallet && dot) {
+    if (wallet && dot && you) {
       // 更新数据
-      dot.put(
-        address,
-        myMessages.filter((item) => item.timestamp !== timestamp),
-      )
+      const data = JSON.stringify(myMessages.filter((item) => item.timestamp !== timestamp))
+      dot.put(address, mostEncode(data, you.public_key, wallet.private_key))
     }
   }
 

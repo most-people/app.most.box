@@ -60,13 +60,15 @@ export default function TopicPage() {
 
   const [autoHeight, setAutoHeight] = useState(40)
 
+  const title = wallet?.address === address ? '文件传输助手' : '单线联系'
+
   return (
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <AppHeader
-        title="单线联系"
+        title={title}
         rightContent={
           <TouchableOpacity onPress={() => toast.show('更多操作，开发中...')}>
             <Icon.More width={20} height={20} fill={Colors[theme].text} />
