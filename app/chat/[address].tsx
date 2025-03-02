@@ -13,22 +13,7 @@ export default function TopicPage() {
   const address = params.address as string
   const theme = useUserStore((state) => state.theme)
   const styles = createStyles(theme)
-  return (
-    <PageView title={mp.formatAddress(address)}>
-      <SvgXml xml={mp.avatar(address)} style={styles.avatar} />
-      <TouchableOpacity onPress={() => copy(address)}>
-        <ThemeText style={styles.account}>地址：{address}</ThemeText>
-      </TouchableOpacity>
-      <ThemeView>
-        <ThemeText>联系我</ThemeText>
-        <TouchableOpacity
-          onPress={() => router.push({ pathname: '/chat/[address]', params: { address } })}
-        >
-          <ThemeText type="link">@{mp.formatAddress(address)}</ThemeText>
-        </TouchableOpacity>
-      </ThemeView>
-    </PageView>
-  )
+  return <PageView title={mp.formatAddress(address)}></PageView>
 }
 
 const createStyles = (theme: 'light' | 'dark') => {

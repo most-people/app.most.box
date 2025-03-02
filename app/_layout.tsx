@@ -10,6 +10,7 @@ import { useEffect } from 'react'
 import { useUserStore } from '@/stores/userStore'
 import { useColorScheme } from 'react-native'
 import { Colors } from '@/constants/Colors'
+import Nodes from '@/assets/json/nodes.json'
 import { DotClient, type MostWallet } from 'dot.most.box'
 import mp from '@/constants/mp'
 import asyncStorage from '@/stores/asyncStorage'
@@ -45,7 +46,7 @@ export default function RootLayout() {
   }, [setItem])
 
   const initDot = useCallback(() => {
-    setItem('dotClient', new DotClient(['https://api.most.red', 'https://www.icewall.fun']))
+    setItem('dotClient', new DotClient(Nodes))
   }, [setItem])
 
   useEffect(() => {
