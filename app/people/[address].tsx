@@ -39,8 +39,6 @@ export default function TopicPage() {
     }
   }, [address, dotClient])
 
-  const name = `@${username}#${address.slice(-4)}`
-
   return (
     <PageView title={username || mp.formatAddress(address)}>
       <SvgXml xml={mp.avatar(address)} style={styles.avatar} />
@@ -56,7 +54,7 @@ export default function TopicPage() {
         <TouchableOpacity
           onPress={() => router.push({ pathname: '/chat/[address]', params: { address } })}
         >
-          <ThemeText type="link">{name}</ThemeText>
+          <ThemeText type="link">{username || mp.formatAddress(address)}</ThemeText>
         </TouchableOpacity>
       </ThemeView>
     </PageView>
