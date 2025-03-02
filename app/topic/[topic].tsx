@@ -15,7 +15,8 @@ import { AppHeader } from '@/components/AppHeader'
 import { Icon } from '@/assets/icon'
 import { Colors } from '@/constants/Colors'
 import { useToast } from 'expo-toast'
-import { Message, useChat } from '@/hooks/useChat'
+import { type Message } from '@/hooks/useChat'
+import { useTopic } from '@/hooks/useTopic'
 import { useUserStore } from '@/stores/userStore'
 import DialogTopicMessage from '@/components/Dialog/TopicMessage'
 import { SvgXml } from 'react-native-svg'
@@ -27,7 +28,7 @@ export default function TopicPage() {
   const toast = useToast()
   const topicName = params.topic as string
   const [message, setMessage] = useState('')
-  const chat = useChat(topicName)
+  const topic = useTopic(topicName)
   const wallet = useUserStore((state) => state.wallet)
   const theme = useUserStore((state) => state.theme)
   const styles = createStyles(theme)
@@ -39,13 +40,13 @@ export default function TopicPage() {
       return router.push('/login')
     }
     if (message.trim()) {
-      chat.send(message)
+      topic.send(message)
       setMessage('')
       setAutoHeight(40)
     }
   }
 
-  const messages = chat.messages.sort((a, b) => a.timestamp - b.timestamp)
+  const messages = topic.messages.sort((a, b) => a.timestamp - b.timestamp)
 
   const [showDelete, setShowDelete] = useState(false)
   const [deleteItem, setDeleteItem] = useState<Message | undefined>(undefined)
@@ -54,7 +55,7 @@ export default function TopicPage() {
       toast.show('请先登录')
       return router.push('/login')
     }
-    if (deleteItem) chat.del(deleteItem.timestamp)
+    if (deleteItem) topic.del(deleteItem.timestamp)
   }
 
   const [autoHeight, setAutoHeight] = useState(40)

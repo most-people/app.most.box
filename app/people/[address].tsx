@@ -23,7 +23,7 @@ export default function TopicPage() {
     if (address && dotClient) {
       const dot = dotClient.dot(address)
       let t = 0
-      dot.on('mine', (profile, timestamp) => {
+      dot.on('info', (profile, timestamp) => {
         if (timestamp > t) {
           t = timestamp
           if (profile?.username) {
@@ -34,7 +34,7 @@ export default function TopicPage() {
       })
 
       return () => {
-        dot.off('mine')
+        dot.off('info')
       }
     }
   }, [address, dotClient])
@@ -54,7 +54,7 @@ export default function TopicPage() {
         <TouchableOpacity
           onPress={() => router.push({ pathname: '/chat/[address]', params: { address } })}
         >
-          <ThemeText type="link">{username || mp.formatAddress(address)}</ThemeText>
+          <ThemeText type="link">@{username || mp.formatAddress(address)}</ThemeText>
         </TouchableOpacity>
       </ThemeView>
     </PageView>

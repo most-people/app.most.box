@@ -3,7 +3,7 @@ import { View, Modal, TouchableOpacity, StyleSheet } from 'react-native'
 import { ThemeText } from '@/components/Theme'
 import { useUserStore } from '@/stores/userStore'
 import { Colors } from '@/constants/Colors'
-import { Message } from '@/hooks/useChat'
+import { Message } from '@/hooks/useTopic'
 import dayjs from 'dayjs'
 
 interface Props {
