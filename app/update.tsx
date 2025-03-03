@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, Linking, ActivityIndicator } from 'react-native'
+import { StyleSheet, TouchableOpacity, Linking, ActivityIndicator, View } from 'react-native'
 import { useUserStore } from '@/stores/userStore'
 import { Colors } from '@/constants/Colors'
 import Constants from 'expo-constants'
 import PageView from '@/components/PageView'
 import { useToast } from 'expo-toast'
+import { ThemeText } from '@/components/Theme'
 
 interface AppVersion {
   version: string
@@ -26,7 +27,7 @@ export default function UpdatePage() {
       await new Promise((resolve) => setTimeout(resolve, 1000))
       setLatestVersion({
         version: '1.1.1',
-        downloadUrl: '/download',
+        downloadUrl: 'https://most.box/download',
       })
     } catch (error) {
       console.error('获取版本信息失败', error)
@@ -64,21 +65,21 @@ export default function UpdatePage() {
       {isLoading ? (
         <ActivityIndicator size="large" color={Colors.success} />
       ) : (
-        <View style={styles.versionInfo}>
-          <Text style={styles.versionTitle}>当前版本</Text>
-          <Text style={styles.versionNumber}>{currentVersion}</Text>
+        <>
+          <ThemeText type="subtitle">当前版本</ThemeText>
+          <ThemeText>{currentVersion}</ThemeText>
 
-          <Text style={styles.versionTitle}>最新版本</Text>
-          <Text style={styles.versionNumber}>{latestVersion ? latestVersion.version : '未知'}</Text>
+          <ThemeText type="subtitle">最新版本</ThemeText>
+          <ThemeText>{latestVersion ? latestVersion.version : '未知'}</ThemeText>
 
           {hasNewVersion() ? (
             <TouchableOpacity style={styles.downloadButton} onPress={handleDownload}>
-              <Text style={styles.buttonText}>下载最新版本</Text>
+              <ThemeText style={styles.buttonThemeText}>下载最新版本</ThemeText>
             </TouchableOpacity>
           ) : (
-            <Text style={styles.latestVersionText}>您当前使用的是最新版本</Text>
+            <ThemeText style={styles.latestVersionThemeText}>您当前使用的是最新版本</ThemeText>
           )}
-        </View>
+        </>
       )}
     </PageView>
   )
@@ -86,21 +87,7 @@ export default function UpdatePage() {
 
 const createStyles = (theme: 'light' | 'dark') => {
   return StyleSheet.create({
-    versionInfo: {
-      marginBottom: 30,
-    },
-    versionTitle: {
-      fontSize: 16,
-      color: Colors[theme].text,
-      marginBottom: 4,
-    },
-    versionNumber: {
-      fontSize: 20,
-      fontWeight: 'bold',
-      color: Colors[theme].text,
-      marginBottom: 20,
-    },
-    latestVersionText: {
+    latestVersionThemeText: {
       fontSize: 16,
       color: Colors.success,
       textAlign: 'center',
@@ -114,8 +101,9 @@ const createStyles = (theme: 'light' | 'dark') => {
       alignItems: 'center',
       marginTop: 20,
     },
-    buttonText: {
+    buttonThemeText: {
       fontSize: 18,
+      color: '#000',
     },
   })
 }
