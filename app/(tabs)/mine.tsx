@@ -54,6 +54,11 @@ export default function ProfileScreen() {
       pathname: '/internationale',
       icon: <Icon.Join style={styles.icon} fill={Colors[theme].color} />,
     },
+    {
+      name: '应用更新',
+      pathname: '/download',
+      icon: <Icon.Download style={styles.icon} fill={Colors[theme].color} />,
+    },
   ]
 
   const address = wallet?.address || mp.ZeroAddress

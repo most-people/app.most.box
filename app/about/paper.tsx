@@ -9,9 +9,9 @@ const AboutPaperPage = () => {
   }
 
   return (
-    <PageView title="IPFS + Filecoin + Fastify + Dot.most.box + Smart Contracts = Fully DApp">
+    <PageView title="IPFS + Filecoin + Fastify + dot.most.box + Smart Contracts = Fully DApp">
       <ThemeText type="subtitle">
-        论如何利用 IPFS+Filiecoin+Dot.most.box+以太坊智能合约构建完全不需要后端的去中心化应用
+        论如何利用 IPFS+Filiecoin+dot.most.box+以太坊智能合约构建完全不需要后端的去中心化应用
       </ThemeText>
       <ThemeText>作者：most.box</ThemeText>
       <ThemeText>标题很长，为了跟大家讲清楚，需要了解一定基础知识，若你已经了解，请跳过</ThemeText>
@@ -21,10 +21,10 @@ const AboutPaperPage = () => {
         '去中心化 密码朋克',
         'IPFS',
         'Filecoin',
-        'Dot.most.box',
+        'dot.most.box',
         '我们需要你一起添砖加瓦',
         'Fleek 前端部署',
-        'Dot.most.box 节点部署',
+        'dot.most.box 节点部署',
         'IPFS 节点部署',
         '以太坊智能合约更新节点',
       ].map((item, index) => (
@@ -91,14 +91,14 @@ const AboutPaperPage = () => {
         Filcoin
         网络中喊一嗓子就有无数的图书馆馆长跳出来说他愿意帮你储存，你选一家最便宜的，只需要一笔很小的费用，而且这个馆长很心黑，别人从他这里借书也要收手续费，其他黑心馆长为了赚这个钱，纷纷保存这本书，供大家借阅。而由于馆长的增多，市场化的竞争只会让手续费越来越低。
       </ThemeText>
-      <ThemeText type="subtitle">Dot.most.box</ThemeText>
+      <ThemeText type="subtitle">dot.most.box</ThemeText>
       <ThemeText>
         想象一下每个人都有无数张画板，当你每画一笔，别人的画板上会立刻出现这一笔，同理别人画的每一笔也会出现的你的画板上。
       </ThemeText>
       <ThemeText>这样你只需要和朋友约定好用那张画板，就可以一起聊天了。</ThemeText>
       <ThemeText>你也可以自己搞创作，设置只能有你能画，别人只能看的画板。</ThemeText>
       <ThemeText>
-        Dot.most.box
+        dot.most.box
         就是帮大家立刻同步这一切的工具，有了它，一起吹牛、玩游戏、写文档、开会通通不再是问题😎
       </ThemeText>
       <ThemeText>不过任何事物都不是凭空得来的，如果免费那么肯定有人帮你承担了成本，</ThemeText>
@@ -118,14 +118,14 @@ const AboutPaperPage = () => {
       <ThemeText>代码部分，暂时跳过</ThemeText>
       <ThemeText type="subtitle">IPFS 节点部署</ThemeText>
       <ThemeText>代码部分，暂时跳过</ThemeText>
-      <ThemeText type="subtitle">Dot.most.box 节点部署</ThemeText>
+      <ThemeText type="subtitle">dot.most.box 节点部署</ThemeText>
       <ThemeText>代码部分，暂时跳过</ThemeText>
       <ThemeText type="subtitle">以太坊智能合约更新节点</ThemeText>
       <ThemeText>为什么要用到以太坊？</ThemeText>
       <ThemeText>由于去中心化的应用还很少</ThemeText>
       <ThemeText>以太坊的节点很多，所以我们将最后的救命稻草交给区块链</ThemeText>
       <ThemeText>
-        假设所有的 IPFS 和 Dot.most.box
+        假设所有的 IPFS 和 dot.most.box
         节点都由于种种原因离线，那我们将无法访问，某些节点可以启动他的备份系统，来部署新的节点并通过智能合约推送到以太坊公链上。
       </ThemeText>
       <ThemeText>这样所有客户端刷新去链上查询，就可以重新恢复访问了。</ThemeText>
@@ -142,12 +142,12 @@ const AboutPaperPage = () => {
       <ThemeText>用户 加密钱包</ThemeText>
       <ThemeText>域名 .box</ThemeText>
       <ThemeText>网站 IPFS</ThemeText>
-      <ThemeText>数据库 Dot.most.box</ThemeText>
+      <ThemeText>数据库 dot.most.box</ThemeText>
       <ThemeText>智能合约 ETH</ThemeText>
       <ThemeText>以上是 most.box 的全部架构</ThemeText>
       <ThemeText>⅔ MOST.BOX</ThemeText>
       <ThemeText>最新文章收录在 most.box/about</ThemeText>
-      <ThemeText>2025 年 2 月 5 日</ThemeText>
+      <ThemeText>2025 年 3 月 4 日</ThemeText>
     </PageView>
   )
 }

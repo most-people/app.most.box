@@ -4,12 +4,13 @@
  */
 
 const tint = 'rgb(201,55,33)'
-const sender = 'rgb(30,136,229)'
-
 export const Colors = {
   tint,
+  sender: 'rgb(30,136,229)',
+  success: 'rgb(76, 217, 100)',
+  error: tint,
+  warning: 'rgb(255, 204, 0)',
   link: 'rgb(123,129,151)',
-  sender: sender,
   light: {
     input: {
       background: '#f9f9f9',
@@ -23,7 +24,7 @@ export const Colors = {
     card: 'rgb(255, 255, 255)',
     text: 'rgb(28, 28, 30)',
     border: 'rgb(216, 216, 216)',
-    notification: 'rgb(255, 59, 48)',
+    notification: tint,
   },
   dark: {
     input: {
@@ -38,6 +39,8 @@ export const Colors = {
     card: 'rgb(0,0,0)',
     text: 'aliceblue',
     border: 'rgb(39, 39, 41)',
-    notification: 'rgb(255, 69, 58)',
+    notification: tint,
   },
 }
+
+export default Colors

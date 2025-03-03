@@ -27,6 +27,9 @@ import About from '@/assets/icon/complex/about.svg'
 import Join from '@/assets/icon/complex/join.svg'
 import Setting from '@/assets/icon/complex/setting.svg'
 
+// https://www.flaticon.com/free-icon-font/cloud-download-alt_7434817?page=1&position=2&term=download&origin=search&related_id=7434817
+import Download from '@/assets/icon/complex/download.svg'
+
 export const Icon = {
   // simple
   Chat,
@@ -49,4 +52,5 @@ export const Icon = {
   About,
   Join,
   Setting,
+  Download,
 }
