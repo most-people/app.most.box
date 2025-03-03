@@ -56,7 +56,7 @@ export default function ProfileScreen() {
     },
     {
       name: '应用更新',
-      pathname: '/download',
+      pathname: '/update',
       icon: <Icon.Download style={styles.icon} fill={Colors[theme].color} />,
     },
   ]
