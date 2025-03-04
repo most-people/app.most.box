@@ -65,6 +65,8 @@ export default function RootLayout() {
       dot.setPubKey(wallet.public_key)
       dot.setPrivKey(wallet.private_key)
       setItem('dot', dot)
+
+      // 同步自己的公钥和用户名
       dot.on('info', (info) => {
         if (info?.username === wallet.username && info?.public_key === wallet.public_key) {
           // dot.off('info')

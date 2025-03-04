@@ -8,11 +8,16 @@ import { useUserStore } from '@/stores/userStore'
 import { mostWallet } from 'dot.most.box'
 import PageView from '@/components/PageView'
 import { ThemeText, ThemeView } from '@/components/Theme'
-// import { HDNodeWallet } from 'ethers'
-// import { useToast } from 'expo-toast'
+import { HDNodeWallet } from 'ethers'
+import { useToast } from 'expo-toast'
 
-export default function LoginPage() {
-  // const toast = useToast()
+interface DeriveAddress {
+  index: number
+  address: string
+  privateKey: string
+}
+export default function Web3ToolPage() {
+  const toast = useToast()
   const theme = useUserStore((state) => state.theme)
   const styles = createStyles(theme)
 
@@ -56,31 +61,32 @@ export default function LoginPage() {
   //   console.log(addresses.map((e) => e.privateKey).join('\n'))
   // }
 
-  // const deriveAddress = () => {
-  //   if (!mnemonic) {
-  //     toast.show('助记词为空')
-  //     return
-  //   }
+  const [deriveAddressList, setDeriveAddressList] = useState<DeriveAddress[]>([])
 
-  //   const addresses = []
-  //   for (let i = 0; i < 100; i++) {
-  //     const path = `m/44'/60'/0'/0/${i}`
-  //     const wallet = HDNodeWallet.fromPhrase(mnemonic, undefined, path)
-  //     addresses.push({
-  //       index: i,
-  //       address: wallet.address,
-  //       privateKey: wallet.privateKey,
-  //     })
-  //   }
-  //   console.log('派生地址')
-  //   console.log(addresses.map((e) => e.address).join('\n'))
-  // }
+  const deriveAddress = () => {
+    if (!mnemonic) {
+      toast.show('助记词为空')
+      return
+    }
+
+    const list = []
+    for (let i = 0; i < 100; i++) {
+      const path = `m/44'/60'/0'/0/${i}`
+      const wallet = HDNodeWallet.fromPhrase(mnemonic, undefined, path)
+      list.push({
+        index: i,
+        address: wallet.address,
+        privateKey: wallet.privateKey,
+      })
+    }
+    setDeriveAddressList(list)
+  }
 
   return (
-    <PageView title={'Web3'}>
+    <PageView title="工具集">
       <SvgXml xml={mp.avatar(mostWallet(username, password).address)} style={styles.avatar} />
 
-      <ThemeText style={styles.title}>账户查询</ThemeText>
+      <ThemeText type="subtitle">账户查询</ThemeText>
 
       <TextInput
         style={styles.input}
@@ -112,7 +118,7 @@ export default function LoginPage() {
         </ThemeView>
       )}
 
-      <ThemeText style={styles.title}>ETH 地址：{address}</ThemeText>
+      <ThemeText type="subtitle">ETH 地址：{address}</ThemeText>
 
       <ThemeText style={styles.danger}>
         {showMnemonic
@@ -134,9 +140,13 @@ export default function LoginPage() {
         <ThemeText type="link">自定义导出</ThemeText>
       </TouchableOpacity> */}
 
-      {/* <TouchableOpacity onPress={deriveAddress}>
+      <TouchableOpacity onPress={deriveAddress}>
         <ThemeText type="link">派生100个地址</ThemeText>
-      </TouchableOpacity> */}
+      </TouchableOpacity>
+
+      <ThemeText style={styles.danger}>
+        {deriveAddressList.map((e) => e.address).join('\n')}
+      </ThemeText>
     </PageView>
   )
 }
@@ -150,10 +160,6 @@ const createStyles = (theme: 'light' | 'dark') => {
       backgroundColor: Colors[theme].background,
       padding: 20,
       gap: 16,
-    },
-    title: {
-      fontSize: 24,
-      color: Colors[theme].text,
     },
     input: {
       width: '100%',

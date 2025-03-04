@@ -14,7 +14,7 @@ export default function Web3Page() {
       <ThemeText>
         旨在重塑互联网生态，将用户的控制权和数据所有权还给个人，推动更加公平和透明的人类社会发展。
       </ThemeText>
-      <Link href="/web3/tool">
+      <Link href="/web3/tools">
         <ThemeText type="link">工具集</ThemeText>
       </Link>
       <ThemeText type="subtitle">ETH 地址</ThemeText>
