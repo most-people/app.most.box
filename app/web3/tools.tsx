@@ -28,14 +28,25 @@ export default function Web3ToolPage() {
   const [showAddress, setShowAddress] = useState(true)
   const [showMnemonic, setShowMnemonic] = useState(false)
 
+  // 派生地址
+  const [deriveAddressList, setDeriveAddressList] = useState<DeriveAddress[]>([])
+  const [deriveIndex, setDeriveIndex] = useState(0)
+  const [deriveShowIndex, setDeriveShowIndex] = useState(true)
+  const [deriveShowAddress, setDeriveShowAddress] = useState(true)
+  const [deriveShowPrivateKey, setDeriveShowPrivateKey] = useState(false)
+
   useEffect(() => {
     if (username && password) {
       const danger = mostWallet(username, password, 'I know loss mnemonic will lose my wallet.')
       setAddress(danger.address)
       setMnemonic(danger.mnemonic)
+      setDeriveAddressList([])
+      setDeriveIndex(0)
     } else {
       setAddress(mp.ZeroAddress)
       setMnemonic('')
+      setDeriveAddressList([])
+      setDeriveIndex(0)
     }
   }, [username, password])
 
@@ -60,17 +71,9 @@ export default function Web3ToolPage() {
   //   console.log(addresses.map((e) => e.address).join('\n'))
   //   console.log(addresses.map((e) => e.privateKey).join('\n'))
   // }
-
-  const [deriveAddressList, setDeriveAddressList] = useState<DeriveAddress[]>([])
-
   const deriveAddress = () => {
-    if (!mnemonic) {
-      toast.show('助记词为空')
-      return
-    }
-
-    const list = []
-    for (let i = 0; i < 100; i++) {
+    const list: DeriveAddress[] = []
+    for (let i = deriveIndex; i < deriveIndex + 10; i++) {
       const path = `m/44'/60'/0'/0/${i}`
       const wallet = HDNodeWallet.fromPhrase(mnemonic, undefined, path)
       list.push({
@@ -79,14 +82,18 @@ export default function Web3ToolPage() {
         privateKey: wallet.privateKey,
       })
     }
-    setDeriveAddressList(list)
+    setDeriveAddressList((prev) => [...prev, ...list])
+    setDeriveIndex(deriveIndex + 10)
+    toast.show('已派生10个地址')
   }
 
   return (
     <PageView title="工具集">
       <SvgXml xml={mp.avatar(mostWallet(username, password).address)} style={styles.avatar} />
 
-      <ThemeText type="subtitle">账户查询</ThemeText>
+      <ThemeText type="subtitle">Most Wallet 账户查询</ThemeText>
+
+      <ThemeText>开源代码：https://www.npmjs.com/package/dot.most.box?activeTab=code</ThemeText>
 
       <TextInput
         style={styles.input}
@@ -140,13 +147,54 @@ export default function Web3ToolPage() {
         <ThemeText type="link">自定义导出</ThemeText>
       </TouchableOpacity> */}
 
-      <TouchableOpacity onPress={deriveAddress}>
-        <ThemeText type="link">派生100个地址</ThemeText>
-      </TouchableOpacity>
+      {showMnemonic && mnemonic && (
+        <>
+          <TouchableOpacity onPress={deriveAddress}>
+            <ThemeText type="link">派生10个地址</ThemeText>
+          </TouchableOpacity>
+          <ThemeText style={{ color: Colors.tint }}>
+            任何拥有您私钥的人都可以窃取您地址中的任何资产，切勿泄露！！！
+          </ThemeText>
+          <ThemeView style={styles.table}>
+            <ThemeView style={styles.tableHeader}>
+              <ThemeText style={[styles.tableCell, styles.headerCell, { flex: 0.15 }]}>
+                <TouchableOpacity onPress={() => setDeriveShowIndex(!deriveShowIndex)}>
+                  账户
+                </TouchableOpacity>
+              </ThemeText>
+              <ThemeText style={[styles.tableCell, styles.headerCell, { flex: 0.35 }]}>
+                <TouchableOpacity onPress={() => setDeriveShowAddress(!deriveShowAddress)}>
+                  地址
+                </TouchableOpacity>
+              </ThemeText>
+              <ThemeText
+                style={[styles.tableCell, styles.headerCell, { flex: 0.5, color: Colors.tint }]}
+              >
+                <TouchableOpacity onPress={() => setDeriveShowPrivateKey(!deriveShowPrivateKey)}>
+                  私钥（点击{deriveShowPrivateKey ? '隐藏' : '显示'}）
+                </TouchableOpacity>
+              </ThemeText>
+            </ThemeView>
 
-      <ThemeText style={styles.danger}>
-        {deriveAddressList.map((e) => e.address).join('\n')}
-      </ThemeText>
+            {deriveAddressList.map((item) => (
+              <ThemeView key={item.index} style={styles.tableRow}>
+                <ThemeText style={[styles.tableCell, { flex: 0.15 }]}>
+                  {deriveShowIndex && item.index + 1}
+                </ThemeText>
+                <ThemeText style={[styles.tableCell, { flex: 0.35 }]} numberOfLines={1}>
+                  {deriveShowAddress && item.address}
+                </ThemeText>
+                <ThemeText
+                  style={[styles.tableCell, { flex: 0.5, color: Colors.tint }]}
+                  numberOfLines={1}
+                >
+                  {deriveShowPrivateKey && item.privateKey}
+                </ThemeText>
+              </ThemeView>
+            ))}
+          </ThemeView>
+        </>
+      )}
     </PageView>
   )
 }
@@ -192,6 +240,35 @@ const createStyles = (theme: 'light' | 'dark') => {
       borderRadius: 10,
       width: 230,
       height: 230,
+    },
+    // table
+    table: {
+      width: '100%',
+      borderTopWidth: 1,
+      borderLeftWidth: 1,
+      borderRightWidth: 1,
+      borderColor: Colors[theme].border,
+    },
+    tableHeader: {
+      flexDirection: 'row',
+      backgroundColor: Colors[theme].background,
+      borderBottomWidth: 1,
+      borderColor: Colors[theme].border,
+      paddingVertical: 8,
+    },
+    tableRow: {
+      flexDirection: 'row',
+      borderBottomWidth: 1,
+      borderColor: Colors[theme].border,
+      paddingVertical: 8,
+    },
+    tableCell: {
+      paddingHorizontal: 8,
+      fontSize: 14,
+      color: Colors[theme].text,
+    },
+    headerCell: {
+      fontWeight: 'bold',
     },
   })
 }
