@@ -57,7 +57,7 @@
     "axios": "^1.8.1",
     "buffer": "^6.0.3",
     "dayjs": "^1.11.13",
-    "dot.most.box": "^0.2.2",
+    "dot.most.box": "^0.2.3",
     "ethers": "^6.13.5",
     "expo-clipboard": "~7.0.1",
     "expo-toast": "^1.0.3",

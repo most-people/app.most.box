@@ -7,6 +7,7 @@ import { useUserStore } from '@/stores/userStore'
 import { useToast } from 'expo-toast'
 import { useRef, useState } from 'react'
 import { Switch, TouchableOpacity, StyleSheet } from 'react-native'
+import { useCopy } from '@/hooks/useCopy'
 
 export default function Web3Page() {
   const theme = useUserStore((state) => state.theme)
@@ -17,6 +18,7 @@ export default function Web3Page() {
   const [showMnemonic, setShowMnemonic] = useState(false)
   const [mnemonic, setMnemonic] = useState('')
   const toast = useToast()
+  const copy = useCopy()
 
   const createTopicRef = useRef<any>()
   const getMnemonic = (password: string) => {
@@ -38,6 +40,7 @@ export default function Web3Page() {
   const toggle = () => {
     if (wallet) {
       if (showMnemonic) {
+        copy('Clipboard cleared')
         setMnemonic('')
         setShowMnemonic(false)
       } else {

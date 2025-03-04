@@ -89,7 +89,10 @@ export default function Web3ToolPage() {
 
   return (
     <PageView title="工具集">
-      <SvgXml xml={mp.avatar(mostWallet(username, password).address)} style={styles.avatar} />
+      <SvgXml
+        xml={mp.avatar(username && password ? mostWallet(username, password).address : undefined)}
+        style={styles.avatar}
+      />
 
       <ThemeText type="subtitle">Most Wallet 账户查询</ThemeText>
 
@@ -157,38 +160,42 @@ export default function Web3ToolPage() {
           </ThemeText>
           <ThemeView style={styles.table}>
             <ThemeView style={styles.tableHeader}>
-              <ThemeText style={[styles.tableCell, styles.headerCell, { flex: 0.15 }]}>
-                <TouchableOpacity onPress={() => setDeriveShowIndex(!deriveShowIndex)}>
-                  账户
-                </TouchableOpacity>
-              </ThemeText>
-              <ThemeText style={[styles.tableCell, styles.headerCell, { flex: 0.35 }]}>
-                <TouchableOpacity onPress={() => setDeriveShowAddress(!deriveShowAddress)}>
-                  地址
-                </TouchableOpacity>
-              </ThemeText>
-              <ThemeText
-                style={[styles.tableCell, styles.headerCell, { flex: 0.5, color: Colors.tint }]}
+              <TouchableOpacity
+                style={[styles.tableCell, { flex: 0.15 }]}
+                onPress={() => setDeriveShowIndex(!deriveShowIndex)}
               >
-                <TouchableOpacity onPress={() => setDeriveShowPrivateKey(!deriveShowPrivateKey)}>
+                <ThemeText style={[styles.headerCell]}>账户</ThemeText>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.tableCell, { flex: 0.35 }]}
+                onPress={() => setDeriveShowAddress(!deriveShowAddress)}
+              >
+                <ThemeText style={[styles.headerCell]}>地址</ThemeText>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.tableCell, { flex: 0.5 }]}
+                onPress={() => setDeriveShowPrivateKey(!deriveShowPrivateKey)}
+              >
+                <ThemeText style={[styles.headerCell, { color: Colors.tint }]}>
                   私钥（点击{deriveShowPrivateKey ? '隐藏' : '显示'}）
-                </TouchableOpacity>
-              </ThemeText>
+                </ThemeText>
+              </TouchableOpacity>
             </ThemeView>
 
             {deriveAddressList.map((item) => (
               <ThemeView key={item.index} style={styles.tableRow}>
                 <ThemeText style={[styles.tableCell, { flex: 0.15 }]}>
-                  {deriveShowIndex && item.index + 1}
+                  {deriveShowIndex ? item.index + 1 : ''}
                 </ThemeText>
                 <ThemeText style={[styles.tableCell, { flex: 0.35 }]} numberOfLines={1}>
-                  {deriveShowAddress && item.address}
+                  {deriveShowAddress ? item.address : ''}
                 </ThemeText>
                 <ThemeText
                   style={[styles.tableCell, { flex: 0.5, color: Colors.tint }]}
                   numberOfLines={1}
                 >
-                  {deriveShowPrivateKey && item.privateKey}
+                  {deriveShowPrivateKey ? item.privateKey : ''}
                 </ThemeText>
               </ThemeView>
             ))}
@@ -224,6 +231,7 @@ const createStyles = (theme: 'light' | 'dark') => {
       width: 100,
       height: 100,
       borderRadius: 10,
+      margin: 'auto',
     },
     danger: {
       color: Colors.tint,
@@ -264,11 +272,11 @@ const createStyles = (theme: 'light' | 'dark') => {
     },
     tableCell: {
       paddingHorizontal: 8,
-      fontSize: 14,
-      color: Colors[theme].text,
     },
     headerCell: {
       fontWeight: 'bold',
+      fontSize: 14,
+      color: Colors[theme].text,
     },
   })
 }
