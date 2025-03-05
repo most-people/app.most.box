@@ -75,6 +75,7 @@ export default function RootLayout() {
             username: wallet.username,
             public_key: wallet.public_key,
           })
+          dot.off('info')
         }
       })
     }
