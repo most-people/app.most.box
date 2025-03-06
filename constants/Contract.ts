@@ -5,9 +5,9 @@ import CONTRACT_ABI from '@/assets/abi/AppVersionContract.json'
 const CONTRACT_ADDRESS = '0xBEAF3697ba3DDC9199Ffa6Fd6E13d75E5780c90c'
 const OPTIMISM_RPC = 'https://optimism.llamarpc.com'
 
-interface AppInfo {
+export interface AppInfo {
   version: string
-  downloadLink: string
+  downloadUrl: string
   updateContent: string
 }
 
@@ -20,14 +20,9 @@ export class AppContract {
     this.contract = new Contract(CONTRACT_ADDRESS, CONTRACT_ABI, this.provider)
   }
 
-  async getAppInfo(): Promise<AppInfo> {
+  async getAppInfo() {
     try {
-      const [version, downloadLink, updateContent] = await this.contract.getAppInfo()
-      return {
-        version,
-        downloadLink,
-        updateContent,
-      }
+      return await this.contract.getAppInfo()
     } catch (error) {
       console.error('获取版本信息失败:', error)
       throw error
@@ -51,7 +46,6 @@ export class AppContract {
       throw error
     }
   }
-
   async getPendingNodeUrls() {
     try {
       const pendingNodes = await this.contract.getPendingNodeUrls()
@@ -61,13 +55,56 @@ export class AppContract {
       throw error
     }
   }
-
   async getOwner(): Promise<string> {
     try {
       const owner = await this.contract.owner()
       return owner
     } catch (error) {
       console.error('获取合约拥有者失败:', error)
+      throw error
+    }
+  }
+  async updateAppInfo(version: string, downloadUrl: string, updateContent: string) {
+    try {
+      const tx = await this.contract.updateAppInfo(version, downloadUrl, updateContent)
+      await tx.wait()
+    } catch (error) {
+      console.error('更新应用信息失败:', error)
+      throw error
+    }
+  }
+  async addNodeUrl(url: string) {
+    try {
+      const tx = await this.contract.addNodeUrl(url)
+      await tx.wait()
+    } catch (error) {
+      console.error('添加节点失败:', error)
+      throw error
+    }
+  }
+  async approveNode(url: string) {
+    try {
+      const tx = await this.contract.approveNode(url)
+      await tx.wait()
+    } catch (error) {
+      console.error('批准节点失败:', error)
+      throw error
+    }
+  }
+  async removeNodeUrl(url: string) {
+    try {
+      const tx = await this.contract.removeNodeUrl(url)
+      await tx.wait()
+    } catch (error) {
+      console.error('删除节点失败:', error)
+      throw error
+    }
+  }
+  async isNodeManager(address: string): Promise<boolean> {
+    try {
+      return await this.contract.isNodeManager(address)
+    } catch (error) {
+      console.error('检查管理员权限失败:', error)
       throw error
     }
   }
