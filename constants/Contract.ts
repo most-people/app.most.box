@@ -38,7 +38,7 @@ export class AppContract {
       const managers = await this.contract.getAllNodeManagers()
       return Array.from(managers) as string[]
     } catch (error) {
-      console.error('获取节点列表失败:', error)
+      console.error('获取节点管理员列表失败:', error)
       throw error
     }
   }
@@ -47,7 +47,7 @@ export class AppContract {
       const approvedNodes = await this.contract.getApprovedNodeUrls()
       return Array.from(approvedNodes) as string[]
     } catch (error) {
-      console.error('获取节点列表失败:', error)
+      console.error('获取认证节点列表失败:', error)
       throw error
     }
   }
@@ -57,7 +57,17 @@ export class AppContract {
       const pendingNodes = await this.contract.getPendingNodeUrls()
       return Array.from(pendingNodes) as string[]
     } catch (error) {
-      console.error('获取节点列表失败:', error)
+      console.error('获取待审节点列表失败:', error)
+      throw error
+    }
+  }
+
+  async getOwner(): Promise<string> {
+    try {
+      const owner = await this.contract.owner()
+      return owner
+    } catch (error) {
+      console.error('获取合约拥有者失败:', error)
       throw error
     }
   }

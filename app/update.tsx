@@ -35,6 +35,9 @@ export default function UpdatePage() {
     appContract.getApprovedNodeUrls().then((pendingNodes) => {
       console.log('🌊', pendingNodes)
     })
+    appContract.getOwner().then((owner) => {
+      console.log('🌊', owner)
+    })
   }
 
   // 获取当前版本并获取最新版本信息
