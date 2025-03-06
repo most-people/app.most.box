@@ -7,7 +7,6 @@ import {
   toUtf8String,
   ZeroAddress,
   computeHmac,
-  sha256,
 } from 'ethers'
 import asyncStorage from '@/stores/asyncStorage'
 import { createAvatar } from '@dicebear/core'

@@ -6,6 +6,7 @@ import Constants from 'expo-constants'
 import PageView from '@/components/PageView'
 import { useToast } from 'expo-toast'
 import { ThemeText } from '@/components/Theme'
+import { AppContract } from '@/constants/Contract'
 
 interface AppVersion {
   version: string
@@ -19,23 +20,22 @@ export default function UpdatePage() {
 
   const [currentVersion, setCurrentVersion] = useState('-')
   const [latestVersion, setLatestVersion] = useState<AppVersion | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
 
-  const fetchLatestVersion = useCallback(async () => {
-    try {
-      // 模拟API响应
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-      setLatestVersion({
-        version: '1.1.1',
-        downloadUrl: 'https://most.box/download',
-      })
-    } catch (error) {
-      console.error('获取版本信息失败', error)
-      toast.show('获取版本信息失败')
-    } finally {
-      setIsLoading(false)
-    }
-  }, [toast])
+  const init = () => {
+    const appContract = new AppContract()
+    appContract.getAppInfo().then((appInfo) => {
+      console.log('🌊', appInfo)
+    })
+    appContract.getAllNodeManagers().then((managers) => {
+      console.log('🌊', managers)
+    })
+    appContract.getApprovedNodeUrls().then((approvedNodes) => {
+      console.log('🌊', approvedNodes)
+    })
+    appContract.getApprovedNodeUrls().then((pendingNodes) => {
+      console.log('🌊', pendingNodes)
+    })
+  }
 
   // 获取当前版本并获取最新版本信息
   useEffect(() => {
@@ -43,8 +43,8 @@ export default function UpdatePage() {
     if (v) {
       setCurrentVersion(v)
     }
-    fetchLatestVersion()
-  }, [fetchLatestVersion])
+    init()
+  }, [])
 
   const handleDownload = () => {
     if (latestVersion?.downloadUrl) {
@@ -62,24 +62,18 @@ export default function UpdatePage() {
 
   return (
     <PageView title="应用更新">
-      {isLoading ? (
-        <ActivityIndicator size="large" color={Colors.success} />
+      <ThemeText type="subtitle">当前版本</ThemeText>
+      <ThemeText>{currentVersion}</ThemeText>
+
+      <ThemeText type="subtitle">最新版本</ThemeText>
+      <ThemeText>{latestVersion ? latestVersion.version : '未知'}</ThemeText>
+
+      {hasNewVersion() ? (
+        <TouchableOpacity style={styles.downloadButton} onPress={handleDownload}>
+          <ThemeText style={styles.buttonThemeText}>下载最新版本</ThemeText>
+        </TouchableOpacity>
       ) : (
-        <>
-          <ThemeText type="subtitle">当前版本</ThemeText>
-          <ThemeText>{currentVersion}</ThemeText>
-
-          <ThemeText type="subtitle">最新版本</ThemeText>
-          <ThemeText>{latestVersion ? latestVersion.version : '未知'}</ThemeText>
-
-          {hasNewVersion() ? (
-            <TouchableOpacity style={styles.downloadButton} onPress={handleDownload}>
-              <ThemeText style={styles.buttonThemeText}>下载最新版本</ThemeText>
-            </TouchableOpacity>
-          ) : (
-            <ThemeText style={styles.latestVersionThemeText}>您当前使用的是最新版本</ThemeText>
-          )}
-        </>
+        <ThemeText style={styles.latestVersionThemeText}>您当前使用的是最新版本</ThemeText>
       )}
     </PageView>
   )
