@@ -20,9 +20,10 @@ export class AppContract {
     this.contract = new Contract(CONTRACT_ADDRESS, CONTRACT_ABI, this.provider)
   }
 
-  async getAppInfo() {
+  async getAppInfo(): Promise<AppInfo> {
     try {
-      return await this.contract.getAppInfo()
+      const [version, downloadUrl, updateContent] = await this.contract.getAppInfo()
+      return { version, downloadUrl, updateContent }
     } catch (error) {
       console.error('获取版本信息失败:', error)
       throw error

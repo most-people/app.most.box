@@ -21,31 +21,13 @@ export const useAppUpdate = () => {
 
   const appContract = new AppContract()
 
-  const init = async () => {
-    try {
-      const [version, downloadUrl, updateContent] = await appContract.getAppInfo()
-      setAppInfo({ version, downloadUrl, updateContent })
-
-      const managerList = await appContract.getAllNodeManagers()
-      setManagers(managerList)
-
-      const approved = await appContract.getApprovedNodeUrls()
-      setApprovedNodes(approved)
-
-      const pending = await appContract.getPendingNodeUrls()
-      setPendingNodes(pending)
-    } catch (error) {
-      console.error('初始化数据失败', error)
-      toast.show('获取数据失败')
-    }
-  }
-
   const updateAppInfo = async (version: string, downloadUrl: string, content: string) => {
     try {
       await appContract.updateAppInfo(version, downloadUrl, content)
       toast.show('更新成功')
-      init()
+      appContract.getAppInfo().then((appInfo) => setAppInfo(appInfo))
     } catch (error) {
+      console.error('更新失败', error)
       toast.show('更新失败')
     }
   }
@@ -54,8 +36,10 @@ export const useAppUpdate = () => {
     try {
       await appContract.addNodeUrl(url)
       toast.show('添加成功')
-      init()
+      appContract.getApprovedNodeUrls().then((approvedNodes) => setApprovedNodes(approvedNodes))
+      appContract.getPendingNodeUrls().then((pendingNodes) => setPendingNodes(pendingNodes))
     } catch (error) {
+      console.error('添加失败', error)
       toast.show('添加失败')
     }
   }
@@ -64,8 +48,9 @@ export const useAppUpdate = () => {
     try {
       await appContract.approveNode(url)
       toast.show('批准成功')
-      init()
+      appContract.getApprovedNodeUrls().then((approvedNodes) => setApprovedNodes(approvedNodes))
     } catch (error) {
+      console.error('批准失败', error)
       toast.show('批准失败')
     }
   }
@@ -74,16 +59,37 @@ export const useAppUpdate = () => {
     try {
       await appContract.removeNodeUrl(url)
       toast.show('删除成功')
-      init()
+      appContract.getApprovedNodeUrls().then((approvedNodes) => setApprovedNodes(approvedNodes))
+      appContract.getPendingNodeUrls().then((pendingNodes) => setPendingNodes(pendingNodes))
     } catch (error) {
+      console.error('删除失败', error)
       toast.show('删除失败')
     }
   }
 
   useEffect(() => {
     const v = Constants.expoConfig?.version
-    if (v) setCurrentVersion(v)
-    init()
+    if (v) {
+      setCurrentVersion(v)
+    }
+
+    appContract.getAppInfo().then((appInfo) => setAppInfo(appInfo))
+    appContract.getAllNodeManagers().then((managerList) => setManagers(managerList))
+    appContract.getApprovedNodeUrls().then((approvedNodes) => setApprovedNodes(approvedNodes))
+    appContract.getPendingNodeUrls().then((pendingNodes) => setPendingNodes(pendingNodes))
+    // 监听钱包地址变化
+    // @ts-ignore
+    const provider = window.ethereum
+    if (provider) {
+      const callback = (accounts: string[]) => {
+        setAccount(accounts[0])
+      }
+      provider.on('accountsChanged', callback)
+      return () => {
+        provider.removeListener('accountsChanged', callback)
+      }
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -104,26 +110,20 @@ export const useAppUpdate = () => {
     }
   }
 
-  const initWallet = async () => {
-    if (!account) return
-
-    const owner = await appContract.getOwner()
-    setIsOwner(account === owner)
-
-    const isNodeManager = await appContract.isNodeManager(account)
-    setIsManager(isNodeManager)
-  }
-
   useEffect(() => {
     const v = Constants.expoConfig?.version
     if (v) setCurrentVersion(v)
-    init()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
     if (account) {
-      initWallet()
+      appContract.getOwner().then((owner) => setIsOwner(account === owner.toLowerCase()))
+      appContract.isNodeManager(account).then((isNodeManager) => setIsManager(isNodeManager))
+    } else {
+      // 当账户断开时，重置状态
+      setIsOwner(false)
+      setIsManager(false)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account])

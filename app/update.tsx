@@ -1,11 +1,11 @@
 import { useState } from 'react'
-import { StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
+import { StyleSheet, TouchableOpacity } from 'react-native'
 import { useUserStore } from '@/stores/userStore'
 import { Colors } from '@/constants/Colors'
 import PageView from '@/components/PageView'
 import { ThemeText, ThemeView } from '@/components/Theme'
-import { UpdateDialog } from '@/components/Dialog/UpdateDialog'
-import { AddNodeDialog } from '@/components/Dialog/AddNodeDialog'
+import { UpdateDialog } from '@/components/Dialog/update/UpdateDialog'
+import { AddNodeDialog } from '@/components/Dialog/update/AddNodeDialog'
 import { useAppUpdate } from '@/hooks/useAppUpdate'
 import mp from '@/constants/mp'
 
@@ -46,7 +46,6 @@ export default function UpdatePage() {
         <ThemeText>最新版本：{appInfo?.version || '未知'}</ThemeText>
         <ThemeText>下载链接：{appInfo?.downloadUrl || '未知'}</ThemeText>
         <ThemeText>更新内容：{appInfo?.updateContent || '未知'}</ThemeText>
-
         {isOwner && (
           <TouchableOpacity style={styles.button} onPress={() => setShowUpdateDialog(true)}>
             <ThemeText style={styles.buttonText}>更新应用信息</ThemeText>
