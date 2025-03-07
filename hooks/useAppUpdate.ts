@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { useUserStore } from '@/stores/userStore'
 import { useToast } from 'expo-toast'
 import Constants from 'expo-constants'
 import { AppContract, type AppInfo } from '@/constants/Contract'
@@ -11,8 +10,7 @@ export interface NodeInfo {
 
 export const useAppUpdate = () => {
   const toast = useToast()
-  const wallet = useUserStore((state) => state.wallet)
-
+  const [account, setAccount] = useState<string>('')
   const [currentVersion, setCurrentVersion] = useState('-')
   const [appInfo, setAppInfo] = useState<AppInfo | null>(null)
   const [managers, setManagers] = useState<string[]>([])
@@ -86,22 +84,49 @@ export const useAppUpdate = () => {
     const v = Constants.expoConfig?.version
     if (v) setCurrentVersion(v)
     init()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const initWallet = async () => {
-    const owner = await appContract.getOwner()
-    setIsOwner(wallet?.address === owner)
+  const connectOKX = async () => {
+    try {
+      // @ts-ignore
+      const provider = window.ethereum
+      if (!provider) {
+        toast.show('请安装 OKX Wallet')
+        return
+      }
 
-    if (wallet?.address) {
-      const isNodeManager = await appContract.isNodeManager(wallet.address)
-      setIsManager(isNodeManager)
+      const accounts = await provider.request({ method: 'eth_requestAccounts' })
+      setAccount(accounts[0])
+    } catch (error) {
+      console.error('连接 OKX Wallet 失败', error)
+      toast.show('连接钱包失败')
     }
   }
+
+  const initWallet = async () => {
+    if (!account) return
+
+    const owner = await appContract.getOwner()
+    setIsOwner(account === owner)
+
+    const isNodeManager = await appContract.isNodeManager(account)
+    setIsManager(isNodeManager)
+  }
+
   useEffect(() => {
-    if (wallet) {
+    const v = Constants.expoConfig?.version
+    if (v) setCurrentVersion(v)
+    init()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    if (account) {
       initWallet()
     }
-  }, [wallet])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [account])
 
   return {
     currentVersion,
@@ -115,5 +140,7 @@ export const useAppUpdate = () => {
     addNode,
     approveNode,
     removeNode,
+    account,
+    connectOKX,
   }
 }
