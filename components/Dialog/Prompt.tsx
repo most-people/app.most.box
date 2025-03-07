@@ -11,7 +11,7 @@ interface DialogPromptProps {
   onConfirm: (inputText: string) => void // 完成回调
 }
 
-const DialogPrompt = forwardRef(({ onConfirm, title }: DialogPromptProps, ref) => {
+export const DialogPrompt = forwardRef(({ onConfirm, title }: DialogPromptProps, ref) => {
   const [modalVisible, setModalVisible] = useState(false)
   const [inputText, setInputText] = useState('')
   const theme = useUserStore((state) => state.theme)
@@ -66,8 +66,6 @@ const DialogPrompt = forwardRef(({ onConfirm, title }: DialogPromptProps, ref) =
 
 // 设置组件名称
 DialogPrompt.displayName = 'DialogPrompt'
-
-export default DialogPrompt
 
 const createStyles = (theme: 'light' | 'dark') => {
   return StyleSheet.create({

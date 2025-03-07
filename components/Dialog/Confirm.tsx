@@ -12,7 +12,7 @@ interface DeleteConfirmationModalProps {
   message?: string
 }
 
-const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
+export const DialogConfirm: React.FC<DeleteConfirmationModalProps> = ({
   visible,
   onClose,
   onConfirmDelete,
@@ -119,5 +119,3 @@ const createStyles = (theme: 'light' | 'dark') => {
     },
   })
 }
-
-export default DeleteConfirmationModal
