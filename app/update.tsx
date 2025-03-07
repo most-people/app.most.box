@@ -75,9 +75,11 @@ export default function UpdatePage() {
           </ThemeView>
         ))}
 
-        <TouchableOpacity style={styles.button} onPress={() => setShowAddNodeDialog(true)}>
-          <ThemeText style={styles.buttonText}>添加节点</ThemeText>
-        </TouchableOpacity>
+        {account && (
+          <TouchableOpacity style={styles.button} onPress={() => setShowAddNodeDialog(true)}>
+            <ThemeText style={styles.buttonText}>添加节点</ThemeText>
+          </TouchableOpacity>
+        )}
       </ThemeView>
 
       <ThemeView style={styles.section}>

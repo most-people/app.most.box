@@ -20,6 +20,12 @@ export class AppContract {
     this.contract = new Contract(CONTRACT_ADDRESS, CONTRACT_ABI, this.provider)
   }
 
+  setProvider(provider: Provider) {
+    console.log('🌊', provider)
+    this.provider = provider
+    this.contract = new Contract(CONTRACT_ADDRESS, CONTRACT_ABI, provider)
+  }
+
   async getAppInfo(): Promise<AppInfo> {
     try {
       const [version, downloadUrl, updateContent] = await this.contract.getAppInfo()

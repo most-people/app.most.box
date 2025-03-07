@@ -81,6 +81,7 @@ export const useAppUpdate = () => {
     // @ts-ignore
     const provider = window.ethereum
     if (provider) {
+      appContract.setProvider(provider)
       const callback = (accounts: string[]) => {
         setAccount(accounts[0])
       }
