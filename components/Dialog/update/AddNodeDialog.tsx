@@ -37,7 +37,7 @@ export const AddNodeDialog = ({ visible, onClose, onConfirm }: AddNodeDialogProp
               style={[styles.modalButton, styles.confirmButton]}
               onPress={() => onConfirm({ url })}
             >
-              <ThemeText style={styles.buttonText}>确认</ThemeText>
+              <ThemeText style={[styles.buttonText, { color: '#000' }]}>确认</ThemeText>
             </TouchableOpacity>
           </View>
         </ThemeView>
@@ -48,46 +48,59 @@ export const AddNodeDialog = ({ visible, onClose, onConfirm }: AddNodeDialogProp
 
 const createStyles = (theme: 'light' | 'dark') => {
   return StyleSheet.create({
+    modalOverlay: {
+      flex: 1,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    modalContent: {
+      width: '90%',
+      padding: 24,
+      borderRadius: 16,
+      gap: 20,
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 5,
+      backgroundColor: Colors[theme].background, // 添加主题背景色
+    },
     input: {
       width: '100%',
-      padding: 12,
-      borderRadius: 8,
+      padding: 14,
+      borderRadius: 10,
       fontSize: 16,
-      borderWidth: 1,
+      borderWidth: 1.5,
       borderColor: Colors[theme].input.border,
       backgroundColor: Colors[theme].input.background,
       color: Colors[theme].text,
     },
     modalButton: {
       flex: 1,
-      paddingVertical: 12,
+      paddingVertical: 14,
       paddingHorizontal: 16,
-      borderRadius: 8,
+      borderRadius: 10,
       alignItems: 'center',
-      backgroundColor: Colors[theme].disabled,
+      backgroundColor: 'transparent',
+      borderWidth: 1,
+      borderColor: Colors[theme].disabled,
     },
     confirmButton: {
       backgroundColor: Colors.success,
+      borderWidth: 0,
     },
     buttonText: {
       fontSize: 16,
       color: Colors[theme].text,
     },
-    modalOverlay: {
-      flex: 1,
-      backgroundColor: 'rgb(247, 126, 126)',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    modalContent: {
-      width: '90%',
-      padding: 20,
-      borderRadius: 12,
-      gap: 16,
-    },
     buttonGroup: {
       flexDirection: 'row',
-      gap: 10,
+      gap: 12,
+      marginTop: 8,
     },
   })
 }

@@ -59,7 +59,7 @@ export const UpdateDialog = ({ visible, onClose, onConfirm, defaultValues }: Upd
               style={[styles.modalButton, styles.confirmButton]}
               onPress={() => onConfirm({ version, downloadUrl, content })}
             >
-              <ThemeText style={styles.buttonText}>确认</ThemeText>
+              <ThemeText style={[styles.buttonText, { color: '#000' }]}>确认</ThemeText>
             </TouchableOpacity>
           </View>
         </ThemeView>
@@ -72,49 +72,62 @@ const createStyles = (theme: 'light' | 'dark') => {
   return StyleSheet.create({
     modalOverlay: {
       flex: 1,
-      backgroundColor: 'rgb(247, 126, 126)',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)', // 修改为半透明黑色遮罩
       justifyContent: 'center',
       alignItems: 'center',
     },
     modalContent: {
       width: '90%',
-      padding: 20,
-      borderRadius: 12,
-      gap: 16,
+      padding: 24, // 增加内边距
+      borderRadius: 16, // 增加圆角
+      gap: 20, // 增加间距
+      shadowColor: '#000', // 添加阴影效果
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 5,
+      backgroundColor: Colors[theme].background, // 添加主题背景色
     },
     input: {
       width: '100%',
-      padding: 12,
-      borderRadius: 8,
+      padding: 14, // 增加输入框内边距
+      borderRadius: 10,
       fontSize: 16,
-      borderWidth: 1,
+      borderWidth: 1.5, // 增加边框宽度
       borderColor: Colors[theme].input.border,
       backgroundColor: Colors[theme].input.background,
       color: Colors[theme].text,
     },
     modalButton: {
       flex: 1,
-      paddingVertical: 12,
+      paddingVertical: 14, // 增加按钮高度
       paddingHorizontal: 16,
-      borderRadius: 8,
+      borderRadius: 10,
       alignItems: 'center',
-      backgroundColor: Colors[theme].disabled,
+      backgroundColor: 'transparent', // 取消按钮使用透明背景
+      borderWidth: 1,
+      borderColor: Colors[theme].disabled,
     },
     confirmButton: {
       backgroundColor: Colors.success,
+      borderWidth: 0, // 确认按钮不需要边框
     },
     buttonText: {
       fontSize: 16,
       color: Colors[theme].text,
     },
-
     multilineInput: {
-      height: 100,
+      height: 120, // 增加多行输入框高度
       textAlignVertical: 'top',
+      paddingTop: 14, // 确保文本从顶部开始
     },
     buttonGroup: {
       flexDirection: 'row',
-      gap: 10,
+      gap: 12, // 增加按钮间距
+      marginTop: 8, // 添加顶部间距
     },
   })
 }
