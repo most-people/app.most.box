@@ -8,7 +8,7 @@ type ThemeProps = TextProps & {
   type?: 'default' | 'title' | 'subtitle' | 'link' | 'hide'
 }
 
-const ThemeText = ({ style, type = 'default', ...rest }: ThemeProps) => {
+const ThemeText = ({ children, style, type = 'default', ...rest }: ThemeProps) => {
   const theme = useUserStore((state) => state.theme)
 
   return (
@@ -23,7 +23,9 @@ const ThemeText = ({ style, type = 'default', ...rest }: ThemeProps) => {
         style,
       ]}
       {...rest}
-    />
+    >
+      {children || ''}
+    </Text>
   )
 }
 

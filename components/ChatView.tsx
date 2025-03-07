@@ -21,6 +21,7 @@ import DialogTopicMessage from '@/components/Dialog/TopicMessage'
 import { SvgXml } from 'react-native-svg'
 import mp from '@/constants/mp'
 import { useCopy } from '@/hooks/useCopy'
+import { ThemeText } from '@/components/Theme'
 
 export interface ChatViewProps {
   title: string
@@ -105,14 +106,14 @@ export default function ChatView({ title, messages, onSend, onDelete }: ChatView
                 item.address === wallet?.address ? styles.sender : styles.receiver,
               ]}
             >
-              <Text
+              <ThemeText
                 style={[
                   styles.messageText,
                   item.address === wallet?.address ? styles.senderText : styles.receiverText,
                 ]}
               >
                 {item.text}
-              </Text>
+              </ThemeText>
             </TouchableOpacity>
           </View>
         )}

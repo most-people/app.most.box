@@ -66,12 +66,12 @@ export const DialogForm = ({ visible, title, fields, onClose, onConfirm }: FormD
 
   return (
     <Modal visible={visible} transparent animationType="fade">
-      <View style={styles.modalOverlay}>
+      <ThemeView style={styles.modalOverlay}>
         <ThemeView style={styles.modalContent}>
           <ThemeText type="subtitle">{title}</ThemeText>
 
           {fields.map((field) => (
-            <View key={field.name}>
+            <ThemeView key={field.name}>
               <TextInput
                 style={[
                   styles.input,
@@ -91,10 +91,10 @@ export const DialogForm = ({ visible, title, fields, onClose, onConfirm }: FormD
               {errors[field.name] && (
                 <ThemeText style={styles.errorText}>{errors[field.name]}</ThemeText>
               )}
-            </View>
+            </ThemeView>
           ))}
 
-          <View style={styles.buttonGroup}>
+          <ThemeView style={styles.buttonGroup}>
             <TouchableOpacity style={styles.modalButton} onPress={onClose}>
               <ThemeText style={styles.buttonText}>取消</ThemeText>
             </TouchableOpacity>
@@ -109,9 +109,9 @@ export const DialogForm = ({ visible, title, fields, onClose, onConfirm }: FormD
             >
               <ThemeText style={[styles.buttonText, { color: '#000' }]}>确认</ThemeText>
             </TouchableOpacity>
-          </View>
+          </ThemeView>
         </ThemeView>
-      </View>
+      </ThemeView>
     </Modal>
   )
 }

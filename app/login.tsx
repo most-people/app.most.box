@@ -93,7 +93,7 @@ export default function LoginPage() {
         onPress={toLogin}
         disabled={disabled}
       >
-        <Text style={styles.buttonText}>登录</Text>
+        <ThemeText style={styles.buttonText}>登录</ThemeText>
       </TouchableOpacity>
 
       <Link href="/about">

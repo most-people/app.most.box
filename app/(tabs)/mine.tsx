@@ -99,7 +99,7 @@ export default function ProfileScreen() {
       {/* 服务 */}
       <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/web3')}>
         <Icon.Web3 style={styles.icon} fill={Colors[theme].color} />
-        <Text style={styles.menuText}>Web3</Text>
+        <ThemeText style={styles.menuText}>Web3</ThemeText>
         <Icon.Arrow color={Colors[theme].primary} />
       </TouchableOpacity>
 
@@ -112,7 +112,7 @@ export default function ProfileScreen() {
             onPress={() => router.push(tab.pathname)}
           >
             {tab.icon}
-            <Text style={styles.menuText}>{tab.name}</Text>
+            <ThemeText style={styles.menuText}>{tab.name}</ThemeText>
             <Icon.Arrow color={Colors[theme].primary} />
           </TouchableOpacity>
         ))}

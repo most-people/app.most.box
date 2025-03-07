@@ -15,6 +15,7 @@ import { type MostWallet, mostWallet } from 'dot.most.box'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import 'dayjs/locale/zh-cn'
+import { Linking } from 'react-native'
 
 dayjs.extend(relativeTime)
 dayjs.locale('zh-cn')
@@ -150,6 +151,10 @@ const login = (username: string, password: string): MostWallet | null => {
   return null
 }
 
+const open = (url: string) => {
+  Linking.openURL(url)
+}
+
 export default {
   avatar,
   getHash,
@@ -161,4 +166,5 @@ export default {
   verifyJWT,
   login,
   ZeroAddress,
+  open,
 }

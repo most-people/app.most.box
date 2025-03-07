@@ -1,7 +1,11 @@
 import { ViewProps, View } from 'react-native'
 
-const ThemeView = ({ style, ...otherProps }: ViewProps) => {
-  return <View style={style} {...otherProps} />
+const ThemeView = ({ children, style, ...reset }: ViewProps) => {
+  return (
+    <View style={style} {...reset}>
+      {children}
+    </View>
+  )
 }
 
 export default ThemeView

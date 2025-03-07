@@ -1,12 +1,16 @@
+import { Linking } from 'react-native'
 import { useState, useEffect } from 'react'
 import { useToast } from 'expo-toast'
 import Constants from 'expo-constants'
 import { AppContract, type AppInfo } from '@/constants/Contract'
+import { BrowserProvider } from 'ethers'
 
 export interface NodeInfo {
   url: string
   isApproved: boolean
 }
+
+const appContract = new AppContract()
 
 export const useAppUpdate = () => {
   const toast = useToast()
@@ -19,15 +23,12 @@ export const useAppUpdate = () => {
   const [isOwner, setIsOwner] = useState(false)
   const [isManager, setIsManager] = useState(false)
 
-  const appContract = new AppContract()
-
   const updateAppInfo = async (version: string, downloadUrl: string, content: string) => {
     try {
       await appContract.updateAppInfo(version, downloadUrl, content)
       toast.show('更新成功')
       appContract.getAppInfo().then((appInfo) => setAppInfo(appInfo))
     } catch (error) {
-      console.error('更新失败', error)
       toast.show('更新失败')
     }
   }
@@ -39,7 +40,6 @@ export const useAppUpdate = () => {
       appContract.getApprovedNodeUrls().then((approvedNodes) => setApprovedNodes(approvedNodes))
       appContract.getPendingNodeUrls().then((pendingNodes) => setPendingNodes(pendingNodes))
     } catch (error) {
-      console.error('添加失败', error)
       toast.show('添加失败')
     }
   }
@@ -50,7 +50,6 @@ export const useAppUpdate = () => {
       toast.show('批准成功')
       appContract.getApprovedNodeUrls().then((approvedNodes) => setApprovedNodes(approvedNodes))
     } catch (error) {
-      console.error('批准失败', error)
       toast.show('批准失败')
     }
   }
@@ -62,26 +61,23 @@ export const useAppUpdate = () => {
       appContract.getApprovedNodeUrls().then((approvedNodes) => setApprovedNodes(approvedNodes))
       appContract.getPendingNodeUrls().then((pendingNodes) => setPendingNodes(pendingNodes))
     } catch (error) {
-      console.error('删除失败', error)
       toast.show('删除失败')
     }
   }
 
   useEffect(() => {
     const v = Constants.expoConfig?.version
-    if (v) {
-      setCurrentVersion(v)
-    }
+    if (v) setCurrentVersion(v)
 
-    appContract.getAppInfo().then((appInfo) => setAppInfo(appInfo))
-    appContract.getAllNodeManagers().then((managerList) => setManagers(managerList))
-    appContract.getApprovedNodeUrls().then((approvedNodes) => setApprovedNodes(approvedNodes))
-    appContract.getPendingNodeUrls().then((pendingNodes) => setPendingNodes(pendingNodes))
+    // 初始化合约数据
+    appContract.getAppInfo().then(setAppInfo)
+    appContract.getAllNodeManagers().then(setManagers)
+    appContract.getApprovedNodeUrls().then(setApprovedNodes)
+    appContract.getPendingNodeUrls().then(setPendingNodes)
     // 监听钱包地址变化
     // @ts-ignore
     const provider = window.ethereum
     if (provider) {
-      appContract.setProvider(provider)
       const callback = (accounts: string[]) => {
         setAccount(accounts[0])
       }
@@ -105,17 +101,15 @@ export const useAppUpdate = () => {
 
       const accounts = await provider.request({ method: 'eth_requestAccounts' })
       setAccount(accounts[0])
+
+      const ethersProvider = new BrowserProvider(provider)
+      const signer = await ethersProvider.getSigner()
+      appContract.setSigner(signer)
     } catch (error) {
       console.error('连接 OKX Wallet 失败', error)
       toast.show('连接钱包失败')
     }
   }
-
-  useEffect(() => {
-    const v = Constants.expoConfig?.version
-    if (v) setCurrentVersion(v)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   useEffect(() => {
     if (account) {

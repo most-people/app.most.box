@@ -1,9 +1,12 @@
-import { Contract, JsonRpcProvider, type Provider } from 'ethers'
+import { Contract, JsonRpcProvider, type Signer } from 'ethers'
 // 合约 ABI
 import CONTRACT_ABI from '@/assets/abi/AppVersionContract.json'
 
 const CONTRACT_ADDRESS = '0xBEAF3697ba3DDC9199Ffa6Fd6E13d75E5780c90c'
-const OPTIMISM_RPC = 'https://optimism.llamarpc.com'
+const CONTRACT_RPC = 'https://optimism.llamarpc.com'
+const CONTRACT_EXPLORER = 'https://optimistic.etherscan.io'
+
+export { CONTRACT_ADDRESS, CONTRACT_RPC, CONTRACT_EXPLORER }
 
 export interface AppInfo {
   version: string
@@ -13,17 +16,50 @@ export interface AppInfo {
 
 export class AppContract {
   private contract: Contract
-  private provider: Provider
 
   constructor() {
-    this.provider = new JsonRpcProvider(OPTIMISM_RPC)
-    this.contract = new Contract(CONTRACT_ADDRESS, CONTRACT_ABI, this.provider)
+    const provider = new JsonRpcProvider(CONTRACT_RPC)
+    this.contract = new Contract(CONTRACT_ADDRESS, CONTRACT_ABI, provider)
+  }
+  async setSigner(signer: Signer) {
+    this.contract = new Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer)
+    this.switchNetwork()
   }
 
-  setProvider(provider: Provider) {
-    console.log('🌊', provider)
-    this.provider = provider
-    this.contract = new Contract(CONTRACT_ADDRESS, CONTRACT_ABI, provider)
+  async switchNetwork() {
+    // @ts-ignore
+    const provider = window.ethereum
+    if (provider) {
+      // 切换到 Optimism 网络
+      try {
+        await provider.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: '0xA' }],
+        })
+      } catch (switchError: any) {
+        // 如果网络不存在，则添加网络
+        if (switchError.code === 4902) {
+          await provider.request({
+            method: 'wallet_addEthereumChain',
+            params: [
+              {
+                chainId: '0xA',
+                chainName: 'Optimism',
+                nativeCurrency: {
+                  name: 'Ethereum',
+                  symbol: 'ETH',
+                  decimals: 18,
+                },
+                rpcUrls: [CONTRACT_RPC],
+                blockExplorerUrls: [CONTRACT_EXPLORER],
+              },
+            ],
+          })
+        } else {
+          throw switchError
+        }
+      }
+    }
   }
 
   async getAppInfo(): Promise<AppInfo> {
@@ -84,8 +120,8 @@ export class AppContract {
     try {
       const tx = await this.contract.addNodeUrl(url)
       await tx.wait()
-    } catch (error) {
-      console.error('添加节点失败:', error)
+    } catch (error: any) {
+      console.error('添加节点失败:', error?.message)
       throw error
     }
   }
