@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { StyleSheet, TouchableOpacity, Modal, TextInput, View } from 'react-native'
 import { useUserStore } from '@/stores/userStore'
 import { Colors } from '@/constants/Colors'
@@ -9,11 +9,54 @@ interface AddNodeDialogProps {
   onClose: () => void
   onConfirm: (values: { url: string }) => void
 }
-
 export const AddNodeDialog = ({ visible, onClose, onConfirm }: AddNodeDialogProps) => {
   const [url, setUrl] = useState('')
+  const [error, setError] = useState('')
   const theme = useUserStore((state) => state.theme)
   const styles = createStyles(theme)
+
+  const validateUrl = useCallback((value: string) => {
+    try {
+      new URL(value.trim())
+      return true
+    } catch {
+      return false
+    }
+  }, [])
+
+  const validateField = useCallback(
+    (value: string) => {
+      const trimmedValue = value.trim()
+      if (!trimmedValue) return '请输入节点地址'
+      if (!validateUrl(trimmedValue)) return '请输入有效的网址'
+      return ''
+    },
+    [validateUrl],
+  )
+
+  const handleBlur = () => {
+    const error = validateField(url)
+    setError(error)
+  }
+
+  const handleConfirm = () => {
+    const trimmedUrl = url.trim()
+    const error = validateField(trimmedUrl)
+    if (error) {
+      setError(error)
+      return
+    }
+    onConfirm({ url: trimmedUrl })
+  }
+
+  const handleUrlChange = (text: string) => {
+    setUrl(text)
+    setError('')
+  }
+
+  const isValid = useCallback(() => {
+    return !error && url.trim() && validateUrl(url.trim())
+  }, [error, url, validateUrl])
 
   return (
     <Modal visible={visible} transparent animationType="fade">
@@ -21,21 +64,29 @@ export const AddNodeDialog = ({ visible, onClose, onConfirm }: AddNodeDialogProp
         <ThemeView style={styles.modalContent}>
           <ThemeText type="subtitle">添加节点</ThemeText>
 
-          <TextInput
-            style={styles.input}
-            placeholder="请输入节点地址"
-            value={url}
-            onChangeText={setUrl}
-            // placeholderTextColor={Colors[theme].text.secondary}
-          />
+          <View>
+            <TextInput
+              style={[styles.input, error ? styles.inputError : null]}
+              placeholder="请输入节点地址"
+              value={url}
+              onChangeText={handleUrlChange}
+              onBlur={handleBlur}
+            />
+            {error ? <ThemeText style={styles.errorText}>{error}</ThemeText> : null}
+          </View>
 
           <View style={styles.buttonGroup}>
             <TouchableOpacity style={styles.modalButton} onPress={onClose}>
               <ThemeText style={styles.buttonText}>取消</ThemeText>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[styles.modalButton, styles.confirmButton]}
-              onPress={() => onConfirm({ url })}
+              style={[
+                styles.modalButton,
+                styles.confirmButton,
+                !isValid() && styles.disabledButton,
+              ]}
+              onPress={handleConfirm}
+              disabled={!isValid()}
             >
               <ThemeText style={[styles.buttonText, { color: '#000' }]}>确认</ThemeText>
             </TouchableOpacity>
@@ -101,6 +152,17 @@ const createStyles = (theme: 'light' | 'dark') => {
       flexDirection: 'row',
       gap: 12,
       marginTop: 8,
+    },
+    inputError: {
+      borderColor: Colors.error,
+    },
+    errorText: {
+      color: Colors.error,
+      fontSize: 12,
+      marginTop: 4,
+    },
+    disabledButton: {
+      opacity: 0.5,
     },
   })
 }

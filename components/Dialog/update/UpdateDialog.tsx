@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { StyleSheet, TouchableOpacity, Modal, TextInput, View } from 'react-native'
 import { useUserStore } from '@/stores/userStore'
 import { Colors } from '@/constants/Colors'
@@ -16,8 +16,85 @@ export const UpdateDialog = ({ visible, onClose, onConfirm, defaultValues }: Upd
   const [version, setVersion] = useState(defaultValues?.version || '')
   const [downloadUrl, setDownloadUrl] = useState(defaultValues?.downloadUrl || '')
   const [content, setContent] = useState(defaultValues?.updateContent || '')
+  const [errors, setErrors] = useState({ version: '', downloadUrl: '', content: '' })
   const theme = useUserStore((state) => state.theme)
   const styles = createStyles(theme)
+
+  const validateUrl = useCallback((value: string) => {
+    try {
+      new URL(value.trim())
+      return true
+    } catch {
+      return false
+    }
+  }, [])
+
+  const handleConfirm = () => {
+    const trimmedVersion = version.trim()
+    const trimmedUrl = downloadUrl.trim()
+    const trimmedContent = content.trim()
+    const newErrors = { version: '', downloadUrl: '', content: '' }
+
+    if (!trimmedVersion) newErrors.version = '请输入版本号'
+    if (!trimmedUrl) newErrors.downloadUrl = '请输入下载链接'
+    if (!validateUrl(trimmedUrl)) newErrors.downloadUrl = '请输入有效的下载链接'
+    if (!trimmedContent) newErrors.content = '请输入更新内容'
+
+    if (Object.values(newErrors).some((error) => error)) {
+      setErrors(newErrors)
+      return
+    }
+
+    onConfirm({
+      version: trimmedVersion,
+      downloadUrl: trimmedUrl,
+      content: trimmedContent,
+    })
+  }
+
+  const clearError = (field: keyof typeof errors) => {
+    setErrors((prev) => ({ ...prev, [field]: '' }))
+  }
+
+  const validateField = useCallback(
+    (field: string, value: string) => {
+      const trimmedValue = value.trim()
+      switch (field) {
+        case 'version':
+          if (!trimmedValue) return '请输入版本号'
+          // 验证版本号格式 x.x.x
+          if (!/^\d+\.\d+\.\d+$/.test(trimmedValue)) {
+            return '版本号必须为 x.x.x'
+          }
+          return ''
+        case 'downloadUrl':
+          if (!trimmedValue) return '请输入下载链接'
+          return validateUrl(trimmedValue) ? '' : '请输入有效的下载链接'
+        case 'content':
+          return trimmedValue ? '' : '请输入更新内容'
+        default:
+          return ''
+      }
+    },
+    [validateUrl],
+  )
+
+  const handleBlur = (field: keyof typeof errors) => {
+    const value = field === 'version' ? version : field === 'downloadUrl' ? downloadUrl : content
+    const error = validateField(field, value)
+    setErrors((prev) => ({ ...prev, [field]: error }))
+  }
+
+  const isValid = useCallback(() => {
+    return (
+      !errors.version &&
+      !errors.downloadUrl &&
+      !errors.content &&
+      version.trim() &&
+      downloadUrl.trim() &&
+      content.trim()
+    )
+  }, [errors, version, downloadUrl, content])
 
   return (
     <Modal visible={visible} transparent animationType="fade">
@@ -25,39 +102,72 @@ export const UpdateDialog = ({ visible, onClose, onConfirm, defaultValues }: Upd
         <ThemeView style={styles.modalContent}>
           <ThemeText type="subtitle">更新应用信息</ThemeText>
 
-          <TextInput
-            style={styles.input}
-            placeholder="请输入版本号"
-            value={version}
-            onChangeText={setVersion}
-            // placeholderTextColor={Colors[theme].text.secondary}
-          />
+          <View>
+            <TextInput
+              style={[styles.input, errors.version ? styles.inputError : null]}
+              placeholder="请输入版本号"
+              value={version}
+              onChangeText={(text) => {
+                setVersion(text)
+                clearError('version')
+              }}
+              onBlur={() => handleBlur('version')}
+            />
+            {errors.version ? (
+              <ThemeText style={styles.errorText}>{errors.version}</ThemeText>
+            ) : null}
+          </View>
 
-          <TextInput
-            style={styles.input}
-            placeholder="请输入下载链接"
-            value={downloadUrl}
-            onChangeText={setDownloadUrl}
-            // placeholderTextColor={Colors[theme].text.secondary}
-          />
+          <View>
+            <TextInput
+              style={[styles.input, errors.downloadUrl ? styles.inputError : null]}
+              placeholder="请输入下载链接"
+              value={downloadUrl}
+              onChangeText={(text) => {
+                setDownloadUrl(text)
+                clearError('downloadUrl')
+              }}
+              onBlur={() => handleBlur('downloadUrl')}
+            />
+            {errors.downloadUrl ? (
+              <ThemeText style={styles.errorText}>{errors.downloadUrl}</ThemeText>
+            ) : null}
+          </View>
 
-          <TextInput
-            style={[styles.input, styles.multilineInput]}
-            placeholder="请输入更新内容"
-            value={content}
-            onChangeText={setContent}
-            multiline
-            numberOfLines={4}
-            // placeholderTextColor={Colors[theme].text.secondary}
-          />
+          <View>
+            <TextInput
+              style={[
+                styles.input,
+                styles.multilineInput,
+                errors.content ? styles.inputError : null,
+              ]}
+              placeholder="请输入更新内容"
+              value={content}
+              onChangeText={(text) => {
+                setContent(text)
+                clearError('content')
+              }}
+              onBlur={() => handleBlur('content')}
+              multiline
+              numberOfLines={4}
+            />
+            {errors.content ? (
+              <ThemeText style={styles.errorText}>{errors.content}</ThemeText>
+            ) : null}
+          </View>
 
           <View style={styles.buttonGroup}>
             <TouchableOpacity style={styles.modalButton} onPress={onClose}>
               <ThemeText style={styles.buttonText}>取消</ThemeText>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[styles.modalButton, styles.confirmButton]}
-              onPress={() => onConfirm({ version, downloadUrl, content })}
+              style={[
+                styles.modalButton,
+                styles.confirmButton,
+                !isValid() && styles.disabledButton,
+              ]}
+              onPress={handleConfirm}
+              disabled={!isValid()}
             >
               <ThemeText style={[styles.buttonText, { color: '#000' }]}>确认</ThemeText>
             </TouchableOpacity>
@@ -128,6 +238,17 @@ const createStyles = (theme: 'light' | 'dark') => {
       flexDirection: 'row',
       gap: 12, // 增加按钮间距
       marginTop: 8, // 添加顶部间距
+    },
+    inputError: {
+      borderColor: Colors.error,
+    },
+    errorText: {
+      color: Colors.error,
+      fontSize: 12,
+      marginTop: 4,
+    },
+    disabledButton: {
+      opacity: 0.5,
     },
   })
 }
