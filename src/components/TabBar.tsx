@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useMemo } from 'react'
-import './TabBar.css'
+import '@/components/TabBar.css'
 
 interface TabItem {
   key: string

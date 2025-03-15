@@ -5,8 +5,7 @@ import '@/app.css'
 import routes from '~react-pages'
 import MainLayout from './layouts/MainLayout'
 
-// 打印路由信息，帮助调试
-console.log('Generated routes:', routes)
+const tabs = ['/', 'discover', 'message', 'profile']
 
 // 重新组织路由结构
 const mainRoutes = [
@@ -14,26 +13,15 @@ const mainRoutes = [
     path: '/',
     element: <MainLayout />,
     children: [
-      {
-        index: true,
-        element: routes.find(r => r.path === '/')?.element,
-      },
-      {
-        path: 'discover',
-        element: routes.find(r => r.path === 'discover')?.element,
-      },
-      {
-        path: 'message',
-        element: routes.find(r => r.path === 'message')?.element,
-      },
-      {
-        path: 'profile',
-        element: routes.find(r => r.path === 'profile')?.element,
-      },
+      ...tabs.map(tab => ({
+        path: tab,
+        index: tab === '/',
+        element: routes.find(r => r.path === tab)?.element,
+      })),
     ],
   },
-  // 其他非主要页面路由可以放在这里
-  ...routes.filter(r => !['/', 'discover', 'message', 'profile'].includes(r.path || '')),
+  // 非标签页路由
+  ...routes.filter(r => !tabs.includes(r.path || '')),
 ]
 
 const router = createBrowserRouter(mainRoutes)
