@@ -2,7 +2,8 @@ import type { NextConfig } from "next";
 import withPWA from "@ducanh2912/next-pwa";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  output: "export",
+  /* 其他配置选项 */
 };
 
 const config = withPWA({

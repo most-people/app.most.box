@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev --turbopack --port 2025",
     "build": "next build",
-    "preview": "next start",
+    "preview": "npx serve out",
     "npm": "npm i",
     "lint": "next lint"
   },
