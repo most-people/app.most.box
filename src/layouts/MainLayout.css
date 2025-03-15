@@ -1,0 +1,10 @@
+.main-layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  .page-content {
+    flex: 1;
+    padding-bottom: 56px; /* 底部导航栏的高度 */
+  }
