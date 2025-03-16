@@ -1,8 +1,9 @@
+import Script from "next/script";
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { theme } from "@/constants/theme";
 
-import { MantineProvider, createTheme } from "@mantine/core";
+import { MantineProvider } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
 import { ModalsProvider } from "@mantine/modals";
 import "@mantine/core/styles.css";
@@ -57,6 +58,7 @@ export default function RootLayout({
           <Notifications />
           <ModalsProvider>{children}</ModalsProvider>
         </MantineProvider>
+        <Script defer src="/js/iconpark.js" />
       </body>
     </html>
   );

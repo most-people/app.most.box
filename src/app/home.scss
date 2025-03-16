@@ -11,22 +11,24 @@
     left: 0;
     right: 0;
     justify-content: center;
-    background-color: var(--tab-background);
+    border-top: 1px solid var(--tab-background);
 
     .mantine-Tabs-tab {
       background-color: transparent;
       flex: 1;
-
-      &[data-active] {
-        color: var(--tab-bg);
-      }
+      fill: var(--mantine-color-text);
+      color: var(--mantine-color-text);
       .mantine-Tabs-tabLabel {
         display: flex;
         align-items: center;
         flex-direction: column;
-        .mantine-Text-root {
+        p {
           font-size: 12px;
         }
+      }
+      &[data-active] {
+        color: var(--tab-bg);
+        fill: var(--tab-bg);
       }
     }
   }

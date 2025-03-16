@@ -26,7 +26,7 @@ export default function LoginPage() {
             Most.Box
           </Text>
           <br />
-          <Avatar size="xl" src="/icons/most.png" alt="it's me" />
+          <Avatar size="xl" src="/icons/pwa-512x512.png" alt="it's me" />
         </div>
         <Stack gap="md">
           <Input autoFocus placeholder="请输入用户名" />

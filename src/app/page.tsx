@@ -1,18 +1,20 @@
 "use client";
+import { useState } from "react";
 import { Button, Tabs, Text } from "@mantine/core";
-import "./home.scss";
-
-import {
-  IconHome,
-  IconMessage,
-  IconUsers,
-  IconUser,
-} from "@tabler/icons-react";
 import Link from "next/link";
+import "./home.scss";
+import Icon from "@/components/icon";
 
 export default function PageHome() {
+  const [activeTab, setActiveTab] = useState<string | null>("chat");
   return (
-    <Tabs id="page-home" variant="pills" radius={0} defaultValue="chat">
+    <Tabs
+      id="page-home"
+      variant="pills"
+      radius={0}
+      value={activeTab}
+      onChange={setActiveTab}
+    >
       <Tabs.Panel keepMounted value="chat">
         <Button variant="gradient" component={Link} href="/login">
           去登录
@@ -33,19 +35,19 @@ export default function PageHome() {
 
       <Tabs.List>
         <Tabs.Tab value="chat">
-          <IconMessage />
+          <Icon name={activeTab === "chat" ? "chat-active" : "chat"} />
           <Text>聊天</Text>
         </Tabs.Tab>
         <Tabs.Tab value="note">
-          <IconUsers />
+          <Icon name={activeTab === "note" ? "note-active" : "note"} />
           <Text>笔记</Text>
         </Tabs.Tab>
         <Tabs.Tab value="explore">
-          <IconHome />
+          <Icon name={activeTab === "explore" ? "explore-active" : "explore"} />
           <Text>探索</Text>
         </Tabs.Tab>
         <Tabs.Tab value="mine">
-          <IconUser />
+          <Icon name={activeTab === "mine" ? "mine-active" : "mine"} />
           <Text>我的</Text>
         </Tabs.Tab>
       </Tabs.List>
