@@ -5,7 +5,7 @@ export default function HomePage() {
   return (
     <div id="page-home">
       <Button variant="gradient" component={Link} href="/login">
-        Login
+        去登录
       </Button>
     </div>
   );

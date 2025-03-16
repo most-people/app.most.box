@@ -35,7 +35,9 @@ export default function LoginPage() {
             visible={visible}
             onVisibilityChange={toggle}
           />
-          <Button fullWidth>登录</Button>
+          <Button fullWidth component={Link} href="/">
+            登录
+          </Button>
           <Divider label="Or" labelPosition="center" />
           <Button variant="default" loading loaderProps={{ type: "dots" }}>
             连接钱包
