@@ -8,9 +8,12 @@ import {
   Stack,
   Divider,
   PasswordInput,
+  Avatar,
+  Anchor,
 } from "@mantine/core";
 
 import "./login.scss";
+import Link from "next/link";
 
 export default function LoginPage() {
   const [visible, { toggle }] = useDisclosure(true);
@@ -22,10 +25,11 @@ export default function LoginPage() {
           <Text size="xl" fw={500}>
             Most.Box
           </Text>
-          <Text>完全去中心化，无需注册</Text>
+          <br />
+          <Avatar size="xl" src="/icons/most.png" alt="it's me" />
         </div>
         <Stack gap="md">
-          <Input placeholder="请输入用户名" />
+          <Input autoFocus placeholder="请输入用户名" />
           <PasswordInput
             placeholder="请输入密码"
             visible={visible}
@@ -33,7 +37,16 @@ export default function LoginPage() {
           />
           <Button fullWidth>登录</Button>
           <Divider label="Or" labelPosition="center" />
-          <Button variant="default">连接钱包</Button>
+          <Button variant="default" loading loaderProps={{ type: "dots" }}>
+            连接钱包
+          </Button>
+          <Anchor
+            component={Link}
+            href="/about"
+            style={{ textAlign: "center" }}
+          >
+            完全去中心化，无需注册
+          </Anchor>
         </Stack>
       </Stack>
     </div>
