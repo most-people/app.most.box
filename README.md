@@ -1,3 +1,3 @@
-## radix-ui
+## Mantine
 
-https://www.radix-ui.com/
+https://mantine.dev

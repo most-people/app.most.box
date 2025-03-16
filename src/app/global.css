@@ -1,3 +1,13 @@
+:root {
+  --red: #c93721;
+}
+:root[data-mantine-color-scheme="light"] {
+  --mantine-color-body: #eee;
+}
+:root[data-mantine-color-scheme="dark"] {
+  --mantine-color-body: #151718;
+}
+
 body {
   min-height: 100vh;
   display: flex;

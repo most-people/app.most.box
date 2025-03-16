@@ -1,0 +1,33 @@
+#page-home {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+
+  .mantine-Tabs-list {
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    justify-content: center;
+    background-color: var(--tab-hover-color);
+
+    .mantine-Tabs-tab {
+      background-color: transparent;
+      flex: 1;
+
+      &[data-active] {
+        color: var(--tab-bg);
+      }
+      .mantine-Tabs-tabLabel {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        .mantine-Text-root {
+          font-size: 12px;
+        }
+      }
+    }
+  }
+}
