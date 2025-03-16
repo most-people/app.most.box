@@ -3,10 +3,10 @@ import { Button } from "@mantine/core";
 
 export default function HomePage() {
   return (
-    <>
-      <Button component={Link} href="/login">
+    <div id="page-home">
+      <Button variant="gradient" component={Link} href="/login">
         Login
       </Button>
-    </>
+    </div>
   );
 }

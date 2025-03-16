@@ -18,7 +18,8 @@
     "@mantine/notifications": "^7.17.2",
     "@mantine/nprogress": "^7.17.2",
     "dayjs": "^1.11.13",
-    "ethers": "^6.13.5"
+    "ethers": "^6.13.5",
+    "sass": "^1.85.1"
   },
   "devDependencies": {
     "@ducanh2912/next-pwa": "^10.2.9",
