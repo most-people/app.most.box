@@ -11,9 +11,15 @@ export const theme = createTheme({
     deg: 45,
   },
   components: {
+    Input: {
+      defaultProps: {
+        size: "md",
+      },
+    },
     Button: {
       defaultProps: {
         fw: 400,
+        size: "md",
       },
     },
   },
