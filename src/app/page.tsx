@@ -1,14 +1,21 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Tabs, Text } from "@mantine/core";
 import Link from "next/link";
 import { Icon } from "@/components/Icon";
 import HomeMine from "@/components/home/mine";
 
 import "./page.scss";
+import { useUserStore } from "@/stores/userStore";
 
 export default function PageHome() {
   const [activeTab, setActiveTab] = useState<string | null>("chat");
+  const initWallet = useUserStore((state) => state.initWallet);
+
+  useEffect(() => {
+    initWallet();
+  }, []);
+
   return (
     <Tabs
       id="page-home"

@@ -10,6 +10,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@dicebear/collection": "^9.2.2",
+    "@dicebear/core": "^9.2.2",
     "@emotion/react": "^11.14.0",
     "@mantine/core": "^7.17.2",
     "@mantine/form": "^7.17.2",
@@ -19,8 +21,11 @@
     "@mantine/nprogress": "^7.17.2",
     "@tabler/icons-react": "^3.31.0",
     "dayjs": "^1.11.13",
+    "dot.most.box": "^0.2.6",
     "ethers": "^6.13.5",
-    "sass": "^1.85.1"
+    "sass": "^1.85.1",
+    "tweetnacl": "^1.0.3",
+    "zustand": "^5.0.3"
   },
   "devDependencies": {
     "@ducanh2912/next-pwa": "^10.2.9",

@@ -1,11 +1,12 @@
-#home-mine {
-  padding: 20px;
-
+#page-home-panel-mine {
+  max-width: 400px;
+  width: 100%;
+  padding: 8px;
   .header {
     background-color: var(--tab-background);
     padding: 16px 20px;
     border-radius: 8px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
   }
 
   .menu-list {
@@ -17,7 +18,6 @@
       align-items: center;
       padding: 0 20px;
       text-decoration: none;
-      width: 384px;
       color: var(--tab-color);
       height: 64px;
 

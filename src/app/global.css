@@ -11,9 +11,11 @@
   --tab-color: #787c80;
 }
 
-html,
-body {
+html {
   height: 100%;
+}
+body {
+  min-height: 100%;
 }
 body {
   display: flex;

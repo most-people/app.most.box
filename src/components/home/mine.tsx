@@ -1,31 +1,37 @@
 "use client";
 
-import {
-  Avatar,
-  Text,
-  Stack,
-  Group,
-  Box,
-  Button,
-  ActionIcon,
-} from "@mantine/core";
+import { Avatar, Text, Stack, Group, Box, ActionIcon } from "@mantine/core";
 import { Icon, type IconName } from "@/components/Icon";
 import { notifications } from "@mantine/notifications";
 import Link from "next/link";
+import { useUserStore } from "@/stores/userStore";
+import mp from "@/constants/mp";
+
 import "./mine.scss";
 
 export default function HomeMine() {
+  const wallet = useUserStore((state) => state.wallet);
+  const address = wallet?.address || mp.ZeroAddress;
   return (
-    <div id="home-mine">
+    <>
       <div className="header">
         <Group>
-          <Avatar size="md" src="/icons/pwa-512x512.png" alt="most.box" />
+          <Avatar
+            size="md"
+            radius="sm"
+            src={
+              wallet?.address
+                ? mp.avatar(wallet.address)
+                : "/icons/pwa-512x512.png"
+            }
+            alt="it's me"
+          />
           <div>
             <Text size="lg" fw={500}>
-              Most.Box
+              {wallet?.username || "Most.Box"}
             </Text>
             <Text size="sm" c="dimmed">
-              地址: 0x0000...0000
+              地址: {mp.formatAddress(address)}
             </Text>
           </div>
 
@@ -57,7 +63,7 @@ export default function HomeMine() {
       <Stack className="menu-list" mt="xs">
         <MenuItem icon="exit" label="去登录" link="/login" />
       </Stack>
-    </div>
+    </>
   );
 }
 
