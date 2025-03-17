@@ -2,11 +2,13 @@
   --red: #c93721;
 }
 :root[data-mantine-color-scheme="light"] {
-  --tab-background: rgba(0, 0, 0, 0.04);
+  --tab-background: #0000000a;
+  --tab-color: #8e8e8f;
 }
 :root[data-mantine-color-scheme="dark"] {
   --mantine-color-body: #151718;
-  --tab-background: rgba(255, 255, 255, 0.04);
+  --tab-background: #ffffff0a;
+  --tab-color: #787c80;
 }
 
 body {

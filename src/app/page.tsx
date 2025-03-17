@@ -2,8 +2,9 @@
 import { useState } from "react";
 import { Button, Tabs, Text } from "@mantine/core";
 import Link from "next/link";
-import "./home.scss";
-import Icon from "@/components/icon";
+import { Icon } from "@/components/Icon";
+import { ThemeSwitcher } from "@/components/ThemeSwitcher";
+import "./page.scss";
 
 export default function PageHome() {
   const [activeTab, setActiveTab] = useState<string | null>("chat");
@@ -30,7 +31,7 @@ export default function PageHome() {
       </Tabs.Panel>
 
       <Tabs.Panel keepMounted value="mine">
-        Mine tab content
+        <ThemeSwitcher />
       </Tabs.Panel>
 
       <Tabs.List>

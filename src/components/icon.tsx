@@ -15,10 +15,10 @@ interface IconProps {
   size?: number;
 }
 
-export default function Icon({ name, size }: IconProps) {
+export const Icon = ({ name, size }: IconProps) => {
   return createElement("iconpark-icon", {
     name,
     width: size ?? 24,
     height: size ?? 24,
   });
-}
+};
