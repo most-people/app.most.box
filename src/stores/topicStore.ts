@@ -22,7 +22,7 @@ interface State extends TopicStore {
   setItem: <K extends keyof State>(key: K, value: State[K]) => void;
   pushItem: <K extends keyof State>(
     key: K,
-    value: State[K] extends any[]
+    value: State[K] extends unknown[]
       ? State[K] extends (infer T)[]
         ? T
         : never

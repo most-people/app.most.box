@@ -79,7 +79,7 @@ const enBase64 = (str: string) => encodeBase64(toUtf8Bytes(str));
 const deBase64 = (str: string) => toUtf8String(decodeBase64(str));
 
 // JWT 生成
-const createJWT = (data: any, secret: string, exp = 60) => {
+const createJWT = (data: MostWallet, secret: string, exp = 60) => {
   const header = { alg: "HS256", typ: "JWT" };
   const payload = {
     exp: dayjs().add(exp, "second").unix(),
@@ -157,10 +157,10 @@ const login = (username: string, password: string): MostWallet | null => {
 };
 
 const open = (url: string) => {
-  //   Linking.openURL(url)
+  window.open(url);
 };
 
-export default {
+const mp = {
   avatar,
   getHash,
   formatTime,
@@ -173,3 +173,5 @@ export default {
   ZeroAddress,
   open,
 };
+
+export default mp;
