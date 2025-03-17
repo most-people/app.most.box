@@ -11,10 +11,18 @@
   --tab-color: #787c80;
 }
 
+html,
 body {
-  min-height: 100vh;
+  height: 100%;
+}
+body {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+.iconpark {
+  width: 1em;
+  height: 1em;
 }

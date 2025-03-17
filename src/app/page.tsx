@@ -3,7 +3,8 @@ import { useState } from "react";
 import { Button, Tabs, Text } from "@mantine/core";
 import Link from "next/link";
 import { Icon } from "@/components/Icon";
-import { ThemeSwitcher } from "@/components/ThemeSwitcher";
+import HomeMine from "@/components/home/mine";
+
 import "./page.scss";
 
 export default function PageHome() {
@@ -31,7 +32,7 @@ export default function PageHome() {
       </Tabs.Panel>
 
       <Tabs.Panel keepMounted value="mine">
-        <ThemeSwitcher />
+        <HomeMine />
       </Tabs.Panel>
 
       <Tabs.List>

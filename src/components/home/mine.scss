@@ -1,0 +1,34 @@
+#home-mine {
+  padding: 20px;
+
+  .header {
+    background-color: var(--tab-background);
+    padding: 16px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+
+    .iconpark.qr-code {
+      margin-left: auto;
+      cursor: pointer;
+    }
+  }
+
+  .menu-list {
+    background-color: var(--tab-background);
+    border-radius: 8px;
+    .menu-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      text-decoration: none;
+      width: 384px;
+      color: var(--tab-color);
+      height: 64px;
+
+      &:hover {
+        color: var(--tab-active-text);
+      }
+    }
+  }
+}
