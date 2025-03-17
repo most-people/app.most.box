@@ -1,7 +1,16 @@
 "use client";
 
-import { Avatar, Text, Stack, Group, Box, Divider } from "@mantine/core";
+import {
+  Avatar,
+  Text,
+  Stack,
+  Group,
+  Box,
+  Button,
+  ActionIcon,
+} from "@mantine/core";
 import { Icon, type IconName } from "@/components/Icon";
+import { notifications } from "@mantine/notifications";
 import Link from "next/link";
 import "./mine.scss";
 
@@ -19,7 +28,21 @@ export default function HomeMine() {
               地址: 0x0000...0000
             </Text>
           </div>
-          <Icon name="qr-code" size={18} />
+
+          <ActionIcon
+            ml={"auto"}
+            variant="transparent"
+            color="inherit"
+            onClick={() =>
+              notifications.show({
+                title: "二维码",
+                message: "开发中，快催我们",
+                color: "gray",
+              })
+            }
+          >
+            <Icon name="qr-code" size={18} />
+          </ActionIcon>
         </Group>
       </div>
       <Stack className="menu-list" mb="xs">
@@ -28,7 +51,7 @@ export default function HomeMine() {
       <Stack className="menu-list" gap={0}>
         <MenuItem icon="about" label="关于" link="/about" />
         <MenuItem icon="setting" label="设置" link="/setting" />
-        <MenuItem icon="join" label="志同道合" link="/internationale" />
+        <MenuItem icon="join" label="志同道合" link="/join" />
         <MenuItem icon="download" label="应用更新" link="/update" />
       </Stack>
       <Stack className="menu-list" mt="xs">

@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import { theme } from "@/constants/theme";
 
 import { MantineProvider } from "@mantine/core";
+import { NavigationProgress } from "@mantine/nprogress";
 import { Notifications } from "@mantine/notifications";
 import { ModalsProvider } from "@mantine/modals";
 import "@mantine/core/styles.css";
@@ -55,6 +56,7 @@ export default function RootLayout({
     <html lang="zh-CN" suppressHydrationWarning>
       <body className={`${inter.variable}`}>
         <MantineProvider defaultColorScheme="auto" theme={theme}>
+          <NavigationProgress />
           <Notifications />
           <ModalsProvider>{children}</ModalsProvider>
         </MantineProvider>
