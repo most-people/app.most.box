@@ -1,17 +1,25 @@
 "use client";
 
+import "./mine.scss";
+import Link from "next/link";
 import { Avatar, Text, Stack, Group, Box, ActionIcon } from "@mantine/core";
 import { Icon, type IconName } from "@/components/Icon";
 import { notifications } from "@mantine/notifications";
-import Link from "next/link";
 import { useUserStore } from "@/stores/userStore";
+import { useTopicStore } from "@/stores/topicStore";
 import mp from "@/constants/mp";
-
-import "./mine.scss";
 
 export default function HomeMine() {
   const wallet = useUserStore((state) => state.wallet);
   const address = wallet?.address || mp.ZeroAddress;
+
+  const exit = useUserStore((state) => state.exit);
+  const resetTopic = useTopicStore((state) => state.reset);
+
+  const quit = () => {
+    exit();
+    resetTopic();
+  };
   return (
     <>
       <Box className="header">
@@ -61,7 +69,12 @@ export default function HomeMine() {
         <MenuItem icon="download" label="应用更新" link="/update" />
       </Stack>
       <Stack className="menu-list" mt="xs">
-        <MenuItem icon="exit" label="去登录" link="/login" />
+        <MenuItem
+          icon="exit"
+          label={wallet ? "退出账户" : "去登录"}
+          link="/login"
+          onClick={quit}
+        />
       </Stack>
     </>
   );
@@ -71,11 +84,12 @@ interface MenuItemProps {
   icon: IconName;
   label: string;
   link: string;
+  onClick?: () => void;
 }
 
-function MenuItem({ icon, label, link }: MenuItemProps) {
+function MenuItem({ icon, label, link, onClick }: MenuItemProps) {
   return (
-    <Box component={Link} href={link} className="menu-item">
+    <Box component={Link} href={link} className="menu-item" onClick={onClick}>
       <Group>
         <Icon name={icon} size={32} />
         <Text>{label}</Text>

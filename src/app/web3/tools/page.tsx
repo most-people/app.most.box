@@ -59,9 +59,11 @@ export default function Web3ToolPage() {
     setDeriveShowPrivateKey(false);
   }, [username, password]);
 
+  const deriveNumber = 10;
+
   const deriveAddress = () => {
     const list: DeriveAddress[] = [];
-    for (let i = deriveIndex; i < deriveIndex + 10; i++) {
+    for (let i = deriveIndex; i < deriveIndex + deriveNumber; i++) {
       const path = `m/44'/60'/0'/0/${i}`;
       const wallet = HDNodeWallet.fromPhrase(mnemonic, undefined, path);
       list.push({
@@ -71,8 +73,9 @@ export default function Web3ToolPage() {
       });
     }
     setDeriveAddressList((prev) => [...prev, ...list]);
-    setDeriveIndex(deriveIndex + 10);
-    notifications.show({ message: "已派生10个地址" });
+    const newIndex = deriveIndex + deriveNumber;
+    setDeriveIndex(newIndex);
+    notifications.show({ message: `已派生 ${newIndex} 个地址` });
   };
 
   return (
@@ -178,7 +181,7 @@ export default function Web3ToolPage() {
         {showMnemonic && mnemonic && (
           <Stack gap="md" w="100%">
             <Button color="gray" variant="light" onClick={deriveAddress}>
-              派生 10 个地址
+              派生 {deriveNumber} 个地址
             </Button>
 
             <Text c="var(--red)">

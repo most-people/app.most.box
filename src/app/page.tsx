@@ -19,9 +19,7 @@ export default function PageHome() {
       onChange={setActiveTab}
     >
       <Tabs.Panel keepMounted value="chat">
-        <Button variant="gradient" component={Link} href="/login">
-          去登录
-        </Button>
+        Chat tab content
       </Tabs.Panel>
 
       <Tabs.Panel keepMounted value="note">
