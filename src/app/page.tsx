@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Button, Tabs, Text } from "@mantine/core";
-import Link from "next/link";
+import { Tabs, Text } from "@mantine/core";
 import { Icon } from "@/components/Icon";
 import HomeMine from "@/components/home/mine";
 

@@ -28,6 +28,9 @@
           font-size: 12px;
         }
       }
+      &:hover {
+        color: var(--tab-active-color);
+      }
       &[data-active] {
         color: var(--tab-bg);
         fill: var(--tab-bg);

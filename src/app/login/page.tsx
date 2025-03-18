@@ -22,7 +22,7 @@ import { mostWallet } from "dot.most.box";
 import { useRouter } from "next/navigation";
 import { useUserStore } from "@/stores/userStore";
 
-export default function LoginPage() {
+export default function PageLogin() {
   const router = useRouter();
   const [visible, { toggle }] = useDisclosure(true);
 

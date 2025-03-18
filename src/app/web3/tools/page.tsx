@@ -95,7 +95,7 @@ export default function Web3ToolPage() {
 
         <Text size="xl">Most Wallet 账户查询</Text>
 
-        <Text>
+        <Text c="dimmed">
           开源代码：https://www.npmjs.com/package/dot.most.box?activeTab=code
         </Text>
 
