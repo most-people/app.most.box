@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Tabs, Text } from "@mantine/core";
 import { Icon } from "@/components/Icon";
 import HomeMine from "@/components/home/mine";
@@ -7,7 +7,16 @@ import HomeMine from "@/components/home/mine";
 import "./page.scss";
 
 export default function PageHome() {
-  const [activeTab, setActiveTab] = useState<string | null>("chat");
+  const [activeTab, setActiveTab] = useState<string | null>(null);
+
+  const tabChange = (value: string | null) => {
+    setActiveTab(value);
+    localStorage.setItem("activeTab", value || "chat");
+  };
+  useEffect(() => {
+    const activeTab = localStorage.getItem("activeTab");
+    setActiveTab(activeTab || "chat");
+  }, []);
 
   return (
     <Tabs
@@ -15,7 +24,7 @@ export default function PageHome() {
       variant="pills"
       radius={0}
       value={activeTab}
-      onChange={setActiveTab}
+      onChange={tabChange}
     >
       <Tabs.Panel keepMounted value="chat">
         Chat tab content

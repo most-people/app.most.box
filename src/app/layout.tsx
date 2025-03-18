@@ -1,5 +1,4 @@
 import AppProvider from "@/components/AppProvider";
-import Script from "next/script";
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { theme } from "@/constants/theme";
@@ -58,7 +57,6 @@ export default function RootLayout({
           <Notifications />
           <ModalsProvider>{children}</ModalsProvider>
         </MantineProvider>
-        <Script defer src="/js/iconpark.js" />
       </body>
     </html>
   );

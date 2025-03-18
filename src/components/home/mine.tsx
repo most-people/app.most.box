@@ -50,7 +50,7 @@ export default function HomeMine() {
             onClick={() =>
               notifications.show({
                 title: "二维码",
-                message: "开发中，快催我们",
+                message: "开发中",
                 color: "gray",
               })
             }

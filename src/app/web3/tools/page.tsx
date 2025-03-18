@@ -127,7 +127,7 @@ export default function Web3ToolPage() {
 
         <Button
           color="gray"
-          variant="outline"
+          variant="light"
           disabled={!username}
           onClick={() => setShowAddress(!showAddress)}
         >

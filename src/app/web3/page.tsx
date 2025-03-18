@@ -47,7 +47,7 @@ export default function Web3Page() {
             {showX25519 ? <IconEye size={16} /> : <IconEyeOff size={16} />}
           </ActionIcon>
         </Title>
-        <Text>{showX25519 ? wallet?.private_key : "0x"}</Text>
+        <Text>{showX25519 ? wallet?.private_key : "-"}</Text>
       </Stack>
     </Container>
   );
