@@ -1,16 +1,6 @@
 "use client";
 
-import {
-  Avatar,
-  Text,
-  Stack,
-  Group,
-  Box,
-  ActionIcon,
-  Popover,
-  CopyButton,
-  Tooltip,
-} from "@mantine/core";
+import { Avatar, Text, Stack, Group, Box, ActionIcon } from "@mantine/core";
 import { Icon, type IconName } from "@/components/Icon";
 import { notifications } from "@mantine/notifications";
 import Link from "next/link";
@@ -18,7 +8,6 @@ import { useUserStore } from "@/stores/userStore";
 import mp from "@/constants/mp";
 
 import "./mine.scss";
-import { IconCheck, IconCopy } from "@tabler/icons-react";
 
 export default function HomeMine() {
   const wallet = useUserStore((state) => state.wallet);

@@ -1,6 +1,6 @@
 import { AppHeader } from "@/components/AppHeader";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
-import { Text, Box, Group } from "@mantine/core";
+import { Text, Box } from "@mantine/core";
 import "./setting.scss";
 
 export default function PageSetting() {

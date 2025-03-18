@@ -7,7 +7,7 @@
     "build": "next build",
     "preview": "npx serve out",
     "pnpm": "pnpm i",
-    "lint": "next lint"
+    "lint": "next lint --fix"
   },
   "dependencies": {
     "@dicebear/collection": "^9.2.2",
