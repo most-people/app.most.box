@@ -9,6 +9,7 @@ import {
   Stack,
   Table,
   Avatar,
+  Input,
 } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { mostWallet } from "dot.most.box";
@@ -28,7 +29,7 @@ export default function Web3ToolPage() {
   const [password, setPassword] = useState("");
   const [address, setAddress] = useState(mp.ZeroAddress);
   const [mnemonic, setMnemonic] = useState("");
-  const [showAddress, setShowAddress] = useState(true);
+  const [showAddress, setShowAddress] = useState(false);
   const [showMnemonic, setShowMnemonic] = useState(false);
 
   const [deriveAddressList, setDeriveAddressList] = useState<DeriveAddress[]>(
@@ -96,29 +97,45 @@ export default function Web3ToolPage() {
           开源代码：https://www.npmjs.com/package/dot.most.box?activeTab=code
         </Text>
 
-        <TextInput
+        <Input
           placeholder="请输入用户名"
           maxLength={36}
           value={username}
           onChange={(e) => setUsername(e.currentTarget.value)}
-          style={{ width: "100%" }}
+          rightSectionPointerEvents="auto"
+          rightSection={
+            username ? (
+              <Input.ClearButton onClick={() => setUsername("")} />
+            ) : undefined
+          }
         />
 
-        <TextInput
+        <Input
           placeholder="请输入密码"
           maxLength={100}
           value={password}
           onChange={(e) => setPassword(e.currentTarget.value)}
-          style={{ width: "100%" }}
+          rightSectionPointerEvents="auto"
+          rightSection={
+            password ? (
+              <Input.ClearButton onClick={() => setPassword("")} />
+            ) : undefined
+          }
         />
 
-        <Button variant="outline" onClick={() => setShowAddress(!showAddress)}>
+        <Button
+          color="gray"
+          variant="outline"
+          disabled={!username}
+          onClick={() => setShowAddress(!showAddress)}
+        >
           {showAddress ? "隐藏二维码" : "显示二维码"}
         </Button>
 
         {showAddress && (
           <Paper
             p={10}
+            withBorder
             style={{
               display: "flex",
               alignSelf: "center",
@@ -131,7 +148,11 @@ export default function Web3ToolPage() {
 
         <Text size="lg">ETH 地址：{address}</Text>
 
-        <Button onClick={() => setShowMnemonic(!showMnemonic)}>
+        <Button
+          color="gray"
+          onClick={() => setShowMnemonic(!showMnemonic)}
+          disabled={!username}
+        >
           {showMnemonic ? "隐藏助记词" : "显示助记词"}
         </Button>
 
@@ -144,19 +165,20 @@ export default function Web3ToolPage() {
         {showMnemonic && (
           <Paper
             p={10}
+            withBorder
             style={{
               display: "flex",
               alignSelf: "center",
               backgroundColor: "white",
             }}
           >
-            <QRCodeCanvas value={mnemonic || " "} size={240} />
+            <QRCodeCanvas value={mnemonic || " "} size={260} />
           </Paper>
         )}
 
         {showMnemonic && mnemonic && (
           <Stack gap="md" w="100%">
-            <Button variant="light" onClick={deriveAddress}>
+            <Button color="gray" variant="light" onClick={deriveAddress}>
               派生 10 个地址
             </Button>
 
@@ -164,7 +186,7 @@ export default function Web3ToolPage() {
               任何拥有您私钥的人都可以窃取您地址中的任何资产，切勿泄露！！！
             </Text>
 
-            <Table withColumnBorders highlightOnHover captionSide="bottom">
+            <Table withColumnBorders highlightOnHover>
               <Table.Thead>
                 <Table.Tr>
                   <Table.Th
