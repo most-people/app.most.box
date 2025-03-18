@@ -1,10 +1,14 @@
-import Page from "@/components/Page";
+import { AppHeader } from "@/components/AppHeader";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
+import { Text, Box, Group } from "@mantine/core";
+import "./setting.scss";
 
 export default function PageSetting() {
   return (
-    <Page title="设置">
+    <Box id="page-setting">
+      <AppHeader title="设置" />
+      <Text>主题</Text>
       <ThemeSwitcher />
-    </Page>
+    </Box>
   );
 }

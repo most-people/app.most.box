@@ -10,6 +10,8 @@ import {
   PasswordInput,
   Avatar,
   Anchor,
+  Box,
+  Space,
 } from "@mantine/core";
 
 import "./login.scss";
@@ -47,13 +49,13 @@ export default function LoginPage() {
   };
 
   return (
-    <div id="page-login">
+    <Box id="page-login">
       <Stack gap="md">
-        <div className="header">
+        <Box className="header">
           <Text size="xl" fw={500}>
             Most.Box
           </Text>
-          <br />
+          <Space h="sx" />
           <Avatar
             size="xl"
             radius="md"
@@ -64,7 +66,7 @@ export default function LoginPage() {
             }
             alt="it's me"
           />
-        </div>
+        </Box>
         <Stack gap="md">
           <Input
             autoFocus
@@ -95,6 +97,6 @@ export default function LoginPage() {
           </Anchor>
         </Stack>
       </Stack>
-    </div>
+    </Box>
   );
 }
