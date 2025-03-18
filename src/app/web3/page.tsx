@@ -1,13 +1,6 @@
 "use client";
 import { useState } from "react";
-import {
-  Container,
-  Text,
-  Title,
-  Stack,
-  Anchor,
-  ActionIcon,
-} from "@mantine/core";
+import { Container, Text, Stack, Anchor, ActionIcon } from "@mantine/core";
 import { useUserStore } from "@/stores/userStore";
 import { AppHeader } from "@/components/AppHeader";
 import { IconEye, IconEyeOff } from "@tabler/icons-react";
@@ -19,7 +12,7 @@ export default function Web3Page() {
 
   return (
     <Container>
-      <AppHeader title="web3" />
+      <AppHeader title="Web3" />
       <Stack gap="md">
         <Text size="lg" fw={500}>
           Web3

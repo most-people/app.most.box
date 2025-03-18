@@ -3,8 +3,11 @@ import { useEffect, useState } from "react";
 import { Tabs, Text } from "@mantine/core";
 import { Icon } from "@/components/Icon";
 import HomeMine from "@/components/home/mine";
+import HomeChat from "@/components/home/chat";
 
 import "./page.scss";
+import HomeNote from "@/components/home/note";
+import HomeExplore from "@/components/home/explore";
 
 export default function PageHome() {
   const [activeTab, setActiveTab] = useState<string | null>(null);
@@ -27,15 +30,15 @@ export default function PageHome() {
       onChange={tabChange}
     >
       <Tabs.Panel keepMounted value="chat">
-        Chat tab content
+        <HomeChat />
       </Tabs.Panel>
 
       <Tabs.Panel keepMounted value="note">
-        Note tab content
+        <HomeNote />
       </Tabs.Panel>
 
       <Tabs.Panel keepMounted value="explore">
-        Explore tab content
+        <HomeExplore />
       </Tabs.Panel>
 
       <Tabs.Panel keepMounted value="mine">
