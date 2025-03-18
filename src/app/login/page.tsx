@@ -21,6 +21,8 @@ import mp from "@/constants/mp";
 import { mostWallet } from "dot.most.box";
 import { useRouter } from "next/navigation";
 import { useUserStore } from "@/stores/userStore";
+import { useAccountStore } from "@/stores/accountStore";
+import { notifications } from "@mantine/notifications";
 
 export default function PageLogin() {
   const router = useRouter();
@@ -31,7 +33,24 @@ export default function PageLogin() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const login = () => {
+  const connectOKX = useAccountStore((state) => state.connectOKX);
+  const ethereum = useAccountStore((state) => state.ethereum);
+
+  const connectWallet = async () => {
+    try {
+      const signer = await connectOKX();
+      if (signer) {
+        const address = await signer.getAddress();
+        const sig = await signer.signMessage(address);
+        login(address, sig);
+      }
+    } catch (error) {
+      console.log("钱包连接失败", error);
+      notifications.show({ title: "提示", message: "连接失败" });
+    }
+  };
+
+  const login = (username: string, password: string) => {
     if (username) {
       const wallet = mp.login(username, password);
       if (wallet) {
@@ -81,13 +100,23 @@ export default function PageLogin() {
             value={password}
             onChange={(event) => setPassword(event.currentTarget.value)}
           />
-          <Button fullWidth onClick={login}>
+          <Button onClick={() => login(username, password)}>
             {username ? "登录" : "游客"}
           </Button>
-          <Divider label="Or" labelPosition="center" />
-          <Button variant="default" loading loaderProps={{ type: "dots" }}>
-            连接钱包
-          </Button>
+
+          {ethereum && (
+            <>
+              <Divider label="Or" labelPosition="center" />
+              <Button
+                variant="default"
+                // loading
+                loaderProps={{ type: "dots" }}
+                onClick={connectWallet}
+              >
+                连接钱包
+              </Button>
+            </>
+          )}
           <Anchor
             component={Link}
             href="/about"

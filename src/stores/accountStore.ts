@@ -7,7 +7,7 @@ interface AccountState {
   account: string;
   connectOKX: () => Promise<Signer | null>;
   disconnect: () => void;
-  onAccountChange: () => void;
+  initAccount: () => void;
 }
 
 export const useAccountStore = create<AccountState>((set, get) => ({
@@ -19,30 +19,26 @@ export const useAccountStore = create<AccountState>((set, get) => ({
   },
   // 连接钱包地址
   async connectOKX() {
-    try {
-      // @ts-expect-error window.ethereum
-      const provider = window.ethereum;
-      if (provider) {
-        const accounts = await provider.request({
-          method: "eth_requestAccounts",
-        });
-        if (accounts && accounts.length > 0) {
-          const account = getAddress(accounts[0]);
-          const ethersProvider = new BrowserProvider(provider);
-          const signer = await ethersProvider.getSigner();
-          set({ account, signer });
-          return signer;
-        }
-      } else {
-        console.log("请安装 OKX Wallet");
+    // @ts-expect-error window.ethereum
+    const provider = window.ethereum;
+    if (provider) {
+      const accounts = await provider.request({
+        method: "eth_requestAccounts",
+      });
+      if (accounts && accounts.length > 0) {
+        const account = getAddress(accounts[0]);
+        const ethersProvider = new BrowserProvider(provider);
+        const signer = await ethersProvider.getSigner();
+        set({ account, signer });
+        return signer;
       }
-    } catch (error) {
-      console.log("连接 OKX Wallet 失败", error);
+    } else {
+      throw new Error("请先安装 OKX wallet");
     }
     return null;
   },
   // 监听钱包地址变化
-  async onAccountChange() {
+  async initAccount() {
     // @ts-expect-error window.ethereum
     const ethereum = window?.ethereum;
     if (ethereum) {

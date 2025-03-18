@@ -21,7 +21,9 @@ export default function Web3Page() {
     <Container>
       <AppHeader title="web3" />
       <Stack gap="md">
-        <Title order={2}>Web3</Title>
+        <Text size="lg" fw={500}>
+          Web3
+        </Text>
         <Text>
           旨在重塑互联网生态，将用户的控制权和数据所有权还给个人，推动更加公平和透明的人类社会发展。
         </Text>
@@ -30,13 +32,17 @@ export default function Web3Page() {
           <Text>工具集</Text>
         </Anchor>
 
-        <Title order={3}>ETH 地址</Title>
+        <Text size="lg" fw={500}>
+          ETH 地址
+        </Text>
         <Text>{wallet?.address}</Text>
 
-        <Title order={3}>x25519 公钥</Title>
+        <Text size="lg" fw={500}>
+          x25519 公钥
+        </Text>
         <Text>{wallet?.public_key}</Text>
 
-        <Title order={3}>
+        <Text size="lg" fw={500}>
           x25519 私钥
           <ActionIcon
             variant="subtle"
@@ -46,7 +52,7 @@ export default function Web3Page() {
           >
             {showX25519 ? <IconEye size={16} /> : <IconEyeOff size={16} />}
           </ActionIcon>
-        </Title>
+        </Text>
         <Text>{showX25519 ? wallet?.private_key : "-"}</Text>
       </Stack>
     </Container>

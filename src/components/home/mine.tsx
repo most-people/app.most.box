@@ -17,13 +17,15 @@ export default function HomeMine() {
   const resetTopic = useTopicStore((state) => state.reset);
 
   const quit = () => {
-    exit();
-    resetTopic();
+    setTimeout(() => {
+      exit();
+      resetTopic();
+    }, 0);
   };
   return (
     <>
       <Box className="header">
-        <Group>
+        <Group wrap="nowrap">
           <Avatar
             size="md"
             radius="sm"
@@ -35,7 +37,7 @@ export default function HomeMine() {
             alt="it's me"
           />
           <Box>
-            <Text size="lg" fw={500}>
+            <Text size="lg" fw={500} lineClamp={2}>
               {wallet?.username || "Most.Box"}
             </Text>
             <Text size="sm" c="dimmed">

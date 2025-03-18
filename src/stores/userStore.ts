@@ -38,8 +38,9 @@ export const useUserStore = create<State>((set) => ({
   topics: [],
   setItem: (key, value) => set((state) => ({ ...state, [key]: value })),
   exit() {
-    localStorage.clear();
     set({ wallet: undefined });
+    localStorage.removeItem("token");
+    localStorage.removeItem("tokenSecret");
   },
   firstPath: "",
 }));
