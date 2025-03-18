@@ -1,10 +1,10 @@
+import AppProvider from "@/components/AppProvider";
 import Script from "next/script";
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { theme } from "@/constants/theme";
 
 import { MantineProvider } from "@mantine/core";
-import { NavigationProgress } from "@mantine/nprogress";
 import { Notifications } from "@mantine/notifications";
 import { ModalsProvider } from "@mantine/modals";
 import "@mantine/core/styles.css";
@@ -49,14 +49,12 @@ export const viewport: Viewport = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="zh-CN" suppressHydrationWarning>
       <body className={`${inter.variable}`}>
         <MantineProvider defaultColorScheme="auto" theme={theme}>
-          <NavigationProgress />
+          <AppProvider />
           <Notifications />
           <ModalsProvider>{children}</ModalsProvider>
         </MantineProvider>

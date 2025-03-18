@@ -14,13 +14,14 @@ interface UserStore {
   dot: DotMethods | null;
   exit: () => void;
   topics: Topic[];
+  firstPath: string;
 }
 
 interface State extends UserStore {
   setItem: <K extends keyof State>(key: K, value: State[K]) => void;
 }
 
-export const useUserStore = create<State>((set) => ({
+export const useUserStore = create<State>((set, get) => ({
   wallet: undefined,
   initWallet() {
     const token = localStorage.getItem("token");
@@ -40,4 +41,5 @@ export const useUserStore = create<State>((set) => ({
     localStorage.clear();
     set({ wallet: undefined });
   },
+  firstPath: "",
 }));

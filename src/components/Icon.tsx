@@ -1,3 +1,5 @@
+import { createElement } from "react";
+
 export type IconName =
   | "chat"
   | "chat-active"
@@ -12,6 +14,9 @@ export type IconName =
   | "join"
   | "download"
   | "exit"
+  | "back"
+  | "home"
+  | "more"
   | "qr-code"
   | "mine-active"
   | "arrow";
@@ -22,9 +27,14 @@ interface IconProps {
 }
 
 export const Icon = ({ name, size }: IconProps) => {
-  return (
-    <svg className={`iconpark ${name}`} fontSize={size ?? 24}>
-      <use href={`#${name}`}></use>
-    </svg>
-  );
+  // return (
+  //   <svg className={`iconpark ${name}`} fontSize={size ?? 24}>
+  //     <use href={`#${name}`}></use>
+  //   </svg>
+  // );
+  return createElement("iconpark-icon", {
+    name,
+    width: size ?? 24,
+    height: size ?? 24,
+  });
 };
