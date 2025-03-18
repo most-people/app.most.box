@@ -30,12 +30,6 @@ import Setting from "@/assets/icons/setting.svg";
 // https://www.flaticon.com/free-icon-font/cloud-download-alt_7434817?page=1&position=2&term=download&origin=search&related_id=7434817
 import Download from "@/assets/icons/download.svg";
 
-interface IconProps {
-  name: keyof typeof icons;
-  size?: number;
-  className?: string;
-}
-
 const icons = {
   chat: Chat,
   "chat-active": ChatActive,
@@ -59,6 +53,13 @@ const icons = {
   setting: Setting,
   download: Download,
 } as const;
+
+export type IconName = keyof typeof icons;
+interface IconProps {
+  name: IconName;
+  size?: number;
+  className?: string;
+}
 
 export const Icon = ({ name, size = 24, className }: IconProps) => {
   const IconComponent = icons[name];
