@@ -11,6 +11,7 @@ import {
 import { useUserStore } from "@/stores/userStore";
 import { AppHeader } from "@/components/AppHeader";
 import { IconEye, IconEyeOff } from "@tabler/icons-react";
+import Link from "next/link";
 
 export default function Web3Page() {
   const wallet = useUserStore((state) => state.wallet);
@@ -25,7 +26,7 @@ export default function Web3Page() {
           旨在重塑互联网生态，将用户的控制权和数据所有权还给个人，推动更加公平和透明的人类社会发展。
         </Text>
 
-        <Anchor href="/web3/tools">
+        <Anchor component={Link} href="/web3/tools">
           <Text>工具集</Text>
         </Anchor>
 
