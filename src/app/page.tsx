@@ -14,7 +14,7 @@ export default function PageHome() {
 
   useEffect(() => {
     initWallet();
-  }, [initWallet]);
+  }, []);
 
   return (
     <Tabs
