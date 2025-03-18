@@ -7,6 +7,7 @@ export default function PageSetting() {
   return (
     <Box id="page-setting">
       <AppHeader title="设置" />
+
       <Text>主题</Text>
       <ThemeSwitcher />
     </Box>

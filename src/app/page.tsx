@@ -10,11 +10,6 @@ import { useUserStore } from "@/stores/userStore";
 
 export default function PageHome() {
   const [activeTab, setActiveTab] = useState<string | null>("chat");
-  const initWallet = useUserStore((state) => state.initWallet);
-
-  useEffect(() => {
-    initWallet();
-  }, []);
 
   return (
     <Tabs

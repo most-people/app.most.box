@@ -35,7 +35,11 @@ body {
   top: 0;
   left: 0;
   right: 0;
+  z-index: 10;
   justify-content: space-between;
   padding: 0 20px;
+  background-color: var(--mantine-color-body);
   height: 64px;
+  border-bottom: 1px solid var(--tab-background);
+  flex-wrap: nowrap;
 }

@@ -26,7 +26,9 @@ export const AppHeader = ({ title }: AppHeaderProps) => {
       <ActionIcon variant="transparent" onClick={back} color="--text-color">
         <Icon name="back" size={24} />
       </ActionIcon>
-      <Text>{title}</Text>
+      <Text lineClamp={2} variant="gradient">
+        {title}
+      </Text>
       <ActionIcon variant="transparent" color="--text-color">
         <Icon name="more" size={24} />
       </ActionIcon>
