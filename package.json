@@ -19,6 +19,7 @@
     "@mantine/modals": "^7.17.2",
     "@mantine/notifications": "^7.17.2",
     "@mantine/nprogress": "^7.17.2",
+    "@svgr/webpack": "^8.1.0",
     "@tabler/icons-react": "^3.31.0",
     "dayjs": "^1.11.13",
     "dot.most.box": "^0.2.6",
