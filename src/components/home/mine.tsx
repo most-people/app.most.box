@@ -25,7 +25,7 @@ export default function HomeMine() {
   const address = wallet?.address || mp.ZeroAddress;
   return (
     <>
-      <div className="header">
+      <Box className="header">
         <Group>
           <Avatar
             size="md"
@@ -37,14 +37,14 @@ export default function HomeMine() {
             }
             alt="it's me"
           />
-          <div>
+          <Box>
             <Text size="lg" fw={500}>
               {wallet?.username || "Most.Box"}
             </Text>
             <Text size="sm" c="dimmed">
               地址: {mp.formatAddress(address)}
             </Text>
-          </div>
+          </Box>
 
           <ActionIcon
             ml={"auto"}
@@ -61,7 +61,7 @@ export default function HomeMine() {
             <Icon name="qr-code" size={18} />
           </ActionIcon>
         </Group>
-      </div>
+      </Box>
       <Stack className="menu-list" mb="xs">
         <MenuItem icon="web3" label="Web3" link="/web3" />
       </Stack>

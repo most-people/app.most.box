@@ -23,6 +23,7 @@
     "dayjs": "^1.11.13",
     "dot.most.box": "^0.2.6",
     "ethers": "^6.13.5",
+    "qrcode.react": "^4.2.0",
     "sass": "^1.85.1",
     "tweetnacl": "^1.0.3",
     "zustand": "^5.0.3"
