@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>漂亮的气泡跳转效果</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        width: 100%;
+        height: 100vh;
+        background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+        overflow: hidden;
+        font-family: "Arial", sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+      }
+
+      .bubbles-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        z-index: 0;
+      }
+
+      .bubble {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(5px);
+        box-shadow: 0 8px 32px rgba(31, 38, 135, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+        color: white;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        transform-origin: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease,
+          background 0.3s ease;
+        overflow: hidden;
+        text-decoration: none;
+        text-align: center;
+        padding: 8px;
+        word-break: break-word;
+      }
+
+      .bubble::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(
+          45deg,
+          transparent,
+          rgba(255, 255, 255, 0.3),
+          transparent
+        );
+        transform: rotate(45deg);
+        transition: transform 0.6s ease;
+      }
+
+      .bubble:hover {
+        transform: scale(1.15) rotate(5deg);
+        box-shadow: 0 15px 35px rgba(31, 38, 135, 0.4),
+          0 0 15px rgba(255, 255, 255, 0.5);
+        z-index: 10;
+        background: rgba(255, 255, 255, 0.3);
+        /* letter-spacing: 1px; */
+        color: #fff;
+        text-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+      }
+
+      .bubble:hover::before {
+        opacity: 0;
+      }
+
+      .bubble:active {
+        transform: scale(0.95);
+        transition: transform 0.1s;
+      }
+
+      .content {
+        display: none;
+        text-align: center;
+        position: relative;
+        z-index: 1;
+        color: white;
+        max-width: 600px;
+        padding: 2rem;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      h1 {
+        margin-bottom: 1rem;
+        font-size: 2.5rem;
+      }
+
+      p {
+        font-size: 1.2rem;
+        line-height: 1.6;
+        margin-bottom: 2rem;
+      }
+
+      .search-container {
+        margin-bottom: 1.5rem;
+        position: relative;
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto 2rem auto;
+      }
+
+      .search-input {
+        width: 100%;
+        padding: 12px 20px;
+        border-radius: 50px;
+        border: none;
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        font-size: 1rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(5px);
+        outline: none;
+        transition: all 0.3s ease;
+      }
+
+      .search-input:focus {
+        background: rgba(255, 255, 255, 0.25);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      }
+
+      .search-input::placeholder {
+        color: rgba(255, 255, 255, 0.8);
+      }
+
+      .no-results {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 15px 25px;
+        border-radius: 10px;
+        font-size: 1.2rem;
+        z-index: 100;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bubbles-container" id="bubblesContainer"></div>
+
+    <div class="content">
+      <h1>点击气泡跳转链接</h1>
+      <p>
+        这是一个漂亮的交互式气泡效果。每个气泡都可以点击，并跳转到不同的网址。悬停在气泡上查看动画效果，然后点击访问相应网站。
+      </p>
+
+      <div class="search-container">
+        <input
+          type="text"
+          class="search-input"
+          id="searchInput"
+          placeholder="搜索气泡..."
+        />
+      </div>
+    </div>
+
+    <div class="no-results" id="noResults">未找到匹配结果</div>
+
+    <script>
+      // 气泡数据配置
+
+      const bubbleData = [
+        { label: "春风十里", size: "135px", color: "rgba(128, 128, 128, 0.6)" },
+        { label: "小明", size: "120px", color: "rgba(66, 133, 244, 0.6)" },
+        { label: "张三丰", size: "130px", color: "rgba(219, 68, 55, 0.6)" },
+        { label: "John", size: "100px", color: "rgba(15, 157, 88, 0.6)" },
+        { label: "さくら", size: "115px", color: "rgba(244, 180, 0, 0.6)" },
+        { label: "Mohammed", size: "150px", color: "rgba(170, 71, 188, 0.6)" },
+        { label: "李小龙", size: "125px", color: "rgba(233, 30, 99, 0.6)" },
+        {
+          label: "Maria García",
+          size: "135px",
+          color: "rgba(0, 188, 212, 0.6)",
+        },
+        { label: "王大锤", size: "110px", color: "rgba(255, 152, 0, 0.6)" },
+        { label: "Sophie", size: "95px", color: "rgba(121, 85, 72, 0.6)" },
+        { label: "김민준", size: "120px", color: "rgba(2, 128, 144, 0.6)" },
+        { label: "Alexander", size: "150px", color: "rgba(51, 51, 51, 0.6)" },
+        { label: "中二病少年", size: "150px", color: "rgba(0, 150, 136, 0.6)" },
+        { label: "Giuseppe", size: "125px", color: "rgba(255, 99, 71, 0.6)" },
+        {
+          label: "网络冲浪者",
+          size: "140px",
+          color: "rgba(30, 144, 255, 0.6)",
+        },
+        { label: "Carlos", size: "105px", color: "rgba(255, 69, 0, 0.6)" },
+        {
+          label: "星空漫步者",
+          size: "160px",
+          color: "rgba(244, 128, 36, 0.6)",
+        },
+        { label: "Anastasia", size: "130px", color: "rgba(255, 0, 0, 0.6)" },
+        { label: "码农一号", size: "120px", color: "rgba(0, 163, 136, 0.6)" },
+        { label: "Viktor", size: "115px", color: "rgba(29, 161, 242, 0.6)" },
+        { label: "夜雨江湖", size: "140px", color: "rgba(0, 119, 181, 0.6)" },
+        { label: "Pierre", size: "100px", color: "rgba(225, 48, 108, 0.6)" },
+        { label: "花花世界", size: "125px", color: "rgba(66, 103, 178, 0.6)" },
+        { label: "山田太郎", size: "130px", color: "rgba(255, 69, 0, 0.6)" },
+        {
+          label: "Digital Nomad",
+          size: "155px",
+          color: "rgba(229, 9, 20, 0.6)",
+        },
+        { label: "Anders", size: "110px", color: "rgba(255, 153, 0, 0.6)" },
+        { label: "追梦人", size: "135px", color: "rgba(0, 191, 99, 0.6)" },
+        { label: "Hans", size: "95px", color: "rgba(234, 82, 60, 0.6)" },
+        { label: "快乐星球", size: "140px", color: "rgba(0, 170, 160, 0.6)" },
+        { label: "Ahmed", size: "120px", color: "rgba(30, 215, 96, 0.6)" },
+        { label: "孤独的美食家", size: "150px", color: "rgba(0, 0, 0, 0.6)" },
+        { label: "Elena", size: "125px", color: "rgba(230, 0, 35, 0.6)" },
+        {
+          label: "深海探险家",
+          size: "145px",
+          color: "rgba(114, 137, 218, 0.6)",
+        },
+        { label: "Lars", size: "105px", color: "rgba(0, 136, 204, 0.6)" },
+        { label: "云端漫步", size: "130px", color: "rgba(0, 120, 215, 0.6)" },
+        { label: "Dimitri", size: "140px", color: "rgba(66, 133, 244, 0.6)" },
+        { label: "春风十里", size: "135px", color: "rgba(128, 128, 128, 0.6)" },
+      ];
+      function calculateBubbleCount() {
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+
+        // 移动端(< 768px)时保持至少8个气泡
+        if (width <= 768) {
+          return 14;
+        }
+
+        // 桌面端根据屏幕大小计算
+        const baseCount = 14;
+        const increment = Math.floor((width - 768) / 300) * 4;
+        return Math.min(Math.max(baseCount + increment, 8), 36);
+      }
+
+      // 创建气泡
+      function createBubbles() {
+        const container = document.getElementById("bubblesContainer");
+        container.innerHTML = ""; // 清空容器
+
+        const bubbleCount = calculateBubbleCount();
+        // 选择数量对应的气泡数据
+        // const selectedBubbles = bubbleData.slice(0, bubbleCount);
+        // 随机选择气泡数据
+        const selectedBubbles = [...bubbleData]
+          .sort(() => Math.random() - 0.5)
+          .slice(0, bubbleCount);
+
+        // 根据屏幕大小调整气泡尺寸
+        const sizeFactor =
+          Math.min(window.innerWidth, window.innerHeight) / 1000;
+
+        selectedBubbles.forEach((data) => {
+          const bubble = document.createElement("a");
+          bubble.href = data.url;
+          bubble.target = "_blank";
+          bubble.className = "bubble";
+          bubble.textContent = data.label;
+
+          // 根据屏幕尺寸调整气泡大小
+          const originalSize = parseInt(data.size);
+          const adjustedSize = Math.max(
+            60,
+            Math.round(originalSize * sizeFactor)
+          );
+
+          // 随机位置
+          const randomX = Math.random() * (window.innerWidth - adjustedSize);
+          const randomY = Math.random() * (window.innerHeight - adjustedSize);
+
+          // 设置样式
+          bubble.style.width = `${adjustedSize}px`;
+          bubble.style.height = `${adjustedSize}px`;
+          bubble.style.left = `${randomX}px`;
+          bubble.style.top = `${randomY}px`;
+          bubble.style.background = data.color;
+
+          // 调整字体大小以适应气泡尺寸
+          bubble.style.fontSize = `${Math.max(12, adjustedSize / 5)}px`;
+
+          // 添加动画
+          const duration = 20 + Math.random() * 40;
+          const delay = Math.random() * 5;
+
+          bubble.style.animation = `float ${duration}s ease-in-out ${delay}s infinite`;
+
+          // 添加到容器
+          container.appendChild(bubble);
+
+          // 设置随机漂浮动画
+          animateBubble(bubble);
+        });
+      }
+
+      // 气泡漂浮动画
+      function animateBubble(bubble) {
+        const size = parseInt(bubble.style.width);
+        const maxX = window.innerWidth - size;
+        const maxY = window.innerHeight - size;
+
+        // 根据屏幕大小调整移动速度
+        const speedFactor =
+          Math.min(window.innerWidth, window.innerHeight) / 1500;
+
+        // 随机速度和方向，屏幕越小速度越慢
+        let speedX = (Math.random() - 0.5) * 0.5 * speedFactor;
+        let speedY = (Math.random() - 0.5) * 0.5 * speedFactor;
+
+        function updatePosition() {
+          let x = parseFloat(bubble.style.left);
+          let y = parseFloat(bubble.style.top);
+
+          // 更新位置
+          x += speedX;
+          y += speedY;
+
+          // 碰到边界反弹
+          if (x <= 0 || x >= maxX) {
+            speedX = -speedX;
+            x = Math.max(0, Math.min(x, maxX));
+          }
+
+          if (y <= 0 || y >= maxY) {
+            speedY = -speedY;
+            y = Math.max(0, Math.min(y, maxY));
+          }
+
+          // 应用新位置
+          bubble.style.left = `${x}px`;
+          bubble.style.top = `${y}px`;
+
+          // 继续动画
+          requestAnimationFrame(updatePosition);
+        }
+
+        // 开始动画
+        updatePosition();
+      }
+
+      // 搜索功能
+      function setupSearch() {
+        const searchInput = document.getElementById("searchInput");
+        const noResults = document.getElementById("noResults");
+
+        searchInput.addEventListener("input", function () {
+          const searchTerm = this.value.toLowerCase().trim();
+          const bubbles = document.querySelectorAll(".bubble");
+          let visibleCount = 0;
+
+          bubbles.forEach((bubble) => {
+            const bubbleText = bubble.textContent.toLowerCase();
+            if (searchTerm === "" || bubbleText.includes(searchTerm)) {
+              bubble.style.display = "flex";
+              // 搜索匹配时的特效
+              if (searchTerm !== "" && bubbleText.includes(searchTerm)) {
+                bubble.style.boxShadow = "0 0 20px rgba(255, 255, 255, 0.8)";
+                bubble.style.zIndex = "20";
+                setTimeout(() => {
+                  bubble.style.boxShadow = "";
+                  bubble.style.zIndex = "";
+                }, 1000);
+              }
+              visibleCount++;
+            } else {
+              bubble.style.display = "none";
+            }
+          });
+
+          // 显示"未找到"提示
+          if (visibleCount === 0 && searchTerm !== "") {
+            noResults.style.display = "block";
+            setTimeout(() => {
+              noResults.style.display = "none";
+            }, 2000);
+          } else {
+            noResults.style.display = "none";
+          }
+        });
+      }
+
+      // 窗口调整大小时重新创建气泡
+      window.addEventListener("resize", () => {
+        const container = document.getElementById("bubblesContainer");
+        container.innerHTML = "";
+        createBubbles();
+        setupSearch();
+      });
+
+      // 初始化
+      document.addEventListener("DOMContentLoaded", () => {
+        createBubbles();
+        setupSearch();
+      });
+    </script>
+  </body>
+</html>
