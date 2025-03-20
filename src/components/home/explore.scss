@@ -1,7 +1,7 @@
 #page-home-panel-explore {
   width: 100%;
   height: 100vh;
-  background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+  // background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
   overflow: hidden;
   display: flex;
   justify-content: center;
@@ -20,18 +20,17 @@
   }
 
   .bubble {
+    cursor: pointer;
     position: absolute;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(5px);
     box-shadow: 0 8px 32px rgba(31, 38, 135, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.18);
-    cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
     font-weight: bold;
-    color: white;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
     transform-origin: center;
     transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
@@ -40,7 +39,6 @@
     text-align: center;
     line-height: 1.1;
     user-select: none;
-    // word-break: normal;
   }
 
   .bubble::before {
@@ -66,8 +64,6 @@
       0 0 15px rgba(255, 255, 255, 0.5);
     z-index: 10;
     background: rgba(255, 255, 255, 0.3);
-    /* letter-spacing: 1px; */
-    color: #fff;
     text-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
   }
 

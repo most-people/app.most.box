@@ -4,7 +4,7 @@ import bubbleData from "@/assets/json/bubbleData.json";
 import "./explore.scss";
 
 // 计算气泡数量
-function calculateBubbleCount() {
+const calculateBubbleCount = () => {
   const width = window.innerWidth;
   // const height = window.innerHeight;
 
@@ -17,10 +17,10 @@ function calculateBubbleCount() {
   const baseCount = 14;
   const increment = Math.floor((width - 768) / 300) * 4;
   return Math.min(Math.max(baseCount + increment, 8), 36);
-}
+};
 
 // 创建气泡
-function createBubbles() {
+const createBubbles = () => {
   const container = document.getElementById("bubblesContainer");
   if (!container) return; // 添加空值检查
   container.innerHTML = ""; // 清空容器
@@ -75,10 +75,10 @@ function createBubbles() {
     // 设置随机漂浮动画
     animateBubble(bubble);
   });
-}
+};
 
 // 气泡漂浮动画
-function animateBubble(bubble: HTMLAnchorElement) {
+const animateBubble = (bubble: HTMLAnchorElement) => {
   const size = parseInt(bubble.style.width);
   const maxX = window.innerWidth - size;
   const maxY = window.innerHeight - size - 64;
@@ -119,15 +119,11 @@ function animateBubble(bubble: HTMLAnchorElement) {
 
   // 开始动画
   updatePosition();
-}
+};
 
 export default function HomeExplore() {
   useEffect(() => {
     createBubbles();
   }, []);
-  return (
-    <>
-      <div className="bubbles-container" id="bubblesContainer"></div>
-    </>
-  );
+  return <div className="bubbles-container" id="bubblesContainer"></div>;
 }
