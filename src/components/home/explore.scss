@@ -38,9 +38,9 @@
     overflow: hidden;
     text-decoration: none;
     text-align: center;
-    word-break: break-word;
     line-height: 1.1;
-    padding: 8px;
+    user-select: none;
+    // word-break: normal;
   }
 
   .bubble::before {

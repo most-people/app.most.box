@@ -1,0 +1,62 @@
+[
+  { "label": "孔子", "size": "150px", "color": "rgba(128, 128, 128, 0.6)" },
+  {
+    "label": "Shakespeare",
+    "size": "145px",
+    "color": "rgba(66, 133, 244, 0.6)"
+  },
+  { "label": "宮崎駿", "size": "140px", "color": "rgba(219, 68, 55, 0.6)" },
+  {
+    "label": "Αριστοτέλης",
+    "size": "135px",
+    "color": "rgba(15, 157, 88, 0.6)"
+  },
+  { "label": "김연아", "size": "130px", "color": "rgba(244, 180, 0, 0.6)" },
+  {
+    "label": "Достоевский",
+    "size": "150px",
+    "color": "rgba(170, 71, 188, 0.6)"
+  },
+  { "label": "李小龍", "size": "125px", "color": "rgba(233, 30, 99, 0.6)" },
+  {
+    "label": "Leonardo da Vinci",
+    "size": "135px",
+    "color": "rgba(0, 188, 212, 0.6)"
+  },
+  { "label": "محمد علي", "size": "140px", "color": "rgba(255, 152, 0, 0.6)" },
+  { "label": "גל גדות", "size": "130px", "color": "rgba(121, 85, 72, 0.6)" },
+  { "label": "손흥민", "size": "120px", "color": "rgba(2, 128, 144, 0.6)" },
+  { "label": "村上春樹", "size": "150px", "color": "rgba(51, 51, 51, 0.6)" },
+  { "label": "成龍", "size": "145px", "color": "rgba(0, 150, 136, 0.6)" },
+  { "label": "Βαν Γκογκ", "size": "125px", "color": "rgba(255, 99, 71, 0.6)" },
+  { "label": "الخوارزمي", "size": "140px", "color": "rgba(30, 144, 255, 0.6)" },
+  { "label": "Goethe", "size": "135px", "color": "rgba(255, 69, 0, 0.6)" },
+  { "label": "张艺谋", "size": "140px", "color": "rgba(244, 128, 36, 0.6)" },
+  { "label": "Пушкин", "size": "130px", "color": "rgba(255, 0, 0, 0.6)" },
+  { "label": "北野武", "size": "120px", "color": "rgba(0, 163, 136, 0.6)" },
+  {
+    "label": "Παπαδόπουλος",
+    "size": "135px",
+    "color": "rgba(29, 161, 242, 0.6)"
+  },
+  { "label": "이순신", "size": "125px", "color": "rgba(0, 119, 181, 0.6)" },
+  { "label": "Napoléon", "size": "130px", "color": "rgba(225, 48, 108, 0.6)" },
+  { "label": "莫言", "size": "125px", "color": "rgba(66, 103, 178, 0.6)" },
+  { "label": "黒澤明", "size": "130px", "color": "rgba(255, 69, 0, 0.6)" },
+  {
+    "label": "Νίκος Καζαντζάκης",
+    "size": "155px",
+    "color": "rgba(229, 9, 20, 0.6)"
+  },
+  { "label": "עמוס עוז", "size": "130px", "color": "rgba(255, 153, 0, 0.6)" },
+  { "label": "أم كلثوم", "size": "135px", "color": "rgba(0, 191, 99, 0.6)" },
+  { "label": "Björk", "size": "125px", "color": "rgba(234, 82, 60, 0.6)" },
+  { "label": "李安", "size": "120px", "color": "rgba(0, 170, 160, 0.6)" },
+  { "label": "Толстой", "size": "140px", "color": "rgba(30, 215, 96, 0.6)" },
+  { "label": "金庸", "size": "140px", "color": "rgba(0, 0, 0, 0.6)" },
+  { "label": "Σωκράτης", "size": "135px", "color": "rgba(230, 0, 35, 0.6)" },
+  { "label": "山中伸弥", "size": "145px", "color": "rgba(114, 137, 218, 0.6)" },
+  { "label": "강감찬", "size": "135px", "color": "rgba(0, 136, 204, 0.6)" },
+  { "label": "نجيب محفوظ", "size": "140px", "color": "rgba(0, 120, 215, 0.6)" },
+  { "label": "Čajkovskij", "size": "150px", "color": "rgba(66, 133, 244, 0.6)" }
+]
