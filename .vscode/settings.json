@@ -1,3 +1,4 @@
 {
-  "cSpell.words": ["mantine", "tabler", "turbopack"]
+  "cSpell.words": ["mantine", "tabler", "turbopack"],
+  "svg.preview.background": "transparent"
 }
