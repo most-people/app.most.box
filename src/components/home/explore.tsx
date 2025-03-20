@@ -1,7 +1,9 @@
+"use client";
 import { useEffect } from "react";
 import bubbleData from "@/assets/json/bubbleData.json";
 import "./explore.scss";
 
+// 计算气泡数量
 function calculateBubbleCount() {
   const width = window.innerWidth;
   // const height = window.innerHeight;
