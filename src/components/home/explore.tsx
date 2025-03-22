@@ -1,6 +1,5 @@
 "use client";
 import { useEffect } from "react";
-import { useMediaQuery } from "@mantine/hooks";
 import { bubbleColors, bubbleNames } from "@/constants/bubble";
 import "./explore.scss";
 
@@ -21,7 +20,7 @@ const calculateBubbleCount = () => {
   // const height = window.innerHeight;
 
   // 桌面端根据屏幕大小计算
-  const baseCount = 10;
+  const baseCount = 6;
   const increment = Math.floor((width - 768) / 300) * 4;
   return Math.min(Math.max(baseCount + increment, 8), 36);
 };
