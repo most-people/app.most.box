@@ -1,44 +1,8 @@
 "use client";
 import { useEffect } from "react";
-import bubbleData from "@/assets/json/bubbleData.json";
+import { useMediaQuery } from "@mantine/hooks";
+import { bubbleColors, bubbleNames } from "@/constants/bubble";
 import "./explore.scss";
-
-const bubbleColors = [
-  "rgba(128, 128, 128, 0.6)",
-  "rgba(66, 133, 244, 0.6)",
-  "rgba(219, 68, 55, 0.6)",
-  "rgba(15, 157, 88, 0.6)",
-  "rgba(244, 180, 0, 0.6)",
-  "rgba(170, 71, 188, 0.6)",
-  "rgba(233, 30, 99, 0.6)",
-  "rgba(0, 188, 212, 0.6)",
-  "rgba(255, 152, 0, 0.6)",
-  "rgba(121, 85, 72, 0.6)",
-  "rgba(2, 128, 144, 0.6)",
-  "rgba(51, 51, 51, 0.6)",
-  "rgba(0, 150, 136, 0.6)",
-  "rgba(255, 99, 71, 0.6)",
-  "rgba(30, 144, 255, 0.6)",
-  "rgba(255, 69, 0, 0.6)",
-  "rgba(244, 128, 36, 0.6)",
-  "rgba(255, 0, 0, 0.6)",
-  "rgba(0, 163, 136, 0.6)",
-  "rgba(29, 161, 242, 0.6)",
-  "rgba(0, 119, 181, 0.6)",
-  "rgba(225, 48, 108, 0.6)",
-  "rgba(66, 103, 178, 0.6)",
-  "rgba(229, 9, 20, 0.6)",
-  "rgba(255, 153, 0, 0.6)",
-  "rgba(0, 191, 99, 0.6)",
-  "rgba(234, 82, 60, 0.6)",
-  "rgba(0, 170, 160, 0.6)",
-  "rgba(30, 215, 96, 0.6)",
-  "rgba(0, 0, 0, 0.6)",
-  "rgba(230, 0, 35, 0.6)",
-  "rgba(114, 137, 218, 0.6)",
-  "rgba(0, 136, 204, 0.6)",
-  "rgba(0, 120, 215, 0.6)",
-];
 
 // 计算字符串哈希值
 const hashString = (str: string) => {
@@ -51,23 +15,13 @@ const hashString = (str: string) => {
   return Math.abs(hash);
 };
 
-// 根据文字获取固定颜色
-// const getColorFromText = (text: string) => {
-//   const hash = hashString(text);
-//   return bubbleColors[hash % bubbleColors.length];
-// };
-// 获取随机颜色
-const getRandomColor = () => {
-  return bubbleColors[Math.floor(Math.random() * bubbleColors.length)];
-};
-
 // 计算气泡数量
 const calculateBubbleCount = () => {
   const width = window.innerWidth;
   // const height = window.innerHeight;
 
   // 桌面端根据屏幕大小计算
-  const baseCount = 14;
+  const baseCount = 10;
   const increment = Math.floor((width - 768) / 300) * 4;
   return Math.min(Math.max(baseCount + increment, 8), 36);
 };
@@ -80,17 +34,17 @@ const createBubbles = () => {
 
   const bubbleCount = calculateBubbleCount();
   // 随机选择气泡数据
-  const selectedBubbles = [...bubbleData]
+  const selectedBubbles = [...bubbleNames]
     .sort(() => Math.random() - 0.5)
     .slice(0, bubbleCount);
 
   // 根据屏幕大小调整气泡尺寸
+  const sizeFactor =
+    window.innerWidth < 768
+      ? Math.max(window.innerWidth, window.innerHeight) / 1000
+      : Math.min(window.innerWidth, window.innerHeight) / 1000;
 
-  const sizeFactor = isLandscape()
-    ? Math.min(window.innerWidth, window.innerHeight) / 1000
-    : Math.max(window.innerWidth, window.innerHeight) / 1000;
-
-  selectedBubbles.forEach((data, index) => {
+  selectedBubbles.forEach((name, index) => {
     const bubble = document.createElement("a");
     // if (data.url) {
     //   // 只在有 url 时设置 href
@@ -98,10 +52,11 @@ const createBubbles = () => {
     //   bubble.target = "_blank";
     // }
     bubble.className = "bubble";
-    bubble.textContent = data.label;
+    bubble.textContent = name;
 
-    // 根据屏幕尺寸调整气泡大小
-    const originalSize = parseInt(data.size);
+    // 根据名称生成一个固定的随机大小
+    const nameHash = hashString(name);
+    const originalSize = 120 + (nameHash % 36);
     const adjustedSize = Math.round(originalSize * sizeFactor);
 
     // 随机位置
@@ -175,10 +130,6 @@ const animateBubble = (bubble: HTMLAnchorElement) => {
 
   // 开始动画
   updatePosition();
-};
-
-const isLandscape = () => {
-  return window.matchMedia("(orientation: landscape)").matches;
 };
 
 export default function HomeExplore() {
