@@ -1,6 +1,13 @@
 "use client";
 import { useState } from "react";
-import { Container, Text, Stack, Anchor, ActionIcon } from "@mantine/core";
+import {
+  Container,
+  Text,
+  Stack,
+  Anchor,
+  ActionIcon,
+  Group,
+} from "@mantine/core";
 import { useUserStore } from "@/stores/userStore";
 import { AppHeader } from "@/components/AppHeader";
 import { IconEye, IconEyeOff } from "@tabler/icons-react";
@@ -35,8 +42,10 @@ export default function Web3Page() {
         </Text>
         <Text>{wallet?.public_key}</Text>
 
-        <Text size="lg" fw={500}>
-          x25519 私钥
+        <Group align="center" gap="xs">
+          <Text size="lg" fw={500}>
+            x25519 私钥
+          </Text>
           <ActionIcon
             variant="subtle"
             size="sm"
@@ -45,7 +54,7 @@ export default function Web3Page() {
           >
             {showX25519 ? <IconEye size={16} /> : <IconEyeOff size={16} />}
           </ActionIcon>
-        </Text>
+        </Group>
         <Text>{showX25519 ? wallet?.private_key : "-"}</Text>
       </Stack>
     </Container>

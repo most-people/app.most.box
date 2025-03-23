@@ -45,8 +45,8 @@ importers:
         specifier: ^1.11.13
         version: 1.11.13
       dot.most.box:
-        specifier: ^0.2.6
-        version: 0.2.6
+        specifier: ^0.2.7
+        version: 0.2.7
       ethers:
         specifier: ^6.13.5
         version: 6.13.5
@@ -2022,8 +2022,8 @@ packages:
   dot-case@3.0.4:
     resolution: {integrity: sha512-Kv5nKlh6yRrdrGvxeJ2e5y2eRUpkUosIW4A2AS38zwSz27zu7ufDwQPi5Jhs3XAlGNetl3bmnGhQsMtkKJnj3w==}
 
-  dot.most.box@0.2.6:
-    resolution: {integrity: sha512-QRjOWAqrxG7lVCIsDdhOsk9Q1IGRpJkKM/kZNgQZepzqPlmeeIaUCrZ7lMM5e0IyZZ1MM1MWoWpW8Ea2d6RMXg==}
+  dot.most.box@0.2.7:
+    resolution: {integrity: sha512-HEJA+wTOlrBFZJqSPlGTFv1PpUZWfnI3/gnPCNXXMazt9UlCAr0mS4IsyXBchsGENegYNBGCg5ecI81MWfVv9A==}
 
   dunder-proto@1.0.1:
     resolution: {integrity: sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==}
@@ -5727,7 +5727,7 @@ snapshots:
       no-case: 3.0.4
       tslib: 2.8.1
 
-  dot.most.box@0.2.6:
+  dot.most.box@0.2.7:
     dependencies:
       ethers: 6.13.5
       tweetnacl: 1.0.3
