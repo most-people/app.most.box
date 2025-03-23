@@ -22,7 +22,7 @@
     "@svgr/webpack": "^8.1.0",
     "@tabler/icons-react": "^3.31.0",
     "dayjs": "^1.11.13",
-    "dot.most.box": "^0.2.7",
+    "dot.most.box": "^0.3.0",
     "ethers": "^6.13.5",
     "qrcode.react": "^4.2.0",
     "sass": "^1.86.0",

@@ -7,6 +7,12 @@ export interface Topic {
   timestamp: number;
 }
 
+export interface People {
+  username: string;
+  address: string;
+  public_key: string;
+}
+
 interface UserStore {
   wallet?: MostWallet;
   initWallet: () => void;
@@ -15,6 +21,7 @@ interface UserStore {
   exit: () => void;
   topics: Topic[];
   firstPath: string;
+  onlinePeople: People[];
 }
 
 interface State extends UserStore {
@@ -43,4 +50,5 @@ export const useUserStore = create<State>((set) => ({
     localStorage.removeItem("tokenSecret");
   },
   firstPath: "",
+  onlinePeople: [],
 }));

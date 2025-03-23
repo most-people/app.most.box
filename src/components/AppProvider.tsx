@@ -6,6 +6,8 @@ import { DotClient } from "dot.most.box";
 import { HDNodeWallet } from "ethers";
 import { useEffect } from "react";
 
+const OnlineContract = "0x022B0D0323F789f603220c7ADb694Cb5bb64Ba21"; // MOST
+
 export default function AppProvider() {
   const setItem = useUserStore((state) => state.setItem);
   const initWallet = useUserStore((state) => state.initWallet);
@@ -22,29 +24,47 @@ export default function AppProvider() {
   }, []);
 
   useEffect(() => {
-    if (wallet && dotClient) {
-      const signer = HDNodeWallet.fromPhrase(wallet.mnemonic);
-      const dot = dotClient.dot(wallet.address);
-      dot.setSigner(signer);
-      dot.setPubKey(wallet.public_key);
-      dot.setPrivKey(wallet.private_key);
-      setItem("dot", dot);
+    if (dotClient) {
+      const zeroDot = dotClient.dot(OnlineContract);
+      zeroDot.on("notify", (data) => {
+        console.log("🌊", data);
+      });
+      // 已登录
+      if (wallet) {
+        const signer = HDNodeWallet.fromPhrase(wallet.mnemonic);
+        const dot = dotClient.dot(wallet.address);
+        dot.setSigner(signer);
+        dot.setPubKey(wallet.public_key);
+        dot.setPrivKey(wallet.private_key);
+        setItem("dot", dot);
 
-      // 同步自己的公钥和用户名
-      dot.on("info", (info) => {
-        if (
-          info?.username === wallet.username &&
-          info?.public_key === wallet.public_key
-        ) {
-          dot.off("info");
-        } else {
-          dot.put("info", {
+        const heartbeat = () => {
+          dot.notify(OnlineContract, {
+            address: wallet.address,
             username: wallet.username,
             public_key: wallet.public_key,
           });
+        };
+        // 立即执行一次
+        heartbeat();
+        // 然后每分钟执行一次
+        setInterval(heartbeat, 60000);
+
+        // 同步自己的公钥和用户名
+        dot.on("info", (info) => {
+          const { username, public_key } = info || {};
+          if (
+            username !== wallet.username ||
+            public_key !== wallet.public_key
+          ) {
+            dot.put("info", {
+              username: wallet.username,
+              public_key: wallet.public_key,
+            });
+          }
           dot.off("info");
-        }
-      });
+        });
+      }
     }
   }, [wallet, dotClient]);
   return null;

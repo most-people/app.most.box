@@ -130,9 +130,6 @@ const verifyJWT = (token: string, secret: string) => {
   }
 };
 
-// 生成随机密钥
-const randomKeyBase64 = (bytes = 32) => encodeBase64(nacl.randomBytes(bytes));
-
 // 登录
 const login = (username: string, password: string): MostWallet | null => {
   try {
@@ -141,7 +138,9 @@ const login = (username: string, password: string): MostWallet | null => {
       password,
       "I know loss mnemonic will lose my wallet."
     );
-    const tokenSecret = randomKeyBase64();
+    const tokenSecret = encodeBase64(
+      crypto.getRandomValues(new Uint8Array(32))
+    );
     const token = createJWT(wallet, tokenSecret, 24 * 60 * 60); // 24小时有效期
 
     // 验证并存储
@@ -156,10 +155,6 @@ const login = (username: string, password: string): MostWallet | null => {
   return null;
 };
 
-const open = (url: string) => {
-  window.open(url);
-};
-
 const mp = {
   avatar,
   getHash,
@@ -171,7 +166,6 @@ const mp = {
   verifyJWT,
   login,
   ZeroAddress,
-  open,
 };
 
 export default mp;
