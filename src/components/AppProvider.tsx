@@ -15,6 +15,7 @@ export default function AppProvider() {
   // profile
   const wallet = useUserStore((state) => state.wallet);
   const dotClient = useUserStore((state) => state.dotClient);
+  const onlineUpdate = useUserStore((state) => state.onlineUpdate);
 
   useEffect(() => {
     initWallet();
@@ -23,12 +24,16 @@ export default function AppProvider() {
     setItem("dotClient", new DotClient(Nodes));
   }, []);
 
+  const initOnline = (dotClient: DotClient) => {
+    const onlineDot = dotClient.dot(OnlineContract);
+    onlineDot.on("notify", (data) => {
+      onlineUpdate(data);
+    });
+  };
+
   useEffect(() => {
     if (dotClient) {
-      const zeroDot = dotClient.dot(OnlineContract);
-      zeroDot.on("notify", (data) => {
-        console.log("🌊", data);
-      });
+      initOnline(dotClient);
       // 已登录
       if (wallet) {
         const signer = HDNodeWallet.fromPhrase(wallet.mnemonic);
@@ -39,12 +44,9 @@ export default function AppProvider() {
         setItem("dot", dot);
 
         const heartbeat = () => {
-          dot.notify(OnlineContract, {
-            address: wallet.address,
-            username: wallet.username,
-            public_key: wallet.public_key,
-          });
+          dot.notify(OnlineContract, wallet.username);
         };
+
         // 立即执行一次
         heartbeat();
         // 然后每分钟执行一次

@@ -1,7 +1,8 @@
 "use client";
-import { useEffect } from "react";
-import { bubbleColors, bubbleNames } from "@/constants/bubble";
 import "./explore.scss";
+import { useEffect } from "react";
+import { bubbleColors } from "@/constants/bubble";
+import { type People, useUserStore } from "@/stores/userStore";
 
 // 计算字符串哈希值
 const hashString = (str: string) => {
@@ -26,14 +27,17 @@ const calculateBubbleCount = () => {
 };
 
 // 创建气泡
-const createBubbles = () => {
+const createBubbles = (onlinePeople: Record<string, People>) => {
   const container = document.getElementById("bubblesContainer");
   if (!container) return; // 添加空值检查
   container.innerHTML = ""; // 清空容器
 
   const bubbleCount = calculateBubbleCount();
   // 随机选择气泡数据
-  const selectedBubbles = [...bubbleNames]
+  const selectedBubbles = Object.keys(onlinePeople)
+    .map((key) => {
+      return { address: key, username: onlinePeople[key].value };
+    })
     .sort(() => Math.random() - 0.5)
     .slice(0, bubbleCount);
 
@@ -43,7 +47,7 @@ const createBubbles = () => {
       ? Math.max(window.innerWidth, window.innerHeight) / 1000
       : Math.min(window.innerWidth, window.innerHeight) / 1000;
 
-  selectedBubbles.forEach((name, index) => {
+  selectedBubbles.forEach((online) => {
     const bubble = document.createElement("a");
     // if (data.url) {
     //   // 只在有 url 时设置 href
@@ -51,10 +55,10 @@ const createBubbles = () => {
     //   bubble.target = "_blank";
     // }
     bubble.className = "bubble";
-    bubble.textContent = name;
+    bubble.textContent = online.username;
 
     // 根据名称生成一个固定的随机大小
-    const nameHash = hashString(name);
+    const nameHash = hashString(online.username);
     const originalSize = 120 + (nameHash % 36);
     const adjustedSize = Math.round(originalSize * sizeFactor);
 
@@ -67,7 +71,11 @@ const createBubbles = () => {
     bubble.style.height = `${adjustedSize}px`;
     bubble.style.left = `${randomX}px`;
     bubble.style.top = `${randomY}px`;
-    bubble.style.background = bubbleColors[index % bubbleColors.length];
+    // 随机背景颜色
+    // bubble.style.background = bubbleColors[index % bubbleColors.length];
+    // 根据地址生成一个固定的随机颜色
+    const colorIndex = hashString(online.address) % bubbleColors.length;
+    bubble.style.background = bubbleColors[colorIndex];
 
     // 调整字体大小以适应气泡尺寸
     bubble.style.fontSize = `${Math.max(14, adjustedSize / 5)}px`;
@@ -132,20 +140,11 @@ const animateBubble = (bubble: HTMLAnchorElement) => {
 };
 
 export default function HomeExplore() {
+  const onlinePeople = useUserStore((state) => state.onlinePeople);
+
   useEffect(() => {
-    createBubbles();
+    createBubbles(onlinePeople);
+  }, [onlinePeople]);
 
-    // 监听屏幕方向变化
-    const mediaQuery = window.matchMedia("(orientation: landscape)");
-    const handleOrientationChange = () => {
-      createBubbles();
-    };
-
-    mediaQuery.addEventListener("change", handleOrientationChange);
-
-    return () => {
-      mediaQuery.removeEventListener("change", handleOrientationChange);
-    };
-  }, []);
   return <div className="bubbles-container" id="bubblesContainer"></div>;
 }

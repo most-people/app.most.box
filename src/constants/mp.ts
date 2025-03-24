@@ -1,4 +1,3 @@
-import nacl from "tweetnacl";
 import {
   toUtf8Bytes,
   encodeBase64,
