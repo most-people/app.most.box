@@ -20,7 +20,7 @@ export default function HomeMine() {
     setTimeout(() => {
       exit();
       resetTopic();
-    }, 0);
+    }, 1000);
   };
   return (
     <>

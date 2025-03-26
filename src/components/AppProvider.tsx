@@ -1,12 +1,10 @@
 "use client";
-import Nodes from "@/constants/nodes";
+import Nodes, { ContractOnline } from "@/constants/nodes";
 import { useAccountStore } from "@/stores/accountStore";
 import { useUserStore } from "@/stores/userStore";
 import { DotClient } from "dot.most.box";
 import { HDNodeWallet } from "ethers";
 import { useEffect } from "react";
-
-const OnlineContract = "0x022B0D0323F789f603220c7ADb694Cb5bb64Ba21"; // MOST
 
 export default function AppProvider() {
   const setItem = useUserStore((state) => state.setItem);
@@ -25,7 +23,7 @@ export default function AppProvider() {
   }, []);
 
   const initOnline = (dotClient: DotClient) => {
-    const onlineDot = dotClient.dot(OnlineContract);
+    const onlineDot = dotClient.dot(ContractOnline);
     onlineDot.on("notify", (data) => {
       onlineUpdate(data);
     });
@@ -44,7 +42,7 @@ export default function AppProvider() {
         setItem("dot", dot);
 
         const heartbeat = () => {
-          dot.notify(OnlineContract, wallet.username);
+          dot.notify(ContractOnline, wallet.username);
         };
 
         // 立即执行一次

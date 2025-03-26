@@ -1,4 +1,4 @@
-const nodes = [
+export const nodes = [
   // most
   "https://api.most.red",
   // pSea
@@ -8,5 +8,8 @@ const nodes = [
   // night sky
   "https://cellservice.world",
 ];
+
+// 在线合约 MOST
+export const ContractOnline = "0x022B0D0323F789f603220c7ADb694Cb5bb64Ba21";
 
 export default nodes;
