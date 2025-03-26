@@ -201,7 +201,7 @@ export default function HomeExplore() {
   return (
     <div className="bubbles-container" id="bubblesContainer">
       {size.some((e) => e) &&
-        bubbles.map((bubble, index) => (
+        bubbles.map((bubble) => (
           <Bubble
             key={bubble.address}
             username={bubble.username}
