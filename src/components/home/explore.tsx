@@ -1,8 +1,8 @@
 "use client";
 import "./explore.scss";
-import { useEffect } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { bubbleColors } from "@/constants/bubble";
-import { type People, useUserStore } from "@/stores/userStore";
+import { useUserStore } from "@/stores/userStore";
 
 // 计算字符串哈希值
 const hashString = (str: string) => {
@@ -18,133 +18,197 @@ const hashString = (str: string) => {
 // 计算气泡数量
 const calculateBubbleCount = () => {
   const width = window.innerWidth;
-  // const height = window.innerHeight;
-
-  // 桌面端根据屏幕大小计算
   const baseCount = 6;
   const increment = Math.floor((width - 768) / 300) * 4;
   return Math.min(Math.max(baseCount + increment, 8), 36);
 };
 
-// 创建气泡
-const createBubbles = (onlinePeople: Record<string, People>) => {
-  const container = document.getElementById("bubblesContainer");
-  if (!container) return; // 添加空值检查
-  container.innerHTML = ""; // 清空容器
+// 气泡组件
+interface Bubble {
+  address: string;
+  username: string;
+}
+interface BubbleProps extends Bubble {
+  innerWidth: number;
+  innerHeight: number;
+}
 
-  const bubbleCount = calculateBubbleCount();
-  // 随机选择气泡数据
-  const selectedBubbles = Object.keys(onlinePeople)
-    .map((key) => {
-      return { address: key, username: onlinePeople[key].value };
-    })
-    .sort(() => Math.random() - 0.5)
-    .slice(0, bubbleCount);
+const Bubble = ({
+  username,
+  address,
+  innerWidth,
+  innerHeight,
+}: BubbleProps) => {
+  const bubbleRef = useRef<HTMLAnchorElement>(null);
 
-  // 根据屏幕大小调整气泡尺寸
   const sizeFactor =
-    window.innerWidth < 768
-      ? Math.max(window.innerWidth, window.innerHeight) / 1000
-      : Math.min(window.innerWidth, window.innerHeight) / 1000;
+    innerWidth < 768
+      ? Math.max(innerWidth, innerHeight) / 1000
+      : Math.min(innerWidth, innerHeight) / 1000;
 
-  selectedBubbles.forEach((online) => {
-    const bubble = document.createElement("a");
-    // if (data.url) {
-    //   // 只在有 url 时设置 href
-    //   bubble.href = data.url;
-    //   bubble.target = "_blank";
-    // }
-    bubble.className = "bubble";
-    bubble.textContent = online.username;
+  // 根据名称生成一个固定的随机大小
+  const nameHash = hashString(username);
+  const originalSize = 120 + (nameHash % 36);
+  const adjustedSize = Math.round(originalSize * sizeFactor);
 
-    // 根据名称生成一个固定的随机大小
-    const nameHash = hashString(online.username);
-    const originalSize = 120 + (nameHash % 36);
-    const adjustedSize = Math.round(originalSize * sizeFactor);
+  // 随机位置
+  const initialX = Math.random() * (innerWidth - adjustedSize);
+  const initialY = Math.random() * (innerHeight - adjustedSize);
 
-    // 随机位置
-    const randomX = Math.random() * (window.innerWidth - adjustedSize);
-    const randomY = Math.random() * (window.innerHeight - adjustedSize);
+  // 根据地址生成一个固定的随机颜色
+  const colorIndex = hashString(address) % bubbleColors.length;
+  const backgroundColor = bubbleColors[colorIndex];
 
-    // 设置样式
-    bubble.style.width = `${adjustedSize}px`;
-    bubble.style.height = `${adjustedSize}px`;
-    bubble.style.left = `${randomX}px`;
-    bubble.style.top = `${randomY}px`;
-    // 随机背景颜色
-    // bubble.style.background = bubbleColors[index % bubbleColors.length];
-    // 根据地址生成一个固定的随机颜色
-    const colorIndex = hashString(online.address) % bubbleColors.length;
-    bubble.style.background = bubbleColors[colorIndex];
+  // 动画参数
+  const duration = 20 + Math.random() * 40;
+  const delay = Math.random() * 5;
 
-    // 调整字体大小以适应气泡尺寸
-    bubble.style.fontSize = `${Math.max(14, adjustedSize / 5)}px`;
-    bubble.style.padding = `${(adjustedSize / 14).toFixed(0)}px`;
+  // 气泡样式
+  const bubbleStyle = {
+    width: `${adjustedSize}px`,
+    height: `${adjustedSize}px`,
+    left: `${initialX}px`,
+    top: `${initialY}px`,
+    background: backgroundColor,
+    fontSize: `${Math.max(14, adjustedSize / 5)}px`,
+    padding: `${(adjustedSize / 14).toFixed(0)}px`,
+    animation: `float ${duration}s ease-in-out ${delay}s infinite`,
+  };
 
-    // 添加动画
-    const duration = 20 + Math.random() * 40;
-    const delay = Math.random() * 5;
+  useEffect(() => {
+    const bubble = bubbleRef.current;
+    if (!bubble) return;
 
-    bubble.style.animation = `float ${duration}s ease-in-out ${delay}s infinite`;
+    const size = adjustedSize;
+    const maxX = window.innerWidth - size;
+    const maxY = window.innerHeight - size - 64;
 
-    // 添加到容器
-    container.appendChild(bubble);
+    // 根据屏幕大小调整移动速度
+    const speedFactor = Math.min(window.innerWidth, window.innerHeight) / 1500;
 
-    // 设置随机漂浮动画
-    animateBubble(bubble);
-  });
-};
+    // 随机速度和方向，屏幕越小速度越慢
+    let speedX = (Math.random() - 0.5) * 0.5 * speedFactor;
+    let speedY = (Math.random() - 0.5) * 0.5 * speedFactor;
 
-// 气泡漂浮动画
-const animateBubble = (bubble: HTMLAnchorElement) => {
-  const size = parseInt(bubble.style.width);
-  const maxX = window.innerWidth - size;
-  const maxY = window.innerHeight - size - 64;
+    let x = initialX;
+    let y = initialY;
 
-  // 根据屏幕大小调整移动速度
-  const speedFactor = Math.min(window.innerWidth, window.innerHeight) / 1500;
+    let animationFrameId: number;
 
-  // 随机速度和方向，屏幕越小速度越慢
-  let speedX = (Math.random() - 0.5) * 0.5 * speedFactor;
-  let speedY = (Math.random() - 0.5) * 0.5 * speedFactor;
+    function updatePosition() {
+      // 更新位置
+      x += speedX;
+      y += speedY;
 
-  function updatePosition() {
-    let x = parseFloat(bubble.style.left);
-    let y = parseFloat(bubble.style.top);
+      // 碰到边界反弹
+      if (x <= 0 || x >= maxX) {
+        speedX = -speedX;
+        x = Math.max(0, Math.min(x, maxX));
+      }
 
-    // 更新位置
-    x += speedX;
-    y += speedY;
+      if (y <= 0 || y >= maxY) {
+        speedY = -speedY;
+        y = Math.max(0, Math.min(y, maxY));
+      }
 
-    // 碰到边界反弹
-    if (x <= 0 || x >= maxX) {
-      speedX = -speedX;
-      x = Math.max(0, Math.min(x, maxX));
+      // 应用新位置
+      if (bubble) {
+        bubble.style.left = `${x}px`;
+        bubble.style.top = `${y}px`;
+      }
+
+      // 继续动画
+      animationFrameId = requestAnimationFrame(updatePosition);
     }
 
-    if (y <= 0 || y >= maxY) {
-      speedY = -speedY;
-      y = Math.max(0, Math.min(y, maxY));
-    }
+    // 开始动画
+    updatePosition();
 
-    // 应用新位置
-    bubble.style.left = `${x}px`;
-    bubble.style.top = `${y}px`;
+    // 清理函数
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, [adjustedSize, initialX, initialY]);
 
-    // 继续动画
-    requestAnimationFrame(updatePosition);
-  }
-
-  // 开始动画
-  updatePosition();
+  return (
+    <a ref={bubbleRef} className="bubble" style={bubbleStyle}>
+      {username}
+    </a>
+  );
 };
 
 export default function HomeExplore() {
   const onlinePeople = useUserStore((state) => state.onlinePeople);
+  const [bubbles, setBubbles] = useState<Bubble[]>([]);
 
+  const [innerWidth, setInnerWidth] = useState(0);
+  const [innerHeight, setInnerHeight] = useState(0);
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // 处理窗口大小变化（添加防抖）
+  const handleResize = useCallback(() => {
+    // 清除之前的定时器
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
+    // 设置新的定时器，2秒后执行
+    debounceTimerRef.current = setTimeout(() => {
+      setInnerWidth(window.innerWidth);
+      setInnerHeight(window.innerHeight);
+    }, 1000);
+  }, []);
+
+  // 初始化气泡数据
   useEffect(() => {
-    createBubbles(onlinePeople);
-  }, [onlinePeople]);
+    if (Object.keys(onlinePeople).length === 0) return;
 
-  return <div className="bubbles-container" id="bubblesContainer"></div>;
+    const bubbleCount = calculateBubbleCount();
+    const selectedBubbles = Object.keys(onlinePeople)
+      .map((key) => {
+        return { address: key, username: onlinePeople[key].value };
+      })
+      .sort(() => Math.random() - 0.5)
+      .slice(0, bubbleCount);
+
+    // mock
+    // const selectedBubbles = bubbleNames
+    //   .map((key) => {
+    //     return { address: key, username: key };
+    //   })
+    //   .sort(() => Math.random() - 0.5)
+    //   .slice(0, bubbleCount);
+
+    setBubbles(selectedBubbles);
+    handleResize();
+  }, [onlinePeople, handleResize]);
+
+  // 监听窗口大小变化
+  useEffect(() => {
+    window.addEventListener("resize", handleResize);
+    // 监听屏幕方向变化
+    window.addEventListener("orientationchange", handleResize);
+    return () => {
+      // 清理事件监听和定时器
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("orientationchange", handleResize);
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, [handleResize]);
+
+  return (
+    <div className="bubbles-container" id="bubblesContainer">
+      {bubbles.map((bubble, index) => (
+        <Bubble
+          key={`${bubble.address}-${index}`}
+          username={bubble.username}
+          address={bubble.address}
+          innerWidth={innerWidth}
+          innerHeight={innerHeight}
+        />
+      ))}
+    </div>
+  );
 }
