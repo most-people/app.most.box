@@ -3,6 +3,7 @@ import "./explore.scss";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { bubbleColors } from "@/constants/bubble";
 import { useUserStore } from "@/stores/userStore";
+import Link from "next/link";
 
 // 计算字符串哈希值
 const hashString = (str: string) => {
@@ -29,22 +30,13 @@ interface Bubble {
   username: string;
 }
 interface BubbleProps extends Bubble {
-  innerWidth: number;
-  innerHeight: number;
+  size: [number, number];
 }
 
-const Bubble = ({
-  username,
-  address,
-  innerWidth,
-  innerHeight,
-}: BubbleProps) => {
+const Bubble = ({ username, address, size }: BubbleProps) => {
   const bubbleRef = useRef<HTMLAnchorElement>(null);
-
-  const sizeFactor =
-    innerWidth < 768
-      ? Math.max(innerWidth, innerHeight) / 1000
-      : Math.min(innerWidth, innerHeight) / 1000;
+  const [w, h] = size;
+  const sizeFactor = w < 768 ? Math.max(w, h) / 1000 : Math.min(w, h) / 1000;
 
   // 根据名称生成一个固定的随机大小
   const nameHash = hashString(username);
@@ -52,8 +44,8 @@ const Bubble = ({
   const adjustedSize = Math.round(originalSize * sizeFactor);
 
   // 随机位置
-  const initialX = Math.random() * (innerWidth - adjustedSize);
-  const initialY = Math.random() * (innerHeight - adjustedSize);
+  const initialX = Math.random() * (w - adjustedSize);
+  const initialY = Math.random() * (h - adjustedSize);
 
   // 根据地址生成一个固定的随机颜色
   const colorIndex = hashString(address) % bubbleColors.length;
@@ -80,11 +72,11 @@ const Bubble = ({
     if (!bubble) return;
 
     const size = adjustedSize;
-    const maxX = window.innerWidth - size;
-    const maxY = window.innerHeight - size - 64;
+    const maxX = w - size;
+    const maxY = h - size - 64;
 
     // 根据屏幕大小调整移动速度
-    const speedFactor = Math.min(window.innerWidth, window.innerHeight) / 1500;
+    const speedFactor = Math.min(w, h) / 1500;
 
     // 随机速度和方向，屏幕越小速度越慢
     let speedX = (Math.random() - 0.5) * 0.5 * speedFactor;
@@ -131,18 +123,25 @@ const Bubble = ({
   }, [adjustedSize, initialX, initialY]);
 
   return (
-    <a ref={bubbleRef} className="bubble" style={bubbleStyle}>
+    <Link
+      href={{
+        pathname: "/chat",
+        hash: address,
+      }}
+      ref={bubbleRef}
+      className="bubble"
+      style={bubbleStyle}
+    >
       {username}
-    </a>
+    </Link>
   );
 };
 
 export default function HomeExplore() {
   const onlinePeople = useUserStore((state) => state.onlinePeople);
   const [bubbles, setBubbles] = useState<Bubble[]>([]);
+  const [size, setSize] = useState<[number, number]>([0, 0]);
 
-  const [innerWidth, setInnerWidth] = useState(0);
-  const [innerHeight, setInnerHeight] = useState(0);
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // 处理窗口大小变化（添加防抖）
@@ -152,10 +151,9 @@ export default function HomeExplore() {
       clearTimeout(debounceTimerRef.current);
     }
 
-    // 设置新的定时器，2秒后执行
+    // 设置新的定时器，1秒后执行
     debounceTimerRef.current = setTimeout(() => {
-      setInnerWidth(window.innerWidth);
-      setInnerHeight(window.innerHeight);
+      setSize([window.innerWidth, window.innerHeight]);
     }, 1000);
   }, []);
 
@@ -171,7 +169,7 @@ export default function HomeExplore() {
       .sort(() => Math.random() - 0.5)
       .slice(0, bubbleCount);
 
-    // mock
+    // 测试数据
     // const selectedBubbles = bubbleNames
     //   .map((key) => {
     //     return { address: key, username: key };
@@ -180,7 +178,8 @@ export default function HomeExplore() {
     //   .slice(0, bubbleCount);
 
     setBubbles(selectedBubbles);
-    handleResize();
+    // 渲染
+    setSize([window.innerWidth, window.innerHeight]);
   }, [onlinePeople, handleResize]);
 
   // 监听窗口大小变化
@@ -188,6 +187,7 @@ export default function HomeExplore() {
     window.addEventListener("resize", handleResize);
     // 监听屏幕方向变化
     window.addEventListener("orientationchange", handleResize);
+
     return () => {
       // 清理事件监听和定时器
       window.removeEventListener("resize", handleResize);
@@ -200,15 +200,15 @@ export default function HomeExplore() {
 
   return (
     <div className="bubbles-container" id="bubblesContainer">
-      {bubbles.map((bubble, index) => (
-        <Bubble
-          key={`${bubble.address}-${index}`}
-          username={bubble.username}
-          address={bubble.address}
-          innerWidth={innerWidth}
-          innerHeight={innerHeight}
-        />
-      ))}
+      {size.some((e) => e) &&
+        bubbles.map((bubble, index) => (
+          <Bubble
+            key={bubble.address}
+            username={bubble.username}
+            address={bubble.address}
+            size={size}
+          />
+        ))}
     </div>
   );
 }
