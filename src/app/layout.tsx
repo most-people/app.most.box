@@ -9,7 +9,7 @@ import { ModalsProvider } from "@mantine/modals";
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
 
-import "@/app/global.css";
+import "@/app/global.scss";
 
 const inter = Inter({
   subsets: ["latin"],

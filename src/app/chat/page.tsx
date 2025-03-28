@@ -1,10 +1,12 @@
 "use client";
 import { AppHeader } from "@/components/AppHeader";
-import mp from "@/constants/mp";
 import { useUserStore } from "@/stores/userStore";
-import { Box } from "@mantine/core";
+import { ActionIcon, Avatar, Box, Group, Textarea } from "@mantine/core";
 import { useHash } from "@mantine/hooks";
 import { useEffect, useState } from "react";
+import "./chat.scss";
+import { IconMicrophone, IconMoodSmile, IconPlus } from "@tabler/icons-react";
+import mp from "@/constants/mp";
 
 export default function ChatPage() {
   const [hash] = useHash();
@@ -26,11 +28,34 @@ export default function ChatPage() {
   }, [dotClient, address]);
 
   return (
-    <Box>
-      <AppHeader title={`${mp.formatAddress(address)}`} />
-      <h1>
-        与【{username}】{mp.formatAddress(address)} 的聊天
-      </h1>
+    <Box id="page-chat">
+      <AppHeader
+        title={username}
+        right={
+          <Avatar
+            src={address ? mp.avatar(address) : "/icons/pwa-512x512.png"}
+          />
+        }
+      />
+      <Group gap="xs" className="input-box">
+        <ActionIcon variant="subtle" color="gray" size="lg">
+          <IconMoodSmile size={24} />
+        </ActionIcon>
+        <Textarea
+          placeholder="输入消息..."
+          size="md"
+          radius="md"
+          autosize
+          maxRows={4}
+          style={{ flex: 1 }}
+        />
+        <ActionIcon variant="subtle" color="gray" size="lg" disabled>
+          <IconMicrophone size={24} />
+        </ActionIcon>
+        <ActionIcon variant="subtle" color="gray" size="lg">
+          <IconPlus size={24} />
+        </ActionIcon>
+      </Group>
     </Box>
   );
 }

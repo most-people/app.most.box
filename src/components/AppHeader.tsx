@@ -6,8 +6,9 @@ import { useRouter, usePathname } from "next/navigation";
 
 interface AppHeaderProps {
   title: string | string[];
+  right?: React.ReactNode;
 }
-export const AppHeader = ({ title }: AppHeaderProps) => {
+export const AppHeader = ({ title, right }: AppHeaderProps) => {
   const firstPath = useUserStore((state) => state.firstPath);
   const setItem = useUserStore((state) => state.setItem);
   const router = useRouter();
@@ -29,9 +30,13 @@ export const AppHeader = ({ title }: AppHeaderProps) => {
       <Text lineClamp={2} variant="gradient">
         {title}
       </Text>
-      <ActionIcon variant="transparent" color="--text-color">
-        <Icon name="more" size={24} />
-      </ActionIcon>
+      {right ? (
+        right
+      ) : (
+        <ActionIcon variant="transparent" color="--text-color">
+          <Icon name="more" size={24} />
+        </ActionIcon>
+      )}
     </Group>
   );
 };

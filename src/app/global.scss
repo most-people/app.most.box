@@ -42,11 +42,6 @@ body {
   word-break: break-word;
 }
 
-.iconpark {
-  width: 1em;
-  height: 1em;
-}
-
 .app-header {
   position: fixed;
   top: 0;
@@ -59,4 +54,23 @@ body {
   height: 64px;
   border-bottom: 1px solid var(--tab-background);
   flex-wrap: nowrap;
+}
+
+.mantine-Textarea-input {
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #ddd;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #ccc;
+  }
 }
