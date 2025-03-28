@@ -13,6 +13,9 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import "dayjs/locale/zh-cn";
 
+import isoWeek from "dayjs/plugin/isoWeek";
+dayjs.extend(isoWeek);
+
 dayjs.extend(relativeTime);
 dayjs.locale("zh-cn");
 
@@ -26,7 +29,7 @@ const avatar = (address = "Most") => {
 };
 
 // 时间格式化
-const formatTime = (time: string) => {
+const formatTime = (time: number | string) => {
   if (!time) return "";
   const date = dayjs(Number(time));
   const hour = date.hour();
@@ -50,6 +53,29 @@ const formatTime = (time: string) => {
     timeOfDay = "深夜";
   }
   return date.format(`YYYY年M月D日 ${timeOfDay}h点m分`);
+};
+
+// 日期格式化
+const formatDate = (date: string | number) => {
+  const input = dayjs(Number(date));
+  const today = dayjs();
+
+  if (input.isSame(today, "day")) {
+    // 当天显示时间
+    return input.format("HH:mm");
+  } else if (input.isSame(today.subtract(1, "day"), "day")) {
+    return "昨天";
+  } else if (input.isoWeek() === today.isoWeek()) {
+    // 如果是本周，显示周几
+    const weekDays = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
+    return weekDays[input.day()];
+  } else if (input.year() === today.year()) {
+    // 同年显示日期和月份
+    return input.format("M月D日");
+  } else {
+    // 跨年显示完整日期
+    return input.format("YY年M月D日");
+  }
 };
 
 const getHash = (message: string) => {
@@ -158,6 +184,7 @@ const mp = {
   avatar,
   getHash,
   formatTime,
+  formatDate,
   formatAddress,
   enBase64,
   deBase64,
