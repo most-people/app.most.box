@@ -64,11 +64,11 @@ const formatDate = (date: string | number) => {
     // 当天显示时间
     return input.format("HH:mm");
   } else if (input.isSame(today.subtract(1, "day"), "day")) {
-    return "昨天";
+    return `昨天 ${input.format("HH:mm")}`;
   } else if (input.isoWeek() === today.isoWeek()) {
     // 如果是本周，显示周几
     const weekDays = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
-    return weekDays[input.day()];
+    return `${weekDays[input.day()]} ${input.format("HH:mm")}`;
   } else if (input.year() === today.year()) {
     // 同年显示日期和月份
     return input.format("M月D日");
