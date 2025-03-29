@@ -49,7 +49,7 @@ export default function ChatPage() {
           maxRows={4}
           style={{ flex: 1 }}
         />
-        <ActionIcon variant="subtle" color="gray" size="lg" disabled>
+        <ActionIcon variant="subtle" color="gray" size="lg">
           <IconMicrophone size={24} />
         </ActionIcon>
         <ActionIcon variant="subtle" color="gray" size="lg">

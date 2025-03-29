@@ -5,13 +5,14 @@ import {
   Text,
   Group,
   Avatar,
-  Stack,
   Tabs,
   rem,
   Flex,
   Badge,
+  ActionIcon,
 } from "@mantine/core";
 import { IconSearch, IconPlus } from "@tabler/icons-react";
+import { notifications } from "@mantine/notifications";
 
 interface ChatItem {
   id: string;
@@ -19,6 +20,15 @@ interface ChatItem {
   avatar: string;
   lastMessage: string;
   time: string;
+  unread?: number;
+}
+
+interface TopicItem {
+  id: string;
+  title: string;
+  avatar: string;
+  participants: number;
+  lastActivity: string;
   unread?: number;
 }
 
@@ -62,6 +72,67 @@ export default function HomeChat() {
       avatar: "https://i.pravatar.cc/150?img=5",
       lastMessage: "Let me know",
       time: "03 Jul",
+    },
+  ];
+
+  const topicList: TopicItem[] = [
+    {
+      id: "1",
+      title: "前端开发交流",
+      avatar: "https://i.pravatar.cc/150?img=20",
+      participants: 328,
+      lastActivity: "刚刚",
+      unread: 10,
+    },
+    {
+      id: "2",
+      title: "React vs Vue 讨论",
+      avatar: "https://i.pravatar.cc/150?img=21",
+      participants: 156,
+      lastActivity: "10分钟前",
+      unread: 99,
+    },
+    {
+      id: "3",
+      title: "TypeScript 学习小组",
+      avatar: "https://i.pravatar.cc/150?img=22",
+      participants: 89,
+      lastActivity: "30分钟前",
+    },
+    {
+      id: "4",
+      title: "设计模式分享",
+      avatar: "https://i.pravatar.cc/150?img=23",
+      participants: 42,
+      lastActivity: "1小时前",
+    },
+    {
+      id: "5",
+      title: "产品经理吐槽大会",
+      avatar: "https://i.pravatar.cc/150?img=24",
+      participants: 213,
+      lastActivity: "2小时前",
+    },
+    {
+      id: "6",
+      title: "移动端适配问题",
+      avatar: "https://i.pravatar.cc/150?img=25",
+      participants: 76,
+      lastActivity: "昨天",
+    },
+    {
+      id: "7",
+      title: "后端架构讨论",
+      avatar: "https://i.pravatar.cc/150?img=26",
+      participants: 118,
+      lastActivity: "昨天",
+    },
+    {
+      id: "8",
+      title: "UI/UX 设计趋势",
+      avatar: "https://i.pravatar.cc/150?img=27",
+      participants: 95,
+      lastActivity: "前天",
     },
   ];
 
@@ -120,8 +191,30 @@ export default function HomeChat() {
         </Tabs.List>
 
         <Group className="action">
-          <IconSearch size={24} stroke={1.5} />
-          <IconPlus size={24} stroke={1.5} />
+          <ActionIcon
+            variant="subtle"
+            color="gray"
+            onClick={() =>
+              notifications.show({
+                message: "开发中",
+                color: "gray",
+              })
+            }
+          >
+            <IconSearch size={24} stroke={1.5} />
+          </ActionIcon>
+          <ActionIcon
+            variant="subtle"
+            color="gray"
+            onClick={() =>
+              notifications.show({
+                message: "开发中",
+                color: "gray",
+              })
+            }
+          >
+            <IconPlus size={24} stroke={1.5} />
+          </ActionIcon>
         </Group>
       </Box>
 
@@ -160,7 +253,7 @@ export default function HomeChat() {
 
       <Tabs.Panel value="groups">
         <Box className="chats">
-          {chatList.map((chat, index) => (
+          {topicList.map((topic, index) => (
             <Group
               key={index}
               wrap="nowrap"
@@ -168,23 +261,25 @@ export default function HomeChat() {
               className="chat"
             >
               <Group wrap="nowrap">
-                <Avatar src={chat.avatar} size="lg" radius="md" />
+                <Avatar src={topic.avatar} size="lg" radius="md" />
                 <Box>
-                  <Text fw={500}>{chat.name}</Text>
+                  <Group gap={8} wrap="nowrap">
+                    <Text fw={500}>{topic.title}</Text>
+                    {topic.unread && (
+                      <Badge color="red" size="xs" variant="filled">
+                        {topic.unread}
+                      </Badge>
+                    )}
+                  </Group>
                   <Text size="sm" c="dimmed">
-                    {chat.lastMessage}
+                    {topic.participants} 人参与
                   </Text>
                 </Box>
               </Group>
               <Flex direction="column" align="flex-end" gap={5}>
                 <Text size="xs" c="dimmed">
-                  {chat.time}
+                  {topic.lastActivity}
                 </Text>
-                {chat.unread && (
-                  <Badge color="red" size="md" variant="filled" radius="xl">
-                    {chat.unread}
-                  </Badge>
-                )}
               </Flex>
             </Group>
           ))}

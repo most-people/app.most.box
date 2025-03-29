@@ -1,6 +1,6 @@
 #page-home-panel-chat {
   width: 100%;
-  padding: 54px 0 calc(64px + var(--mantine-spacing-md));
+  padding: 64px 0;
 
   .chat-header {
     height: 64px;
@@ -39,7 +39,7 @@
   }
   .chats {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(480px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(480px, 100%), 1fr));
     gap: 10px;
     justify-content: start;
     .chat {
