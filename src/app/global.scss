@@ -4,11 +4,17 @@
 :root[data-mantine-color-scheme="light"] {
   --tab-background: #0000000a;
   --tab-color: #8e8e8f;
+
+  --message-background: rgba(0, 0, 0, 0.04);
+  --message-color: #222325;
 }
 :root[data-mantine-color-scheme="dark"] {
   --mantine-color-body: #151718;
   --tab-background: #ffffff0a;
   --tab-color: #787c80;
+
+  --message-background: #f5faf70a;
+  --message-color: #fff;
 }
 
 html {
