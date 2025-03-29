@@ -4,7 +4,7 @@
   align-items: center;
   width: 100%;
 
-  .mantine-Tabs-list {
+  > .mantine-Tabs-list {
     position: fixed;
     width: 100%;
     bottom: 0;
@@ -14,6 +14,7 @@
     border-top: 1px solid var(--tab-background);
     height: 64px;
     gap: 0;
+    background-color: var(--mantine-color-body);
 
     .mantine-Tabs-tab {
       align-self: flex-start;
