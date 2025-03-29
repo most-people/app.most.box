@@ -1,6 +1,6 @@
 #page-home-panel-chat {
   width: 100%;
-  padding: 54px 20px calc(64px + var(--mantine-spacing-md));
+  padding: 54px 0 calc(64px + var(--mantine-spacing-md));
 
   .chat-header {
     height: 64px;
@@ -36,5 +36,18 @@
 
   .mantine-Avatar-root {
     border-radius: 4px;
+  }
+  .chats {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(480px, 1fr));
+    gap: 10px;
+    justify-content: start;
+    .chat {
+      padding: 0 20px;
+      cursor: pointer;
+      &:hover {
+        background-color: var(--tab-background);
+      }
+    }
   }
 }
