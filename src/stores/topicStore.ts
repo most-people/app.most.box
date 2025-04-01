@@ -1,18 +1,18 @@
-import { type DotMethods } from "dot.most.box";
 import { create } from "zustand";
 import { useUserStore } from "@/stores/userStore";
 import { startTransition } from "react";
-import router from "next/router";
+import { DotMethods } from "dot.most.box";
 
 export interface Topic {
   name: string;
+  password: string;
   timestamp: number;
 }
 
 interface TopicStore {
   inited: boolean;
   topics: Topic[];
-  join: (name: string) => void;
+  join: (name: string, password: string) => void;
   quit: (name: string) => void;
   init: (dot: DotMethods) => void;
   reset: () => void;
@@ -46,18 +46,15 @@ export const useTopicStore = create<State>((set, get) => ({
         [key]: [value, ...prev],
       };
     }),
-  join(name: string) {
-    if (!name) return;
-
-    router.push({ pathname: "/topic/[topic]", query: { topic: name } });
+  join(name: string, password: string) {
     // 检查登录
     const dot = useUserStore.getState().dot;
     if (dot) {
       // 检查是否已经存在，避免重复添加
       const topics = get().topics;
-      if (!topics.some((e) => e.name === name)) {
+      if (!topics.some((e) => e.name === name && e.password === password)) {
         const timestamp = Date.now();
-        const data: Topic = { name, timestamp };
+        const data: Topic = { name, password, timestamp };
         const list = get().topics;
         dot.put("topics", [data, ...list], true);
       }
@@ -85,10 +82,10 @@ export const useTopicStore = create<State>((set, get) => ({
         if (timestamp > t) {
           t = timestamp;
           // 检查数据
-          if (
+          const check =
             Array.isArray(data) &&
-            data.every((item) => typeof item?.timestamp === "number")
-          ) {
+            data.every((item) => typeof item?.timestamp === "number");
+          if (check) {
             startTransition(() => set({ topics: data }));
           }
         }

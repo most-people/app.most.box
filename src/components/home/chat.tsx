@@ -1,5 +1,5 @@
 import "./chat.scss";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Text,
@@ -22,6 +22,11 @@ import {
 } from "@tabler/icons-react";
 import { notifications } from "@mantine/notifications";
 import Link from "next/link";
+import { useTopicStore } from "@/stores/topicStore";
+import { useUserStore } from "@/stores/userStore";
+import mp from "@/constants/mp";
+import { mostWallet } from "dot.most.box";
+import dayjs from "dayjs";
 
 interface ChatItem {
   id: string;
@@ -32,17 +37,18 @@ interface ChatItem {
   unread?: number;
 }
 
-interface TopicItem {
-  id: string;
-  title: string;
-  avatar: string;
-  participants: number;
-  lastActivity: string;
-  unread?: number;
-}
-
 export default function HomeChat() {
   const [activeTab, setActiveTab] = useState<string | null>("friends");
+
+  const dot = useUserStore((state) => state.dot);
+  const initTopic = useTopicStore((state) => state.init);
+  const topics = useTopicStore((state) => state.topics);
+
+  useEffect(() => {
+    if (dot) {
+      initTopic(dot);
+    }
+  }, [dot]);
 
   const chatList: ChatItem[] = [
     {
@@ -81,67 +87,6 @@ export default function HomeChat() {
       avatar: "https://i.pravatar.cc/150?img=5",
       lastMessage: "Let me know",
       time: "03 Jul",
-    },
-  ];
-
-  const topicList: TopicItem[] = [
-    {
-      id: "1",
-      title: "前端开发交流",
-      avatar: "https://i.pravatar.cc/150?img=20",
-      participants: 328,
-      lastActivity: "刚刚",
-      unread: 10,
-    },
-    {
-      id: "2",
-      title: "React vs Vue 讨论",
-      avatar: "https://i.pravatar.cc/150?img=21",
-      participants: 156,
-      lastActivity: "10分钟前",
-      unread: 99,
-    },
-    {
-      id: "3",
-      title: "TypeScript 学习小组",
-      avatar: "https://i.pravatar.cc/150?img=22",
-      participants: 89,
-      lastActivity: "30分钟前",
-    },
-    {
-      id: "4",
-      title: "设计模式分享",
-      avatar: "https://i.pravatar.cc/150?img=23",
-      participants: 42,
-      lastActivity: "1小时前",
-    },
-    {
-      id: "5",
-      title: "产品经理吐槽大会",
-      avatar: "https://i.pravatar.cc/150?img=24",
-      participants: 213,
-      lastActivity: "2小时前",
-    },
-    {
-      id: "6",
-      title: "移动端适配问题",
-      avatar: "https://i.pravatar.cc/150?img=25",
-      participants: 76,
-      lastActivity: "昨天",
-    },
-    {
-      id: "7",
-      title: "后端架构讨论",
-      avatar: "https://i.pravatar.cc/150?img=26",
-      participants: 118,
-      lastActivity: "昨天",
-    },
-    {
-      id: "8",
-      title: "UI/UX 设计趋势",
-      avatar: "https://i.pravatar.cc/150?img=27",
-      participants: 95,
-      lastActivity: "前天",
     },
   ];
 
@@ -294,32 +239,35 @@ export default function HomeChat() {
 
       <Tabs.Panel value="groups">
         <Box className="chats">
-          {topicList.map((topic, index) => (
+          {topics.map((topic) => (
             <Group
-              key={index}
+              key={`${topic.name}-${topic.password}`}
               wrap="nowrap"
               justify="space-between"
               className="chat"
             >
               <Group wrap="nowrap">
-                <Avatar src={topic.avatar} size="lg" radius="md" />
+                <Avatar
+                  src={mp.topic(mostWallet(topic.name, topic.password).address)}
+                  size="lg"
+                  radius="md"
+                />
                 <Box>
                   <Group gap={8} wrap="nowrap">
-                    <Text fw={500}>{topic.title}</Text>
-                    {topic.unread && (
-                      <Badge color="red" size="xs" variant="filled">
-                        {topic.unread}
-                      </Badge>
-                    )}
+                    <Text fw={500}>{topic.name}</Text>
+
+                    <Badge color="red" size="xs" variant="filled">
+                      99
+                    </Badge>
                   </Group>
                   <Text size="sm" c="dimmed">
-                    {topic.participants} 人参与
+                    100 人参与
                   </Text>
                 </Box>
               </Group>
               <Flex direction="column" align="flex-end" gap={5}>
                 <Text size="xs" c="dimmed">
-                  {topic.lastActivity}
+                  {dayjs(topic.timestamp).fromNow()}
                 </Text>
               </Flex>
             </Group>
