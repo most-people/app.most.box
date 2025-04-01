@@ -1,26 +1,14 @@
 "use client";
 import { Text, Group, ActionIcon } from "@mantine/core";
 import { Icon } from "@/components/Icon";
-import { useUserStore } from "@/stores/userStore";
-import { useRouter, usePathname } from "next/navigation";
+import { useBack } from "@/hooks/useBack";
 
 interface AppHeaderProps {
   title: string | string[];
   right?: React.ReactNode;
 }
 export const AppHeader = ({ title, right }: AppHeaderProps) => {
-  const firstPath = useUserStore((state) => state.firstPath);
-  const setItem = useUserStore((state) => state.setItem);
-  const router = useRouter();
-  const pathname = usePathname();
-  const back = () => {
-    if (firstPath === pathname) {
-      setItem("firstPath", "/");
-      router.replace("/");
-    } else {
-      router.back();
-    }
-  };
+  const back = useBack();
 
   return (
     <Group className="app-header">

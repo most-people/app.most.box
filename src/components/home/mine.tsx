@@ -68,7 +68,7 @@ export default function HomeMine() {
         <MenuItem icon="about" label="关于" link="/about" />
         <MenuItem icon="setting" label="设置" link="/setting" />
         <MenuItem icon="join" label="志同道合" link="/join" />
-        <MenuItem icon="download" label="应用更新" link="/update" />
+        <MenuItem icon="download" label="节点更新" link="/dot" />
       </Stack>
       <Stack className="menu-list" mt="xs">
         <MenuItem

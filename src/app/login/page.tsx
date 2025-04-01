@@ -19,13 +19,13 @@ import Link from "next/link";
 import { useState } from "react";
 import mp from "@/constants/mp";
 import { mostWallet } from "dot.most.box";
-import { useRouter } from "next/navigation";
 import { useUserStore } from "@/stores/userStore";
 import { useAccountStore } from "@/stores/accountStore";
 import { notifications } from "@mantine/notifications";
+import { useBack } from "@/hooks/useBack";
 
 export default function PageLogin() {
-  const router = useRouter();
+  const back = useBack();
   const [visible, { toggle }] = useDisclosure(true);
 
   const setItem = useUserStore((state) => state.setItem);
@@ -60,11 +60,7 @@ export default function PageLogin() {
       }
     }
 
-    if (window.history.length > 1) {
-      router.back();
-    } else {
-      router.replace("/");
-    }
+    back();
   };
 
   return (

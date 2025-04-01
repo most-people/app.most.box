@@ -21,6 +21,7 @@ import {
   IconWallet,
 } from "@tabler/icons-react";
 import { notifications } from "@mantine/notifications";
+import Link from "next/link";
 
 interface ChatItem {
   id: string;
@@ -213,7 +214,7 @@ export default function HomeChat() {
           </ActionIcon>
           <Menu
             shadow="md"
-            width={200}
+            width={140}
             position="bottom-end"
             withArrow
             arrowPosition="center"
@@ -225,17 +226,33 @@ export default function HomeChat() {
             </Menu.Target>
 
             <Menu.Dropdown>
-              <Menu.Item leftSection={<IconMessage size={20} />}>
-                加入话题
+              <Menu.Item
+                leftSection={<IconMessage size={24} />}
+                component={Link}
+                href="/topic"
+              >
+                <Text>加入话题</Text>
               </Menu.Item>
-              <Menu.Item leftSection={<IconUserPlus size={20} />}>
-                添加好友
+              <Menu.Item
+                leftSection={<IconUserPlus size={24} />}
+                component={Link}
+                href="/friend"
+              >
+                <Text>添加好友</Text>
               </Menu.Item>
-              <Menu.Item leftSection={<IconQrcode size={20} />}>
-                扫一扫
+              <Menu.Item
+                leftSection={<IconQrcode size={24} />}
+                component={Link}
+                href="/scan"
+              >
+                <Text>扫一扫</Text>
               </Menu.Item>
-              <Menu.Item leftSection={<IconWallet size={20} />}>
-                收付款
+              <Menu.Item
+                leftSection={<IconWallet size={24} />}
+                component={Link}
+                href="/pay"
+              >
+                <Text>收付款</Text>
               </Menu.Item>
             </Menu.Dropdown>
           </Menu>

@@ -32,8 +32,8 @@
         color: var(--tab-active-color);
       }
       &[data-active] {
-        color: var(--button-bg);
-        fill: var(--button-bg);
+        color: var(--tab-bg);
+        fill: var(--tab-bg);
       }
     }
   }
