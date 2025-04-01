@@ -10,8 +10,16 @@ import {
   Flex,
   Badge,
   ActionIcon,
+  Menu,
 } from "@mantine/core";
-import { IconSearch, IconPlus } from "@tabler/icons-react";
+import {
+  IconSearch,
+  IconPlus,
+  IconMessage,
+  IconUserPlus,
+  IconQrcode,
+  IconWallet,
+} from "@tabler/icons-react";
 import { notifications } from "@mantine/notifications";
 
 interface ChatItem {
@@ -203,18 +211,34 @@ export default function HomeChat() {
           >
             <IconSearch size={24} stroke={1.5} />
           </ActionIcon>
-          <ActionIcon
-            variant="subtle"
-            color="gray"
-            onClick={() =>
-              notifications.show({
-                message: "开发中",
-                color: "gray",
-              })
-            }
+          <Menu
+            shadow="md"
+            width={200}
+            position="bottom-end"
+            withArrow
+            arrowPosition="center"
           >
-            <IconPlus size={24} stroke={1.5} />
-          </ActionIcon>
+            <Menu.Target>
+              <ActionIcon variant="subtle" color="gray">
+                <IconPlus size={24} stroke={1.5} />
+              </ActionIcon>
+            </Menu.Target>
+
+            <Menu.Dropdown>
+              <Menu.Item leftSection={<IconMessage size={20} />}>
+                加入话题
+              </Menu.Item>
+              <Menu.Item leftSection={<IconUserPlus size={20} />}>
+                添加好友
+              </Menu.Item>
+              <Menu.Item leftSection={<IconQrcode size={20} />}>
+                扫一扫
+              </Menu.Item>
+              <Menu.Item leftSection={<IconWallet size={20} />}>
+                收付款
+              </Menu.Item>
+            </Menu.Dropdown>
+          </Menu>
         </Group>
       </Box>
 
