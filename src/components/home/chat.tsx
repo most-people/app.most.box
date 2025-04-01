@@ -1,5 +1,5 @@
 import "./chat.scss";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Box,
   Text,
@@ -27,15 +27,6 @@ import mp from "@/constants/mp";
 import { mostWallet } from "dot.most.box";
 import dayjs from "dayjs";
 import { useFriendStore } from "@/stores/friendStore";
-
-interface ChatItem {
-  id: string;
-  name: string;
-  avatar: string;
-  lastMessage: string;
-  time: string;
-  unread?: number;
-}
 
 export default function HomeChat() {
   const [activeTab, setActiveTab] = useState<string | null>("friends");
@@ -160,69 +151,88 @@ export default function HomeChat() {
       <Tabs.Panel value="friends">
         <Box className="chats">
           {friends.map((friend) => (
-            <Group
+            <Link
               key={friend.address}
-              wrap="nowrap"
-              justify="space-between"
-              className="chat"
+              href={{
+                pathname: "/chat",
+                hash: friend.address,
+              }}
             >
-              <Group wrap="nowrap">
-                <Avatar src={mp.avatar(friend.address)} size="lg" radius="md" />
-                <Box>
-                  <Text fw={500}>{friend.name}</Text>
-                  <Text size="sm" c="dimmed">
-                    {mp.formatAddress(friend.address)}
+              <Group
+                key={friend.address}
+                wrap="nowrap"
+                justify="space-between"
+                className="chat"
+              >
+                <Group wrap="nowrap">
+                  <Avatar
+                    src={mp.avatar(friend.address)}
+                    size="lg"
+                    radius="md"
+                  />
+                  <Box>
+                    <Text fw={500}>{friend.name}</Text>
+                    <Text size="sm" c="dimmed">
+                      {mp.formatAddress(friend.address)}
+                    </Text>
+                  </Box>
+                </Group>
+                <Flex direction="column" align="flex-end" gap={5}>
+                  <Text size="xs" c="dimmed">
+                    {dayjs(friend.timestamp).fromNow()}
                   </Text>
-                </Box>
-              </Group>
-              <Flex direction="column" align="flex-end" gap={5}>
-                <Text size="xs" c="dimmed">
-                  {dayjs(friend.timestamp).fromNow()}
-                </Text>
 
-                <Badge color="red" size="md" variant="filled" radius="xl">
-                  {99}
-                </Badge>
-              </Flex>
-            </Group>
+                  <Badge color="red" size="md" variant="filled" radius="xl">
+                    {99}
+                  </Badge>
+                </Flex>
+              </Group>
+            </Link>
           ))}
         </Box>
       </Tabs.Panel>
 
       <Tabs.Panel value="groups">
         <Box className="chats">
-          {topics.map((topic) => (
-            <Group
-              key={`${topic.name}-${topic.password}`}
-              wrap="nowrap"
-              justify="space-between"
-              className="chat"
+          {topics.map((topic, index) => (
+            <Link
+              key={index}
+              href={{
+                pathname: "/chat",
+                query: topic.password
+                  ? { name: topic.name, password: topic.password }
+                  : { name: topic.name },
+              }}
             >
-              <Group wrap="nowrap">
-                <Avatar
-                  src={mp.topic(mostWallet(topic.name, topic.password).address)}
-                  size="lg"
-                  radius="md"
-                />
-                <Box>
-                  <Group gap={8} wrap="nowrap">
-                    <Text fw={500}>{topic.name}</Text>
+              <Group wrap="nowrap" justify="space-between" className="chat">
+                <Group wrap="nowrap">
+                  <Avatar
+                    src={mp.topic(
+                      mostWallet(topic.name, topic.password).address
+                    )}
+                    size="lg"
+                    radius="md"
+                  />
+                  <Box>
+                    <Group gap={8} wrap="nowrap">
+                      <Text fw={500}>{topic.name}</Text>
 
-                    <Badge color="red" size="xs" variant="filled">
-                      99
-                    </Badge>
-                  </Group>
-                  <Text size="sm" c="dimmed">
-                    100 人参与
+                      <Badge color="red" size="sm" variant="filled">
+                        18
+                      </Badge>
+                    </Group>
+                    <Text size="sm" c="dimmed">
+                      100 人参与
+                    </Text>
+                  </Box>
+                </Group>
+                <Flex direction="column" align="flex-end" gap={5}>
+                  <Text size="xs" c="dimmed">
+                    {dayjs(topic.timestamp).fromNow()}
                   </Text>
-                </Box>
+                </Flex>
               </Group>
-              <Flex direction="column" align="flex-end" gap={5}>
-                <Text size="xs" c="dimmed">
-                  {dayjs(topic.timestamp).fromNow()}
-                </Text>
-              </Flex>
-            </Group>
+            </Link>
           ))}
         </Box>
       </Tabs.Panel>

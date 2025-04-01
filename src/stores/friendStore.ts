@@ -61,6 +61,7 @@ export const useFriendStore = create<State>((set, get) => ({
     }
   },
   del(name: string) {
+    console.log("🌊", name);
     // 检查登录
     // const dot = useUserStore.getState().dot;
     // if (dot) {
