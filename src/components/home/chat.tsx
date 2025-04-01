@@ -23,10 +23,10 @@ import {
 import { notifications } from "@mantine/notifications";
 import Link from "next/link";
 import { useTopicStore } from "@/stores/topicStore";
-import { useUserStore } from "@/stores/userStore";
 import mp from "@/constants/mp";
 import { mostWallet } from "dot.most.box";
 import dayjs from "dayjs";
+import { useFriendStore } from "@/stores/friendStore";
 
 interface ChatItem {
   id: string;
@@ -40,55 +40,8 @@ interface ChatItem {
 export default function HomeChat() {
   const [activeTab, setActiveTab] = useState<string | null>("friends");
 
-  const dot = useUserStore((state) => state.dot);
-  const initTopic = useTopicStore((state) => state.init);
   const topics = useTopicStore((state) => state.topics);
-
-  useEffect(() => {
-    if (dot) {
-      initTopic(dot);
-    }
-  }, [dot]);
-
-  const chatList: ChatItem[] = [
-    {
-      id: "1",
-      name: "赖雅娇",
-      avatar: "https://i.pravatar.cc/150?img=1",
-      lastMessage: "Totally, I do understand it",
-      time: "10:24",
-      unread: 1,
-    },
-    {
-      id: "2",
-      name: "张喜娟",
-      avatar: "https://i.pravatar.cc/150?img=2",
-      lastMessage: "Awesome!",
-      time: "9:28",
-      unread: 65,
-    },
-    {
-      id: "3",
-      name: "萧惠萍",
-      avatar: "https://i.pravatar.cc/150?img=3",
-      lastMessage: "Totally, I do understand it",
-      time: "Yesterday",
-    },
-    {
-      id: "4",
-      name: "林佩瑜",
-      avatar: "https://i.pravatar.cc/150?img=4",
-      lastMessage: "Hey there! 👋",
-      time: "03 Jul",
-    },
-    {
-      id: "5",
-      name: "吴世伟",
-      avatar: "https://i.pravatar.cc/150?img=5",
-      lastMessage: "Let me know",
-      time: "03 Jul",
-    },
-  ];
+  const friends = useFriendStore((state) => state.friends);
 
   return (
     <Tabs value={activeTab} onChange={setActiveTab} variant="outline">
@@ -206,31 +159,30 @@ export default function HomeChat() {
 
       <Tabs.Panel value="friends">
         <Box className="chats">
-          {chatList.map((chat, index) => (
+          {friends.map((friend) => (
             <Group
-              key={index}
+              key={friend.address}
               wrap="nowrap"
               justify="space-between"
               className="chat"
             >
               <Group wrap="nowrap">
-                <Avatar src={chat.avatar} size="lg" radius="md" />
+                <Avatar src={mp.avatar(friend.address)} size="lg" radius="md" />
                 <Box>
-                  <Text fw={500}>{chat.name}</Text>
+                  <Text fw={500}>{friend.name}</Text>
                   <Text size="sm" c="dimmed">
-                    {chat.lastMessage}
+                    {mp.formatAddress(friend.address)}
                   </Text>
                 </Box>
               </Group>
               <Flex direction="column" align="flex-end" gap={5}>
                 <Text size="xs" c="dimmed">
-                  {chat.time}
+                  {dayjs(friend.timestamp).fromNow()}
                 </Text>
-                {chat.unread && (
-                  <Badge color="red" size="md" variant="filled" radius="xl">
-                    {chat.unread}
-                  </Badge>
-                )}
+
+                <Badge color="red" size="md" variant="filled" radius="xl">
+                  {99}
+                </Badge>
               </Flex>
             </Group>
           ))}

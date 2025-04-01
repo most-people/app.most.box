@@ -13,16 +13,15 @@ import {
   Switch,
   Group,
 } from "@mantine/core";
-
-import "./login.scss";
 import { useState } from "react";
 import mp from "@/constants/mp";
 import { mostWallet } from "dot.most.box";
 import { AppHeader } from "@/components/AppHeader";
 import { useRouter } from "next/navigation";
 import { useTopicStore } from "@/stores/topicStore";
+import "./topic.scss";
 
-export default function PageLogin() {
+export default function PageTopic() {
   const router = useRouter();
   const [visible, { toggle }] = useDisclosure(false);
 

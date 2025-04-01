@@ -1,24 +1,25 @@
 import { create } from "zustand";
-import { useUserStore } from "@/stores/userStore";
 import { startTransition } from "react";
 import { DotMethods } from "dot.most.box";
+import { useUserStore } from "@/stores/userStore";
 
-export interface Topic {
+export interface Friend {
   name: string;
-  password: string;
+  address: string;
+  public_key: string;
   timestamp: number;
 }
 
-interface TopicStore {
+interface FriendStore {
   inited: boolean;
-  topics: Topic[];
-  join: (name: string, password: string) => void;
-  quit: (name: string) => void;
+  friends: Friend[];
+  add: (name: string, address: string, public_key: string) => void;
+  del: (address: string) => void;
   init: (dot: DotMethods) => void;
   reset: () => void;
 }
 
-interface State extends TopicStore {
+interface State extends FriendStore {
   setItem: <K extends keyof State>(key: K, value: State[K]) => void;
   pushItem: <K extends keyof State>(
     key: K,
@@ -30,9 +31,9 @@ interface State extends TopicStore {
   ) => void;
 }
 
-export const useTopicStore = create<State>((set, get) => ({
+export const useFriendStore = create<State>((set, get) => ({
   inited: false,
-  topics: [],
+  friends: [],
   setItem: (key, value) => set((state) => ({ ...state, [key]: value })),
   pushItem: (key, value) =>
     set((state) => {
@@ -46,46 +47,49 @@ export const useTopicStore = create<State>((set, get) => ({
         [key]: [value, ...prev],
       };
     }),
-  join(name: string, password: string) {
+  add(name: string, address: string, public_key: string) {
     // 检查登录
     const dot = useUserStore.getState().dot;
     if (dot) {
       // 检查是否已经存在，避免重复添加
-      const topics = get().topics;
-      if (!topics.some((e) => e.name === name && e.password === password)) {
+      const friends = get().friends;
+      if (!friends.some((e) => e.address === address)) {
         const timestamp = Date.now();
-        const data: Topic = { name, password, timestamp };
-        dot.put("topics", [data, ...topics], true);
+        const data: Friend = { name, address, public_key, timestamp };
+        dot.put("friends", [data, ...friends], true);
       }
     }
   },
-  quit(name: string) {
+  del(name: string) {
     // 检查登录
-    const dot = useUserStore.getState().dot;
-    if (dot) {
-      // 检查是否已经删除，避免重复删除
-      const topics = get().topics;
-      const filter = topics.filter((e) => e.name !== name);
-      if (filter.length < topics.length) {
-        dot.put("topics", filter, true);
-      }
-    }
+    // const dot = useUserStore.getState().dot;
+    // if (dot) {
+    //   // 检查是否已经删除，避免重复删除
+    //   const topics = get().topics;
+    //   const filter = topics.filter((e) => e.name !== name);
+    //   if (filter.length < topics.length) {
+    //     dot.put("topics", filter, true);
+    //   }
+    // }
   },
   init(dot: DotMethods) {
     if (get().inited) return;
     set({ inited: true });
     let t = 0;
     dot.on(
-      "topics",
+      "friends",
       (data, timestamp) => {
         if (timestamp > t) {
           t = timestamp;
           // 检查数据
           const check =
             Array.isArray(data) &&
-            data.every((item) => item.timestamp && item.name);
+            data.every(
+              (item) =>
+                item.timestamp && item.name && item.address && item.public_key
+            );
           if (check) {
-            startTransition(() => set({ topics: data }));
+            startTransition(() => set({ friends: data }));
           }
         }
       },
@@ -93,6 +97,6 @@ export const useTopicStore = create<State>((set, get) => ({
     );
   },
   reset() {
-    set({ inited: false, topics: [] });
+    set({ inited: false, friends: [] });
   },
 }));

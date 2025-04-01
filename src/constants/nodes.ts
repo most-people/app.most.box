@@ -6,7 +6,7 @@ export const nodes = [
   // damon
   "https://damon.most.red",
   // night sky
-  // "https://cellservice.world",
+  "https://cellservice.world",
 ];
 
 // 在线合约 MOST

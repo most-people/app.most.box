@@ -31,6 +31,16 @@ export const theme = createTheme({
         size: "md",
       },
     },
+    TextInput: {
+      defaultProps: {
+        size: "md",
+      },
+    },
+    Textarea: {
+      defaultProps: {
+        size: "md",
+      },
+    },
     Button: {
       defaultProps: {
         fw: 400,
