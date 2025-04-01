@@ -85,12 +85,12 @@ export default function PageLogin() {
         <Stack gap="md">
           <Input
             autoFocus
-            placeholder="请输入用户名"
+            placeholder="用户名"
             value={username}
             onChange={(event) => setUsername(event.currentTarget.value)}
           />
           <PasswordInput
-            placeholder="请输入密码"
+            placeholder="密码"
             visible={visible}
             onVisibilityChange={toggle}
             value={password}

@@ -7,7 +7,7 @@ import {
   computeHmac,
 } from "ethers";
 import { createAvatar } from "@dicebear/core";
-import { botttsNeutral } from "@dicebear/collection";
+import { botttsNeutral, icons } from "@dicebear/collection";
 import { type MostWallet, mostWallet } from "dot.most.box";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -25,6 +25,14 @@ const avatar = (address = "Most") => {
     seed: "most.box@" + address,
     flip: true,
     backgroundType: ["gradientLinear"],
+  }).toDataUri();
+};
+// 话题生成
+const topic = (address = "Most") => {
+  return createAvatar(icons, {
+    seed: "most.box#" + address,
+    flip: true,
+    backgroundType: ["gradientLinear", "solid"],
   }).toDataUri();
 };
 
@@ -181,6 +189,7 @@ const login = (username: string, password: string): MostWallet | null => {
 };
 
 const mp = {
+  topic,
   avatar,
   getHash,
   formatTime,
