@@ -35,7 +35,7 @@ export const Messages = ({ messages, onSend }: MessagesProps) => {
             }`}
           >
             {type === "topic" && (
-              <Box w={38}>
+              <Box className="avatar">
                 {message.address !== wallet?.address &&
                   message.address !== messages[index + 1]?.address && (
                     <Avatar src={mp.avatar(message.address)} />
