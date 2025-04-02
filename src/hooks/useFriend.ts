@@ -7,6 +7,7 @@ export interface Message {
   text: string;
   address: string;
   timestamp: number;
+  type?: "text" | "image" | "audio" | "video" | "file";
 }
 
 export interface Friend {
