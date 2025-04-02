@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { startTransition } from "react";
-import { DotMethods } from "dot.most.box";
+import { type DotMethods } from "dot.most.box";
 import { useUserStore } from "@/stores/userStore";
 import { Friend } from "@/hooks/useFriend";
 

@@ -4,7 +4,7 @@ import { useAccountStore } from "@/stores/accountStore";
 import { useFriendStore } from "@/stores/friendStore";
 import { useTopicStore } from "@/stores/topicStore";
 import { useUserStore } from "@/stores/userStore";
-import { DotClient, DotMethods } from "dot.most.box";
+import { DotClient, type DotMethods } from "dot.most.box";
 import { HDNodeWallet } from "ethers";
 import { useEffect } from "react";
 

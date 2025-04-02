@@ -16,21 +16,15 @@ import {
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import mp from "@/constants/mp";
-import { MostWallet, mostWallet } from "dot.most.box";
+import { type MostWallet, mostWallet } from "dot.most.box";
 import { AppHeader } from "@/components/AppHeader";
 import { useRouter } from "next/navigation";
 import { useTopicStore } from "@/stores/topicStore";
 import "@/app/friend/chat.scss";
 import { useTopic } from "@/hooks/useTopic";
 import { Messages } from "@/components/Messages";
-import {
-  IconCompass,
-  IconDoorExit,
-  IconRadar,
-  IconSearch,
-} from "@tabler/icons-react";
+import { IconDoorExit } from "@tabler/icons-react";
 import { useBack } from "@/hooks/useBack";
-import { notifications } from "@mantine/notifications";
 
 const JoinTopic = ({ onUpdate }: { onUpdate: (hash: string) => void }) => {
   const router = useRouter();

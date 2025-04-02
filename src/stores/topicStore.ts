@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { useUserStore } from "@/stores/userStore";
 import { startTransition } from "react";
-import { DotMethods, mostWallet } from "dot.most.box";
+import { type DotMethods } from "dot.most.box";
 
 export interface Topic {
   name: string;
