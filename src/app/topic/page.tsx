@@ -1,6 +1,6 @@
 "use client";
 
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure, useHash } from "@mantine/hooks";
 import {
   Text,
   Input,
@@ -13,15 +13,15 @@ import {
   Switch,
   Group,
 } from "@mantine/core";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import mp from "@/constants/mp";
-import { mostWallet } from "dot.most.box";
+import { MostWallet, mostWallet } from "dot.most.box";
 import { AppHeader } from "@/components/AppHeader";
 import { useRouter } from "next/navigation";
 import { useTopicStore } from "@/stores/topicStore";
 import "./topic.scss";
 
-export default function PageTopic() {
+const JoinTopic = ({ onUpdate }: { onUpdate: (hash: string) => void }) => {
   const router = useRouter();
   const [visible, { toggle }] = useDisclosure(false);
 
@@ -32,64 +32,92 @@ export default function PageTopic() {
   const [isEncrypted, setIsEncrypted] = useState(false);
 
   const submit = () => {
-    const query = new URLSearchParams();
-    query.set("name", name);
-    if (isEncrypted && password) {
-      query.set("password", password);
-    }
-    router.replace(`/topic?${query.toString()}`);
+    const hash = "#" + mp.enBase64(JSON.stringify([name, password]));
+    router.replace(`/topic${hash}`);
+    onUpdate(hash);
     join(name, password);
   };
+  return (
+    <Stack gap="md">
+      <Box className="header">
+        <Text size="xl" fw={500}></Text>
+        <Space h="sx" />
+        <Avatar
+          size="xl"
+          radius="md"
+          src={mp.topic(mostWallet(name, password).address)}
+          alt="it's me"
+        />
+      </Box>
+      <Stack gap="md">
+        <Input
+          autoFocus
+          placeholder="话题名称"
+          value={name}
+          onChange={(event) => setName(event.currentTarget.value)}
+        />
 
+        <Group justify="flex-end">
+          <Switch
+            label="加密"
+            size="md"
+            labelPosition="left"
+            checked={isEncrypted}
+            onChange={(event) => {
+              setIsEncrypted(event.currentTarget.checked);
+              setPassword("");
+            }}
+          />
+        </Group>
+
+        <PasswordInput
+          placeholder="话题密码"
+          visible={visible}
+          onVisibilityChange={toggle}
+          value={password}
+          disabled={!isEncrypted}
+          onChange={(event) => setPassword(event.currentTarget.value)}
+        />
+
+        <Button onClick={submit} disabled={!name}>
+          加入话题
+        </Button>
+      </Stack>
+    </Stack>
+  );
+};
+
+export default function PageTopic() {
+  const [hash] = useHash();
+  const [wallet, setWallet] = useState<MostWallet | null>(null);
+  const init = (hash: string) => {
+    try {
+      const [name, password] = JSON.parse(mp.deBase64(hash.slice(1)));
+      setWallet(mostWallet(name, password));
+    } catch (error) {
+      console.log("hash 解析错误", error);
+    }
+  };
+  useEffect(() => {
+    if (hash) {
+      init(hash);
+    }
+  }, [hash]);
   return (
     <Box id="page-topic">
-      <AppHeader title="话题" />
-      <Stack gap="md">
-        <Box className="header">
-          <Text size="xl" fw={500}></Text>
-          <Space h="sx" />
+      <AppHeader
+        title={wallet?.username || "话题"}
+        right={
           <Avatar
-            size="xl"
-            radius="md"
-            src={mp.topic(mostWallet(name, password).address)}
-            alt="it's me"
+            src={
+              wallet?.address
+                ? mp.topic(wallet.address)
+                : "/icons/pwa-512x512.png"
+            }
           />
-        </Box>
-        <Stack gap="md">
-          <Input
-            autoFocus
-            placeholder="话题名称"
-            value={name}
-            onChange={(event) => setName(event.currentTarget.value)}
-          />
-
-          <Group justify="flex-end">
-            <Switch
-              label="加密"
-              size="md"
-              labelPosition="left"
-              checked={isEncrypted}
-              onChange={(event) => {
-                setIsEncrypted(event.currentTarget.checked);
-                setPassword("");
-              }}
-            />
-          </Group>
-
-          <PasswordInput
-            placeholder="话题密码"
-            visible={visible}
-            onVisibilityChange={toggle}
-            value={password}
-            disabled={!isEncrypted}
-            onChange={(event) => setPassword(event.currentTarget.value)}
-          />
-
-          <Button onClick={submit} disabled={!name}>
-            加入话题
-          </Button>
-        </Stack>
-      </Stack>
+        }
+      />
+      {wallet ? <h1>{wallet.address}</h1> : <JoinTopic onUpdate={init} />}
     </Box>
   );
 }

@@ -1,11 +1,13 @@
 #page-friend {
-  max-width: 424px;
-  width: 100%;
-  padding: 0 20px;
+  .add-friend {
+    max-width: 424px;
+    width: 100%;
+    padding: 0 20px;
 
-  .header {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    .header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
   }
 }

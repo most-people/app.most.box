@@ -13,8 +13,8 @@ export interface Friend {
 interface FriendStore {
   inited: boolean;
   friends: Friend[];
-  add: (name: string, address: string, public_key: string) => void;
-  del: (address: string) => void;
+  addFriend: (name: string, address: string, public_key: string) => void;
+  delFriend: (address: string) => void;
   init: (dot: DotMethods) => void;
   reset: () => void;
 }
@@ -47,7 +47,7 @@ export const useFriendStore = create<State>((set, get) => ({
         [key]: [value, ...prev],
       };
     }),
-  add(name: string, address: string, public_key: string) {
+  addFriend(name: string, address: string, public_key: string) {
     // 检查登录
     const dot = useUserStore.getState().dot;
     if (dot) {
@@ -60,7 +60,7 @@ export const useFriendStore = create<State>((set, get) => ({
       }
     }
   },
-  del(name: string) {
+  delFriend(name: string) {
     console.log("🌊", name);
     // 检查登录
     // const dot = useUserStore.getState().dot;
