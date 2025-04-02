@@ -1,5 +1,5 @@
 import "./chat.scss";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Text,
@@ -29,13 +29,23 @@ import dayjs from "dayjs";
 import { useFriendStore } from "@/stores/friendStore";
 
 export default function HomeChat() {
-  const [activeTab, setActiveTab] = useState<string | null>("friends");
+  const [chatTab, setChatTab] = useState<string | null>("friends");
 
   const topics = useTopicStore((state) => state.topics);
   const friends = useFriendStore((state) => state.friends);
 
+  const tabChange = (value: string | null) => {
+    setChatTab(value);
+    localStorage.setItem("chatTab", value || "friends");
+  };
+
+  useEffect(() => {
+    const activeTab = localStorage.getItem("chatTab");
+    setChatTab(activeTab || "friends");
+  }, []);
+
   return (
-    <Tabs value={activeTab} onChange={setActiveTab} variant="outline">
+    <Tabs value={chatTab} onChange={tabChange} variant="outline">
       <Box className="chat-header">
         <Tabs.List>
           <Tabs.Tab
@@ -63,7 +73,7 @@ export default function HomeChat() {
             好友
           </Tabs.Tab>
           <Tabs.Tab
-            value="groups"
+            value="topics"
             fw={500}
             rightSection={
               <Box style={{ position: "relative" }}>
@@ -192,7 +202,7 @@ export default function HomeChat() {
         </Box>
       </Tabs.Panel>
 
-      <Tabs.Panel value="groups">
+      <Tabs.Panel value="topics">
         <Box className="chats">
           {topics.map((topic, index) => (
             <Link
