@@ -26,7 +26,9 @@ export const useFriend = (friendAddress: string) => {
   const [myMessages, setMyMessages] = useState<Message[]>([]);
   const [friendMessages, setFriendMessages] = useState<Message[]>([]);
 
-  const messages = [...myMessages, ...friendMessages];
+  const messages = [...myMessages, ...friendMessages].sort(
+    (a, b) => a.timestamp - b.timestamp
+  );
 
   const [friend, setFriend] = useState<Friend | null>(null);
   const [friendDot, setFriendDot] = useState<DotMethods | null>(null);

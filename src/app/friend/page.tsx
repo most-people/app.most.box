@@ -93,7 +93,9 @@ export default function PageFriend() {
   const [hash] = useHash();
   const [friendAddress, setFriendAddress] = useState("");
   const wallet = useUserStore((state) => state.wallet);
-  const { friend, messages } = useFriend(friendAddress);
+  const { friend, messages, send } = useFriend(friendAddress);
+
+  const [text, setText] = useState("");
 
   useEffect(() => {
     if (hash) {
@@ -103,12 +105,17 @@ export default function PageFriend() {
     }
   }, [hash]);
 
+  const title =
+    friendAddress === wallet?.address
+      ? "文件传输助手"
+      : friend
+      ? `${friend.username}#${friendAddress.slice(-4)}`
+      : "添加好友";
+
   return (
     <Box id="page-chat">
       <AppHeader
-        title={
-          friend ? `${friend.username}#${friendAddress.slice(-4)}` : "好友"
-        }
+        title={title}
         right={
           <Avatar
             src={
@@ -145,6 +152,21 @@ export default function PageFriend() {
               autosize
               maxRows={4}
               style={{ flex: 1 }}
+              value={text}
+              onChange={(event) => setText(event.currentTarget.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  // Shift + Enter: 不做处理，让默认行为（换行）生效
+                  if (event.shiftKey) return;
+
+                  // Enter: 发送消息
+                  event.preventDefault();
+                  if (text.trim()) {
+                    send(text);
+                    setText("");
+                  }
+                }
+              }}
             />
             <ActionIcon variant="subtle" color="gray" size="lg">
               <IconMicrophone size={24} />
