@@ -23,6 +23,7 @@ import { useUserStore } from "@/stores/userStore";
 import { useEffect, useState } from "react";
 import { useHash } from "@mantine/hooks";
 import { useFriend } from "@/hooks/useFriend";
+import { Messages } from "@/components/Messages";
 
 const AddFriend = () => {
   const router = useRouter();
@@ -95,8 +96,6 @@ export default function PageFriend() {
   const wallet = useUserStore((state) => state.wallet);
   const { friend, messages, send } = useFriend(friendAddress);
 
-  const [text, setText] = useState("");
-
   useEffect(() => {
     if (hash) {
       if (isAddress(hash.slice(1))) {
@@ -127,55 +126,7 @@ export default function PageFriend() {
         }
       />
       {friend?.public_key ? (
-        <>
-          <Box className="messages">
-            {messages.map((message) => (
-              <Box
-                key={message.timestamp}
-                className={`message ${
-                  message.address === wallet?.address ? "me" : ""
-                }`}
-              >
-                <Box className="content">{message.text}</Box>
-              </Box>
-            ))}
-          </Box>
-
-          <Group gap="xs" className="message-input">
-            <ActionIcon variant="subtle" color="gray" size="lg">
-              <IconMoodSmile size={24} />
-            </ActionIcon>
-            <Textarea
-              placeholder="输入消息..."
-              size="md"
-              radius="md"
-              autosize
-              maxRows={4}
-              style={{ flex: 1 }}
-              value={text}
-              onChange={(event) => setText(event.currentTarget.value)}
-              onKeyDown={(event) => {
-                if (event.key === "Enter") {
-                  // Shift + Enter: 不做处理，让默认行为（换行）生效
-                  if (event.shiftKey) return;
-
-                  // Enter: 发送消息
-                  event.preventDefault();
-                  if (text.trim()) {
-                    send(text);
-                    setText("");
-                  }
-                }
-              }}
-            />
-            <ActionIcon variant="subtle" color="gray" size="lg">
-              <IconMicrophone size={24} />
-            </ActionIcon>
-            <ActionIcon variant="subtle" color="gray" size="lg">
-              <IconPlus size={24} />
-            </ActionIcon>
-          </Group>
-        </>
+        <Messages onSend={send} messages={messages} />
       ) : (
         <AddFriend />
       )}

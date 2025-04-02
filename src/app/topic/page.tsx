@@ -11,9 +11,7 @@ import {
   Box,
   Space,
   Switch,
-  ActionIcon,
   Group,
-  Textarea,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import mp from "@/constants/mp";
@@ -22,9 +20,8 @@ import { AppHeader } from "@/components/AppHeader";
 import { useRouter } from "next/navigation";
 import { useTopicStore } from "@/stores/topicStore";
 import "@/app/friend/chat.scss";
-import { IconMicrophone, IconMoodSmile, IconPlus } from "@tabler/icons-react";
 import { useTopic } from "@/hooks/useTopic";
-import { useUserStore } from "@/stores/userStore";
+import { Messages } from "@/components/Messages";
 
 const JoinTopic = ({ onUpdate }: { onUpdate: (hash: string) => void }) => {
   const router = useRouter();
@@ -50,8 +47,8 @@ const JoinTopic = ({ onUpdate }: { onUpdate: (hash: string) => void }) => {
         <Avatar
           size="xl"
           radius="md"
-          src={mp.topic(mostWallet(name, password).address)}
-          alt="it's me"
+          src={mp.topic(mostWallet(name, "most.box#" + password).address)}
+          alt="topic"
         />
       </Box>
       <Stack gap="md">
@@ -93,8 +90,6 @@ const JoinTopic = ({ onUpdate }: { onUpdate: (hash: string) => void }) => {
 };
 
 export default function PageTopic() {
-  const wallet = useUserStore((state) => state.wallet);
-
   const [hash] = useHash();
   const [topicWallet, setTopicWallet] = useState<MostWallet | null>(null);
   const init = (hash: string) => {
@@ -102,8 +97,8 @@ export default function PageTopic() {
       const [name, password] = JSON.parse(mp.deBase64(hash.slice(1)));
       setTopicWallet(
         mostWallet(
-          "most.box#" + name,
-          password,
+          name,
+          "most.box#" + password,
           "I know loss mnemonic will lose my wallet."
         )
       );
@@ -138,55 +133,7 @@ export default function PageTopic() {
         }
       />
       {topicWallet ? (
-        <>
-          <Box className="messages">
-            {messages.map((message) => (
-              <Box
-                key={message.timestamp}
-                className={`message ${
-                  message.address === wallet?.address ? "me" : ""
-                }`}
-              >
-                <Box className="content">{message.text}</Box>
-              </Box>
-            ))}
-          </Box>
-
-          <Group gap="xs" className="message-input">
-            <ActionIcon variant="subtle" color="gray" size="lg">
-              <IconMoodSmile size={24} />
-            </ActionIcon>
-            <Textarea
-              placeholder="输入消息..."
-              size="md"
-              radius="md"
-              autosize
-              maxRows={4}
-              style={{ flex: 1 }}
-              value={text}
-              onChange={(event) => setText(event.currentTarget.value)}
-              onKeyDown={(event) => {
-                if (event.key === "Enter") {
-                  // Shift + Enter: 不做处理，让默认行为（换行）生效
-                  if (event.shiftKey) return;
-
-                  // Enter: 发送消息
-                  event.preventDefault();
-                  if (text.trim()) {
-                    send(text);
-                    setText("");
-                  }
-                }
-              }}
-            />
-            <ActionIcon variant="subtle" color="gray" size="lg">
-              <IconMicrophone size={24} />
-            </ActionIcon>
-            <ActionIcon variant="subtle" color="gray" size="lg">
-              <IconPlus size={24} />
-            </ActionIcon>
-          </Group>
-        </>
+        <Messages onSend={send} messages={messages} />
       ) : (
         <JoinTopic onUpdate={init} />
       )}

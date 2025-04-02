@@ -211,7 +211,8 @@ export default function HomeChat() {
                 <Group wrap="nowrap">
                   <Avatar
                     src={mp.topic(
-                      mostWallet(topic.name, topic.password).address
+                      mostWallet(topic.name, "most.box#" + topic.password)
+                        .address
                     )}
                     size="lg"
                     radius="md"
