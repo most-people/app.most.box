@@ -1,8 +1,10 @@
-import { Box, Group, ActionIcon, Textarea } from "@mantine/core";
+import { Box, Group, ActionIcon, Textarea, Avatar } from "@mantine/core";
 import { IconMicrophone, IconMoodSmile, IconPlus } from "@tabler/icons-react";
 import { useEffect, useRef, useState } from "react";
 import { Message } from "@/hooks/useFriend";
 import { useUserStore } from "@/stores/userStore";
+import mp from "@/constants/mp";
+import { usePathname } from "next/navigation";
 
 interface MessagesProps {
   messages: Message[];
@@ -12,6 +14,8 @@ interface MessagesProps {
 export const Messages = ({ messages, onSend }: MessagesProps) => {
   const [text, setText] = useState("");
   const wallet = useUserStore((state) => state.wallet);
+  const pathname = usePathname();
+  const type = pathname.split("/")[1];
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -23,14 +27,24 @@ export const Messages = ({ messages, onSend }: MessagesProps) => {
   return (
     <>
       <Box className="messages">
-        {messages.map((message) => (
+        {messages.map((message, index) => (
           <Box
             key={message.timestamp}
-            className={`message ${
+            className={`message-box ${
               message.address === wallet?.address ? "me" : ""
             }`}
           >
-            <Box className="content">{message.text}</Box>
+            {type === "topic" && (
+              <Box w={38}>
+                {message.address !== wallet?.address &&
+                  message.address !== messages[index + 1]?.address && (
+                    <Avatar src={mp.avatar(message.address)} />
+                  )}
+              </Box>
+            )}
+            <Box className="message">
+              <Box className="content">{message.text}</Box>
+            </Box>
           </Box>
         ))}
         <Box ref={messagesEndRef} />

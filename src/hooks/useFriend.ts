@@ -145,5 +145,18 @@ export const useFriend = (friendAddress: string) => {
     }
   };
 
-  return { friend, messages, send, del };
+  const clear = () => {
+    if (wallet && dot && friend) {
+      // 清空我发送的消息
+      const data = JSON.stringify([]);
+      dot.put(
+        friendAddress,
+        mostEncode(data, friend.public_key, wallet.private_key)
+      );
+      // 清空本地状态
+      setMyMessages([]);
+    }
+  };
+
+  return { friend, messages, send, del, clear };
 };

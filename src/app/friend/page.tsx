@@ -22,7 +22,7 @@ import { useEffect, useState } from "react";
 import { useHash } from "@mantine/hooks";
 import { useFriend } from "@/hooks/useFriend";
 import { Messages } from "@/components/Messages";
-import { IconDoorExit } from "@tabler/icons-react";
+import { IconDoorExit, IconTrash } from "@tabler/icons-react";
 import { useBack } from "@/hooks/useBack";
 
 const AddFriend = () => {
@@ -103,7 +103,7 @@ export default function PageFriend() {
     back();
   };
 
-  const { friend, messages, send } = useFriend(friendAddress);
+  const { friend, messages, send, clear } = useFriend(friendAddress);
 
   useEffect(() => {
     if (hash) {
@@ -146,6 +146,9 @@ export default function PageFriend() {
             <Menu.Dropdown>
               <Menu.Item leftSection={<IconDoorExit size={24} />} onClick={del}>
                 <Text>删除好友</Text>
+              </Menu.Item>
+              <Menu.Item leftSection={<IconTrash size={24} />} onClick={clear}>
+                <Text>清空我的消息</Text>
               </Menu.Item>
             </Menu.Dropdown>
           </Menu>

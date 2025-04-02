@@ -1,6 +1,6 @@
 #page-chat {
   width: 100%;
-  padding: 64px 20px;
+  padding: 64px 16px;
   .add-box {
     max-width: 424px;
     margin: 0 auto;
@@ -18,24 +18,30 @@
     align-items: flex-start;
     gap: 8px;
 
-    .message {
-      border-radius: 12px 12px 12px 2px;
-      background: var(--message-background);
-      color: var(--message-color);
-      padding: 13px 15px;
-      font-size: 16px;
-      font-weight: 500;
-      line-height: 23px;
-      margin-right: 65px;
+    .message-box {
+      display: flex;
+      align-items: center;
+      margin-right: 46px;
       margin-left: 0;
-
+      gap: 8px;
+      .message {
+        border-radius: 12px 12px 12px 2px;
+        background: var(--message-background);
+        color: var(--message-color);
+        padding: 13px 15px;
+        font-size: 16px;
+        font-weight: 500;
+        line-height: 23px;
+      }
       &.me {
         align-self: flex-end;
-        border-radius: 12px 12px 2px 12px;
-        background: var(--mantine-color-anchor);
-        color: #fff;
         margin-right: 0;
-        margin-left: 65px;
+        margin-left: 46px;
+        .message {
+          border-radius: 12px 12px 2px 12px;
+          background: var(--mantine-color-anchor);
+          color: #fff;
+        }
       }
     }
   }
