@@ -154,7 +154,7 @@ export default function HomeChat() {
             <Link
               key={friend.address}
               href={{
-                pathname: "/chat",
+                pathname: "/friend",
                 hash: friend.address,
               }}
             >
@@ -198,10 +198,8 @@ export default function HomeChat() {
             <Link
               key={index}
               href={{
-                pathname: "/chat",
-                query: topic.password
-                  ? { name: topic.name, password: topic.password }
-                  : { name: topic.name },
+                pathname: "/topic",
+                hash: mp.enBase64(JSON.stringify([topic.name, topic.password])),
               }}
             >
               <Group wrap="nowrap" justify="space-between" className="chat">

@@ -19,7 +19,7 @@ import { MostWallet, mostWallet } from "dot.most.box";
 import { AppHeader } from "@/components/AppHeader";
 import { useRouter } from "next/navigation";
 import { useTopicStore } from "@/stores/topicStore";
-import "./topic.scss";
+import "@/app/friend/chat.scss";
 
 const JoinTopic = ({ onUpdate }: { onUpdate: (hash: string) => void }) => {
   const router = useRouter();
@@ -38,7 +38,7 @@ const JoinTopic = ({ onUpdate }: { onUpdate: (hash: string) => void }) => {
     join(name, password);
   };
   return (
-    <Stack gap="md">
+    <Stack gap="md" className="add-box">
       <Box className="header">
         <Text size="xl" fw={500}></Text>
         <Space h="sx" />
@@ -104,9 +104,13 @@ export default function PageTopic() {
     }
   }, [hash]);
   return (
-    <Box id="page-topic">
+    <Box id="page-chat">
       <AppHeader
-        title={wallet?.username || "话题"}
+        title={
+          wallet?.username
+            ? `${wallet.username}#${wallet.address.slice(-4)}`
+            : "话题"
+        }
         right={
           <Avatar
             src={

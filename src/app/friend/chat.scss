@@ -1,9 +1,9 @@
-#page-friend {
-  .add-friend {
+#page-chat {
+  width: 100%;
+  padding: 0 20px;
+  .add-box {
     max-width: 424px;
-    width: 100%;
-    padding: 0 20px;
-
+    margin: 0 auto;
     .header {
       display: flex;
       flex-direction: column;
