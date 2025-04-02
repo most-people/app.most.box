@@ -1,6 +1,6 @@
 import { Box, Group, ActionIcon, Textarea } from "@mantine/core";
 import { IconMicrophone, IconMoodSmile, IconPlus } from "@tabler/icons-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Message } from "@/hooks/useFriend";
 import { useUserStore } from "@/stores/userStore";
 
@@ -12,6 +12,13 @@ interface MessagesProps {
 export const Messages = ({ messages, onSend }: MessagesProps) => {
   const [text, setText] = useState("");
   const wallet = useUserStore((state) => state.wallet);
+
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // 消息列表更新时自动滚动到底部
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   return (
     <>
@@ -26,6 +33,7 @@ export const Messages = ({ messages, onSend }: MessagesProps) => {
             <Box className="content">{message.text}</Box>
           </Box>
         ))}
+        <Box ref={messagesEndRef} />
       </Box>
 
       <Group gap="xs" className="message-input">
