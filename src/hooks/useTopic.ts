@@ -23,20 +23,24 @@ export const useTopic = (topicWallet: MostWallet | null) => {
       setDotTopic(dot);
 
       let t = 0;
-      dot.on(DotKey, (data, timestamp) => {
-        if (timestamp > t) {
-          t = timestamp;
-          if (data) {
-            // 检查数据
-            if (
-              Array.isArray(data) &&
-              data.every((item) => typeof item?.timestamp === "number")
-            ) {
-              startTransition(() => setMessages(data));
+      dot.on(
+        DotKey,
+        (data, timestamp) => {
+          if (timestamp > t) {
+            t = timestamp;
+            if (data) {
+              // 检查数据
+              if (
+                Array.isArray(data) &&
+                data.every((item) => typeof item?.timestamp === "number")
+              ) {
+                startTransition(() => setMessages(data));
+              }
             }
           }
-        }
-      });
+        },
+        { decrypt: true }
+      );
       // 清理监听器，防止内存泄漏
       return () => {
         dot.off(DotKey);
@@ -53,7 +57,7 @@ export const useTopic = (topicWallet: MostWallet | null) => {
         timestamp,
       };
       // 更新数据
-      dotTopic.put(DotKey, [...messages, newMessage]);
+      dotTopic.put(DotKey, [...messages, newMessage], true);
     }
   };
 
@@ -62,7 +66,8 @@ export const useTopic = (topicWallet: MostWallet | null) => {
       // 更新数据
       dotTopic.put(
         DotKey,
-        messages.filter((item) => item.timestamp !== timestamp)
+        messages.filter((item) => item.timestamp !== timestamp),
+        true
       );
     }
   };

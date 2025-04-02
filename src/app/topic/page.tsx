@@ -111,8 +111,8 @@ export default function PageTopic() {
       console.log("hash 解析错误", error);
     }
   };
-
-  const { messages } = useTopic(topicWallet);
+  const [text, setText] = useState("");
+  const { messages, send } = useTopic(topicWallet);
   useEffect(() => {
     if (hash) {
       init(hash);
@@ -163,6 +163,21 @@ export default function PageTopic() {
               autosize
               maxRows={4}
               style={{ flex: 1 }}
+              value={text}
+              onChange={(event) => setText(event.currentTarget.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  // Shift + Enter: 不做处理，让默认行为（换行）生效
+                  if (event.shiftKey) return;
+
+                  // Enter: 发送消息
+                  event.preventDefault();
+                  if (text.trim()) {
+                    send(text);
+                    setText("");
+                  }
+                }
+              }}
             />
             <ActionIcon variant="subtle" color="gray" size="lg">
               <IconMicrophone size={24} />
