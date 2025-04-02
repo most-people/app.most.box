@@ -54,7 +54,7 @@ export default function RootLayout({
       <body className={`${inter.variable}`}>
         <MantineProvider defaultColorScheme="auto" theme={theme}>
           <AppProvider />
-          <Notifications />
+          <Notifications position="top-center" />
           <ModalsProvider>{children}</ModalsProvider>
         </MantineProvider>
       </body>

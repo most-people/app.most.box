@@ -102,12 +102,7 @@ export default function HomeChat() {
           <ActionIcon
             variant="subtle"
             color="gray"
-            onClick={() =>
-              notifications.show({
-                message: "开发中",
-                color: "gray",
-              })
-            }
+            onClick={() => notifications.show({ message: "开发中" })}
           >
             <IconSearch size={24} stroke={1.5} />
           </ActionIcon>

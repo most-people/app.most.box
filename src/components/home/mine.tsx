@@ -50,11 +50,7 @@ export default function HomeMine() {
             variant="subtle"
             color="gray"
             onClick={() =>
-              notifications.show({
-                title: "二维码",
-                message: "开发中",
-                color: "gray",
-              })
+              notifications.show({ title: "二维码", message: "开发中" })
             }
           >
             <Icon name="qr-code" size={18} />

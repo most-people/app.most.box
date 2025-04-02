@@ -47,5 +47,10 @@ export const theme = createTheme({
         size: "md",
       },
     },
+    Notification: {
+      defaultProps: {
+        color: "gray",
+      },
+    },
   },
 });
