@@ -93,6 +93,7 @@ export default function PageFriend() {
   });
   const [address, setAddress] = useState("");
   const dotClient = useUserStore((state) => state.dotClient);
+  const addFriend = useFriendStore((state) => state.addFriend);
 
   useEffect(() => {
     if (hash) {
@@ -107,6 +108,7 @@ export default function PageFriend() {
       const dot = dotClient.dot(address);
       dot.on("info", (data) => {
         if (data.username && data.public_key) {
+          addFriend(data.username, address, data.public_key);
           setInfo(data);
           dot.off("info");
         }

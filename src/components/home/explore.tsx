@@ -125,7 +125,7 @@ const Bubble = ({ username, address, size }: BubbleProps) => {
   return (
     <Link
       href={{
-        pathname: "/chat",
+        pathname: "/friend",
         hash: address,
       }}
       ref={bubbleRef}
