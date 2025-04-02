@@ -2,13 +2,7 @@ import { create } from "zustand";
 import { startTransition } from "react";
 import { DotMethods } from "dot.most.box";
 import { useUserStore } from "@/stores/userStore";
-
-export interface Friend {
-  name: string;
-  address: string;
-  public_key: string;
-  timestamp: number;
-}
+import { Friend } from "@/hooks/useFriend";
 
 interface FriendStore {
   inited: boolean;
@@ -47,7 +41,7 @@ export const useFriendStore = create<State>((set, get) => ({
         [key]: [value, ...prev],
       };
     }),
-  addFriend(name: string, address: string, public_key: string) {
+  addFriend(username: string, address: string, public_key: string) {
     // 检查登录
     const dot = useUserStore.getState().dot;
     if (dot) {
@@ -55,13 +49,13 @@ export const useFriendStore = create<State>((set, get) => ({
       const friends = get().friends;
       if (!friends.some((e) => e.address === address)) {
         const timestamp = Date.now();
-        const data: Friend = { name, address, public_key, timestamp };
+        const data: Friend = { username, address, public_key, timestamp };
         dot.put("friends", [data, ...friends], true);
       }
     }
   },
-  delFriend(name: string) {
-    console.log("🌊", name);
+  delFriend(address: string) {
+    console.log("🌊", address);
     // 检查登录
     // const dot = useUserStore.getState().dot;
     // if (dot) {
@@ -87,7 +81,10 @@ export const useFriendStore = create<State>((set, get) => ({
             Array.isArray(data) &&
             data.every(
               (item) =>
-                item.timestamp && item.name && item.address && item.public_key
+                item.timestamp &&
+                item.username &&
+                item.address &&
+                item.public_key
             );
           if (check) {
             startTransition(() => set({ friends: data }));

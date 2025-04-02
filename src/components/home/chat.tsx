@@ -181,7 +181,7 @@ export default function HomeChat() {
                     radius="md"
                   />
                   <Box>
-                    <Text fw={500}>{friend.name}</Text>
+                    <Text fw={500}>{friend.username}</Text>
                     <Text size="sm" c="dimmed">
                       {mp.formatAddress(friend.address)}
                     </Text>
