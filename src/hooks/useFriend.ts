@@ -1,3 +1,4 @@
+import { useFriendStore } from "@/stores/friendStore";
 import { useUserStore } from "@/stores/userStore";
 import { DotMethods, mostDecode, mostEncode } from "dot.most.box";
 import { startTransition, useEffect, useState } from "react";
@@ -19,6 +20,8 @@ export const useFriend = (friendAddress: string) => {
   const wallet = useUserStore((state) => state.wallet);
   const dotClient = useUserStore((state) => state.dotClient);
   const dot = useUserStore((state) => state.dot);
+
+  const addFriend = useFriendStore((state) => state.addFriend);
 
   const [myMessages, setMyMessages] = useState<Message[]>([]);
   const [friendMessages, setFriendMessages] = useState<Message[]>([]);
@@ -97,6 +100,7 @@ export const useFriend = (friendAddress: string) => {
           if (username && public_key) {
             // 成功获取，停止监听
             friendDot.off("info");
+            addFriend(username, friendAddress, public_key);
             setFriend({ address: friendAddress, username, public_key });
           }
         }
