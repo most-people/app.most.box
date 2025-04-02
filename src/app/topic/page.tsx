@@ -23,8 +23,14 @@ import { useTopicStore } from "@/stores/topicStore";
 import "@/app/friend/chat.scss";
 import { useTopic } from "@/hooks/useTopic";
 import { Messages } from "@/components/Messages";
-import { IconDoorExit } from "@tabler/icons-react";
+import {
+  IconCompass,
+  IconDoorExit,
+  IconRadar,
+  IconSearch,
+} from "@tabler/icons-react";
 import { useBack } from "@/hooks/useBack";
+import { notifications } from "@mantine/notifications";
 
 const JoinTopic = ({ onUpdate }: { onUpdate: (hash: string) => void }) => {
   const router = useRouter();
@@ -135,10 +141,10 @@ export default function PageTopic() {
         right={
           <Menu
             shadow="md"
-            width={140}
             position="bottom-end"
             withArrow
             arrowPosition="center"
+            disabled={!topicWallet}
           >
             <Menu.Target>
               <Avatar

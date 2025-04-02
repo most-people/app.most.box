@@ -55,17 +55,16 @@ export const useFriendStore = create<State>((set, get) => ({
     }
   },
   delFriend(address: string) {
-    console.log("🌊", address);
     // 检查登录
-    // const dot = useUserStore.getState().dot;
-    // if (dot) {
-    //   // 检查是否已经删除，避免重复删除
-    //   const topics = get().topics;
-    //   const filter = topics.filter((e) => e.name !== name);
-    //   if (filter.length < topics.length) {
-    //     dot.put("topics", filter, true);
-    //   }
-    // }
+    const dot = useUserStore.getState().dot;
+    if (dot) {
+      // 检查是否已经删除，避免重复删除
+      const topics = get().friends;
+      const filter = topics.filter((e) => e.address !== address);
+      if (filter.length < topics.length) {
+        dot.put("friends", filter, true);
+      }
+    }
   },
   init(dot: DotMethods) {
     if (get().inited) return;

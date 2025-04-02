@@ -8,6 +8,7 @@ import {
   Box,
   Space,
   Textarea,
+  Menu,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import mp from "@/constants/mp";
@@ -21,6 +22,8 @@ import { useEffect, useState } from "react";
 import { useHash } from "@mantine/hooks";
 import { useFriend } from "@/hooks/useFriend";
 import { Messages } from "@/components/Messages";
+import { IconDoorExit } from "@tabler/icons-react";
+import { useBack } from "@/hooks/useBack";
 
 const AddFriend = () => {
   const router = useRouter();
@@ -88,9 +91,18 @@ const AddFriend = () => {
 };
 
 export default function PageFriend() {
+  const back = useBack();
   const [hash] = useHash();
   const [friendAddress, setFriendAddress] = useState("");
+
   const wallet = useUserStore((state) => state.wallet);
+  const delFriend = useFriendStore((state) => state.delFriend);
+
+  const del = () => {
+    delFriend(friendAddress);
+    back();
+  };
+
   const { friend, messages, send } = useFriend(friendAddress);
 
   useEffect(() => {
@@ -113,13 +125,30 @@ export default function PageFriend() {
       <AppHeader
         title={title}
         right={
-          <Avatar
-            src={
-              friendAddress
-                ? mp.avatar(friendAddress)
-                : "/icons/pwa-512x512.png"
-            }
-          />
+          <Menu
+            shadow="md"
+            position="bottom-end"
+            withArrow
+            arrowPosition="center"
+            disabled={!friendAddress}
+          >
+            <Menu.Target>
+              <Avatar
+                style={{ cursor: "pointer" }}
+                src={
+                  friendAddress
+                    ? mp.avatar(friendAddress)
+                    : "/icons/pwa-512x512.png"
+                }
+              />
+            </Menu.Target>
+
+            <Menu.Dropdown>
+              <Menu.Item leftSection={<IconDoorExit size={24} />} onClick={del}>
+                <Text>删除好友</Text>
+              </Menu.Item>
+            </Menu.Dropdown>
+          </Menu>
         }
       />
       {friend?.public_key ? (

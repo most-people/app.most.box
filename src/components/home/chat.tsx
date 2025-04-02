@@ -107,7 +107,6 @@ export default function HomeChat() {
           </ActionIcon>
           <Menu
             shadow="md"
-            width={140}
             position="bottom-end"
             withArrow
             arrowPosition="center"
