@@ -1,19 +1,20 @@
 import { create } from "zustand";
 import { useUserStore } from "@/stores/userStore";
 import { startTransition } from "react";
-import { DotMethods } from "dot.most.box";
+import { DotMethods, mostWallet } from "dot.most.box";
 
 export interface Topic {
   name: string;
   password: string;
+  address: string;
   timestamp: number;
 }
 
 interface TopicStore {
   inited: boolean;
   topics: Topic[];
-  join: (name: string, password: string) => void;
-  quit: (name: string) => void;
+  join: (name: string, password: string, address: string) => void;
+  quit: (address: string) => void;
   init: (dot: DotMethods) => void;
   reset: () => void;
 }
@@ -46,26 +47,26 @@ export const useTopicStore = create<State>((set, get) => ({
         [key]: [value, ...prev],
       };
     }),
-  join(name: string, password: string) {
+  join(name: string, password: string, address: string) {
     // 检查登录
     const dot = useUserStore.getState().dot;
     if (dot) {
       // 检查是否已经存在，避免重复添加
       const topics = get().topics;
-      if (!topics.some((e) => e.name === name && e.password === password)) {
+      if (!topics.some((e) => e.address === address)) {
         const timestamp = Date.now();
-        const data: Topic = { name, password, timestamp };
+        const data: Topic = { name, password, address, timestamp };
         dot.put("topics", [data, ...topics], true);
       }
     }
   },
-  quit(name: string) {
+  quit(address: string) {
     // 检查登录
     const dot = useUserStore.getState().dot;
     if (dot) {
-      // 检查是否已经删除，避免重复删除
       const topics = get().topics;
-      const filter = topics.filter((e) => e.name !== name);
+      // 检查是否已经删除，避免重复删除
+      const filter = topics.filter((e) => e.address !== address);
       if (filter.length < topics.length) {
         dot.put("topics", filter, true);
       }

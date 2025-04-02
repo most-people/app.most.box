@@ -8,6 +8,7 @@ import { notifications } from "@mantine/notifications";
 import { useUserStore } from "@/stores/userStore";
 import { useTopicStore } from "@/stores/topicStore";
 import mp from "@/constants/mp";
+import { useFriendStore } from "@/stores/friendStore";
 
 export default function HomeMine() {
   const wallet = useUserStore((state) => state.wallet);
@@ -15,11 +16,13 @@ export default function HomeMine() {
 
   const exit = useUserStore((state) => state.exit);
   const resetTopic = useTopicStore((state) => state.reset);
+  const resetFriend = useFriendStore((state) => state.reset);
 
   const quit = () => {
     setTimeout(() => {
       exit();
       resetTopic();
+      resetFriend();
     }, 1000);
   };
   return (

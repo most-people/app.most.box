@@ -12,6 +12,7 @@ import {
   Space,
   Switch,
   Group,
+  Menu,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import mp from "@/constants/mp";
@@ -22,12 +23,12 @@ import { useTopicStore } from "@/stores/topicStore";
 import "@/app/friend/chat.scss";
 import { useTopic } from "@/hooks/useTopic";
 import { Messages } from "@/components/Messages";
+import { IconDoorExit } from "@tabler/icons-react";
+import { useBack } from "@/hooks/useBack";
 
 const JoinTopic = ({ onUpdate }: { onUpdate: (hash: string) => void }) => {
   const router = useRouter();
   const [visible, { toggle }] = useDisclosure(false);
-
-  const join = useTopicStore((state) => state.join);
 
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
@@ -37,7 +38,6 @@ const JoinTopic = ({ onUpdate }: { onUpdate: (hash: string) => void }) => {
     const hash = "#" + mp.enBase64(JSON.stringify([name, password]));
     router.replace(`/topic${hash}`);
     onUpdate(hash);
-    join(name, password);
   };
   return (
     <Stack gap="md" className="add-box">
@@ -91,17 +91,28 @@ const JoinTopic = ({ onUpdate }: { onUpdate: (hash: string) => void }) => {
 
 export default function PageTopic() {
   const [hash] = useHash();
+  const back = useBack();
   const [topicWallet, setTopicWallet] = useState<MostWallet | null>(null);
+  const quit = useTopicStore((state) => state.quit);
+  const join = useTopicStore((state) => state.join);
+
+  const quitTopic = () => {
+    if (topicWallet) {
+      quit(topicWallet.address);
+      back();
+    }
+  };
+
   const init = (hash: string) => {
     try {
       const [name, password] = JSON.parse(mp.deBase64(hash.slice(1)));
-      setTopicWallet(
-        mostWallet(
-          name,
-          "most.box#" + password,
-          "I know loss mnemonic will lose my wallet."
-        )
+      const topicWallet = mostWallet(
+        name,
+        "most.box#" + password,
+        "I know loss mnemonic will lose my wallet."
       );
+      setTopicWallet(topicWallet);
+      join(name, password, topicWallet.address);
     } catch (error) {
       console.log("hash 解析错误", error);
     }
@@ -122,13 +133,33 @@ export default function PageTopic() {
             : "话题"
         }
         right={
-          <Avatar
-            src={
-              topicWallet
-                ? mp.topic(topicWallet.address)
-                : "/icons/pwa-512x512.png"
-            }
-          />
+          <Menu
+            shadow="md"
+            width={140}
+            position="bottom-end"
+            withArrow
+            arrowPosition="center"
+          >
+            <Menu.Target>
+              <Avatar
+                style={{ cursor: "pointer" }}
+                src={
+                  topicWallet
+                    ? mp.topic(topicWallet.address)
+                    : "/icons/pwa-512x512.png"
+                }
+              />
+            </Menu.Target>
+
+            <Menu.Dropdown>
+              <Menu.Item
+                leftSection={<IconDoorExit size={24} />}
+                onClick={quitTopic}
+              >
+                <Text>退出话题</Text>
+              </Menu.Item>
+            </Menu.Dropdown>
+          </Menu>
         }
       />
       {topicWallet ? (

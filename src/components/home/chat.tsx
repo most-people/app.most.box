@@ -24,7 +24,6 @@ import { notifications } from "@mantine/notifications";
 import Link from "next/link";
 import { useTopicStore } from "@/stores/topicStore";
 import mp from "@/constants/mp";
-import { mostWallet } from "dot.most.box";
 import dayjs from "dayjs";
 import { useFriendStore } from "@/stores/friendStore";
 
@@ -199,9 +198,9 @@ export default function HomeChat() {
 
       <Tabs.Panel value="topics">
         <Box className="chats">
-          {topics.map((topic, index) => (
+          {topics.map((topic) => (
             <Link
-              key={index}
+              key={topic.address}
               href={{
                 pathname: "/topic",
                 hash: mp.enBase64(JSON.stringify([topic.name, topic.password])),
@@ -209,14 +208,7 @@ export default function HomeChat() {
             >
               <Group wrap="nowrap" justify="space-between" className="chat">
                 <Group wrap="nowrap">
-                  <Avatar
-                    src={mp.topic(
-                      mostWallet(topic.name, "most.box#" + topic.password)
-                        .address
-                    )}
-                    size="lg"
-                    radius="md"
-                  />
+                  <Avatar src={mp.topic(topic.address)} size="lg" radius="md" />
                   <Box>
                     <Group gap={8} wrap="nowrap">
                       <Text fw={500}>{topic.name}</Text>
