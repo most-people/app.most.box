@@ -8,10 +8,7 @@ import {
   Box,
   Space,
   Textarea,
-  ActionIcon,
-  Group,
 } from "@mantine/core";
-import { IconMicrophone, IconMoodSmile, IconPlus } from "@tabler/icons-react";
 import { useForm } from "@mantine/form";
 import mp from "@/constants/mp";
 import { AppHeader } from "@/components/AppHeader";

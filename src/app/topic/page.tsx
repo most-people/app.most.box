@@ -106,7 +106,6 @@ export default function PageTopic() {
       console.log("hash 解析错误", error);
     }
   };
-  const [text, setText] = useState("");
   const { messages, send } = useTopic(topicWallet);
   useEffect(() => {
     if (hash) {
