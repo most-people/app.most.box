@@ -24,11 +24,12 @@ import { useFriend } from "@/hooks/useFriend";
 import { Messages } from "@/components/Messages";
 import { IconDoorExit, IconTrash } from "@tabler/icons-react";
 import { useBack } from "@/hooks/useBack";
+import { notifications } from "@mantine/notifications";
 
 const AddFriend = () => {
   const router = useRouter();
   const dotClient = useUserStore((state) => state.dotClient);
-  const addFriend = useFriendStore((state) => state.addFriend);
+  const wallet = useUserStore((state) => state.wallet);
 
   const form = useForm({
     initialValues: {
@@ -48,7 +49,12 @@ const AddFriend = () => {
           if (info.username && info.public_key) {
             dot.off("info");
             router.replace(`/friend#${address}`);
-            addFriend(info.username, address, info.public_key);
+            if (!wallet) {
+              notifications.show({
+                title: "提示",
+                message: "请先登录",
+              });
+            }
           }
         });
       }
@@ -82,7 +88,7 @@ const AddFriend = () => {
             {...form.getInputProps("address")}
           />
           <Button type="submit" disabled={!form.values.address}>
-            查找好友
+            添加好友
           </Button>
         </Stack>
       </form>
@@ -118,7 +124,7 @@ export default function PageFriend() {
       ? "文件传输助手"
       : friend
       ? `${friend.username}#${friendAddress.slice(-4)}`
-      : "添加好友";
+      : "好友";
 
   return (
     <Box id="page-chat">

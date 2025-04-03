@@ -3,6 +3,7 @@ import { startTransition } from "react";
 import { type DotMethods } from "dot.most.box";
 import { useUserStore } from "@/stores/userStore";
 import { Friend } from "@/hooks/useFriend";
+import { notifications } from "@mantine/notifications";
 
 interface FriendStore {
   inited: boolean;

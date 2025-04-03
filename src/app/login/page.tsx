@@ -36,8 +36,11 @@ export default function PageLogin() {
   const connectOKX = useAccountStore((state) => state.connectOKX);
   const ethereum = useAccountStore((state) => state.ethereum);
 
+  const [connectLoading, setConnectLoading] = useState(false);
+
   const connectWallet = async () => {
     try {
+      setConnectLoading(true);
       const signer = await connectOKX();
       if (signer) {
         const address = await signer.getAddress();
@@ -45,6 +48,7 @@ export default function PageLogin() {
         login(address, sig);
       }
     } catch (error) {
+      setConnectLoading(false);
       console.log("钱包连接失败", error);
       notifications.show({ title: "提示", message: "连接失败" });
     }
@@ -59,7 +63,7 @@ export default function PageLogin() {
         }, 0);
       }
     }
-
+    setConnectLoading(true);
     back();
   };
 
@@ -96,7 +100,7 @@ export default function PageLogin() {
             value={password}
             onChange={(event) => setPassword(event.currentTarget.value)}
           />
-          <Button onClick={() => login(username, password)}>
+          <Button onClick={() => login(username, password)} variant="gradient">
             {username ? "登录" : "游客"}
           </Button>
 
@@ -105,7 +109,7 @@ export default function PageLogin() {
               <Divider label="Or" labelPosition="center" />
               <Button
                 variant="default"
-                // loading
+                loading={connectLoading}
                 loaderProps={{ type: "dots" }}
                 onClick={connectWallet}
               >

@@ -4,11 +4,6 @@ import { type DotMethods, type DotClient, type MostWallet } from "dot.most.box";
 import { isAddress } from "ethers";
 import { create } from "zustand";
 
-export interface Topic {
-  name: string;
-  timestamp: number;
-}
-
 export interface People {
   value: string;
   timestamp: number;
@@ -20,7 +15,6 @@ interface UserStore {
   dotClient: DotClient | null;
   dot: DotMethods | null;
   exit: () => void;
-  topics: Topic[];
   firstPath: string;
   onlinePeople: Record<string, People>;
   onlineUpdate: (data?: Record<string, People>) => void;
@@ -44,10 +38,9 @@ export const useUserStore = create<State>((set, get) => ({
   },
   dotClient: null,
   dot: null,
-  topics: [],
   setItem: (key, value) => set((state) => ({ ...state, [key]: value })),
   exit() {
-    set({ wallet: undefined });
+    set({ wallet: undefined, dot: null });
     localStorage.removeItem("token");
     localStorage.removeItem("tokenSecret");
   },
