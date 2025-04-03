@@ -1,6 +1,7 @@
 import { useFriendStore } from "@/stores/friendStore";
 import { useUserStore } from "@/stores/userStore";
 import { DotMethods, mostDecode, mostEncode } from "dot.most.box";
+import { useRouter } from "next/navigation";
 import { startTransition, useEffect, useState } from "react";
 
 export interface Message {
@@ -18,6 +19,7 @@ export interface Friend {
 }
 
 export const useFriend = (friendAddress: string) => {
+  const router = useRouter();
   const wallet = useUserStore((state) => state.wallet);
   const dotClient = useUserStore((state) => state.dotClient);
   const dot = useUserStore((state) => state.dot);
@@ -116,7 +118,11 @@ export const useFriend = (friendAddress: string) => {
   }, [friendAddress, dotClient]);
 
   const send = (text: string) => {
-    if (wallet && dot && friend) {
+    if (!wallet) {
+      router.push("/login");
+      return;
+    }
+    if (dot && friend) {
       const timestamp = Date.now();
       const newMessage = {
         text,

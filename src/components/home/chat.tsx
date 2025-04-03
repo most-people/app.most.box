@@ -11,6 +11,8 @@ import {
   Badge,
   ActionIcon,
   Menu,
+  Button,
+  Center,
 } from "@mantine/core";
 import {
   IconSearch,
@@ -26,12 +28,14 @@ import { useTopicStore } from "@/stores/topicStore";
 import mp from "@/constants/mp";
 import dayjs from "dayjs";
 import { useFriendStore } from "@/stores/friendStore";
+import { useUserStore } from "@/stores/userStore";
 
 export default function HomeChat() {
   const [chatTab, setChatTab] = useState<string | null>("friends");
 
   const topics = useTopicStore((state) => state.topics);
   const friends = useFriendStore((state) => state.friends);
+  const wallet = useUserStore((state) => state.wallet);
 
   const tabChange = (value: string | null) => {
     setChatTab(value);
@@ -193,6 +197,13 @@ export default function HomeChat() {
             </Link>
           ))}
         </Box>
+        {!wallet && (
+          <Center>
+            <Button variant="gradient" component={Link} href="/login">
+              去登录
+            </Button>
+          </Center>
+        )}
       </Tabs.Panel>
 
       <Tabs.Panel value="topics">
@@ -230,6 +241,13 @@ export default function HomeChat() {
             </Link>
           ))}
         </Box>
+        {!wallet && (
+          <Center>
+            <Button variant="gradient" component={Link} href="/login">
+              去登录
+            </Button>
+          </Center>
+        )}
       </Tabs.Panel>
     </Tabs>
   );

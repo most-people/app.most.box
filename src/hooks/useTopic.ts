@@ -3,12 +3,14 @@ import { type MostWallet, type DotMethods } from "dot.most.box";
 import { useUserStore } from "@/stores/userStore";
 import { HDNodeWallet } from "ethers";
 import { type Message } from "@/hooks/useFriend";
+import { useRouter } from "next/navigation";
 
 const DotKey = "messages";
 
 export const useTopic = (topicWallet: MostWallet | null) => {
   const wallet = useUserStore((state) => state.wallet);
   const dotClient = useUserStore((state) => state.dotClient);
+  const router = useRouter();
 
   const [dotTopic, setDotTopic] = useState<DotMethods | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -49,7 +51,11 @@ export const useTopic = (topicWallet: MostWallet | null) => {
   }, [topicWallet, dotClient]);
 
   const send = (text: string) => {
-    if (wallet && dotTopic) {
+    if (!wallet) {
+      router.push("/login");
+      return;
+    }
+    if (dotTopic) {
       const timestamp = Date.now();
       const newMessage = {
         text,

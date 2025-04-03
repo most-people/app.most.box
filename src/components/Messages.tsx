@@ -1,10 +1,19 @@
-import { Box, Group, ActionIcon, Textarea, Avatar } from "@mantine/core";
+import {
+  Box,
+  Group,
+  ActionIcon,
+  Textarea,
+  Avatar,
+  Center,
+  Button,
+} from "@mantine/core";
 import { IconMicrophone, IconMoodSmile, IconPlus } from "@tabler/icons-react";
 import { useEffect, useRef, useState } from "react";
 import { Message } from "@/hooks/useFriend";
 import { useUserStore } from "@/stores/userStore";
 import mp from "@/constants/mp";
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 interface MessagesProps {
   messages: Message[];
@@ -49,6 +58,14 @@ export const Messages = ({ messages, onSend }: MessagesProps) => {
         ))}
         <Box ref={messagesEndRef} />
       </Box>
+
+      {!wallet && (
+        <Center>
+          <Button mb="lg" variant="gradient" component={Link} href="/login">
+            去登录
+          </Button>
+        </Center>
+      )}
 
       <Group gap="xs" className="message-input">
         <ActionIcon variant="subtle" color="gray" size="lg">
