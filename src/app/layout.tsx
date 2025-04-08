@@ -52,11 +52,13 @@ export default function RootLayout({
   return (
     <html lang="zh-CN" suppressHydrationWarning>
       <body className={`${inter.variable}`}>
-        <MantineProvider defaultColorScheme="auto" theme={theme}>
-          <AppProvider />
-          <Notifications position="top-center" />
-          <ModalsProvider>{children}</ModalsProvider>
-        </MantineProvider>
+        <div id="app">
+          <MantineProvider defaultColorScheme="auto" theme={theme}>
+            <AppProvider />
+            <Notifications position="top-center" />
+            <ModalsProvider>{children}</ModalsProvider>
+          </MantineProvider>
+        </div>
       </body>
     </html>
   );

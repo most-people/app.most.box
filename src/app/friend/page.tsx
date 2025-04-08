@@ -104,12 +104,12 @@ export default function PageFriend() {
   const wallet = useUserStore((state) => state.wallet);
   const delFriend = useFriendStore((state) => state.delFriend);
 
-  const del = () => {
+  const removeFriend = () => {
     delFriend(friendAddress);
     back();
   };
 
-  const { friend, messages, send, clear } = useFriend(friendAddress);
+  const { friend, messages, send, clear, del } = useFriend(friendAddress);
 
   useEffect(() => {
     if (hash) {
@@ -150,7 +150,10 @@ export default function PageFriend() {
             </Menu.Target>
 
             <Menu.Dropdown>
-              <Menu.Item leftSection={<IconDoorExit size={24} />} onClick={del}>
+              <Menu.Item
+                leftSection={<IconDoorExit size={24} />}
+                onClick={removeFriend}
+              >
                 <Text>删除好友</Text>
               </Menu.Item>
               <Menu.Item leftSection={<IconTrash size={24} />} onClick={clear}>

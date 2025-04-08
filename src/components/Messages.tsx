@@ -7,6 +7,9 @@ import {
   Center,
   Button,
   Menu,
+  Text,
+  Modal,
+  Stack,
 } from "@mantine/core";
 import { useClipboard } from "@mantine/hooks";
 import {
@@ -33,6 +36,9 @@ interface MessagesProps {
 type MessagesType = "topic" | "friend";
 
 export const Messages = ({ messages, onSend, onDelete }: MessagesProps) => {
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [messageToDelete, setMessageToDelete] = useState<Message | null>(null);
+
   const clipboard = useClipboard();
 
   const [text, setText] = useState("");
@@ -67,11 +73,19 @@ export const Messages = ({ messages, onSend, onDelete }: MessagesProps) => {
 
   // 处理删除消息
   const delMessage = (message: Message) => {
-    if (onDelete) {
-      onDelete(message);
+    setMessageToDelete(message);
+    setConfirmDelete(true);
+  };
+
+  const delMessageConfirm = () => {
+    if (messageToDelete && onDelete) {
+      onDelete(messageToDelete);
     }
+    setConfirmDelete(false);
+    setMessageToDelete(null);
     setActiveMessage(null);
   };
+
   // 处理复制消息
   const copyMessage = (message: Message) => {
     clipboard.copy(message.text);
@@ -85,6 +99,30 @@ export const Messages = ({ messages, onSend, onDelete }: MessagesProps) => {
 
   return (
     <>
+      <Modal
+        opened={confirmDelete}
+        onClose={() => setConfirmDelete(false)}
+        title="确认要删除这个消息吗？"
+        centered
+      >
+        {messageToDelete && (
+          <Stack>
+            <Text size="xl">{messageToDelete.text}</Text>
+            <Text c="dimmed">{mp.formatTime(messageToDelete.timestamp)}</Text>
+          </Stack>
+        )}
+
+        <Group justify="space-between">
+          <Text c="dimmed">删除后将无法恢复</Text>
+          <Group>
+            <Button onClick={() => setConfirmDelete(false)} variant="default">
+              取消
+            </Button>
+            <Button onClick={delMessageConfirm}>删除</Button>
+          </Group>
+        </Group>
+      </Modal>
+
       <Box className="messages">
         {messages.map((message, index) => {
           const isMe = message.address === wallet?.address;

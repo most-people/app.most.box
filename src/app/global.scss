@@ -23,6 +23,7 @@ html {
 body {
   min-height: 100%;
   position: relative;
+  word-break: break-word;
 }
 body::after {
   pointer-events: none;
@@ -40,17 +41,18 @@ body::after {
   opacity: 0.06;
   z-index: 100;
 }
-body {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  word-break: break-word;
-}
 
 a {
   text-decoration: none;
   color: inherit;
+}
+
+#app {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 .app-header {
