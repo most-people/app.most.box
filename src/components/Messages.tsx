@@ -36,17 +36,18 @@ interface MessagesProps {
 type MessagesType = "topic" | "friend";
 
 export const Messages = ({ messages, onSend, onDelete }: MessagesProps) => {
-  const [confirmDelete, setConfirmDelete] = useState(false);
-  const [messageToDelete, setMessageToDelete] = useState<Message | null>(null);
-
   const clipboard = useClipboard();
 
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [messageDelete, setMessageDelete] = useState<Message | null>(null);
+  const [longTimer, setLongTimer] = useState<NodeJS.Timeout | null>(null);
+  const [activeMessage, setActiveMessage] = useState<number | null>(null);
+
   const [text, setText] = useState("");
+
   const wallet = useUserStore((state) => state.wallet);
   const pathname = usePathname();
   const messagesType = pathname.split("/")[1] as MessagesType;
-  const [longTimer, setLongTimer] = useState<NodeJS.Timeout | null>(null);
-  const [activeMessage, setActiveMessage] = useState<number | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -73,16 +74,16 @@ export const Messages = ({ messages, onSend, onDelete }: MessagesProps) => {
 
   // 处理删除消息
   const delMessage = (message: Message) => {
-    setMessageToDelete(message);
+    setMessageDelete(message);
     setConfirmDelete(true);
   };
 
   const delMessageConfirm = () => {
-    if (messageToDelete && onDelete) {
-      onDelete(messageToDelete);
+    if (messageDelete && onDelete) {
+      onDelete(messageDelete);
     }
     setConfirmDelete(false);
-    setMessageToDelete(null);
+    setMessageDelete(null);
     setActiveMessage(null);
   };
 
@@ -99,30 +100,6 @@ export const Messages = ({ messages, onSend, onDelete }: MessagesProps) => {
 
   return (
     <>
-      <Modal
-        opened={confirmDelete}
-        onClose={() => setConfirmDelete(false)}
-        title="确认要删除这个消息吗？"
-        centered
-      >
-        {messageToDelete && (
-          <Stack>
-            <Text size="xl">{messageToDelete.text}</Text>
-            <Text c="dimmed">{mp.formatTime(messageToDelete.timestamp)}</Text>
-          </Stack>
-        )}
-
-        <Group justify="space-between">
-          <Text c="dimmed">删除后将无法恢复</Text>
-          <Group>
-            <Button onClick={() => setConfirmDelete(false)} variant="default">
-              取消
-            </Button>
-            <Button onClick={delMessageConfirm}>删除</Button>
-          </Group>
-        </Group>
-      </Modal>
-
       <Box className="messages">
         {messages.map((message, index) => {
           const isMe = message.address === wallet?.address;
@@ -221,6 +198,30 @@ export const Messages = ({ messages, onSend, onDelete }: MessagesProps) => {
           <IconPlus size={24} />
         </ActionIcon>
       </Group>
+
+      <Modal
+        opened={confirmDelete}
+        onClose={() => setConfirmDelete(false)}
+        title="确认要删除这个消息吗？"
+        centered
+      >
+        {messageDelete && (
+          <Stack>
+            <Text size="xl">{messageDelete.text}</Text>
+            <Text c="dimmed">{mp.formatTime(messageDelete.timestamp)}</Text>
+          </Stack>
+        )}
+
+        <Group justify="space-between">
+          <Text c="dimmed">删除后将无法恢复</Text>
+          <Group>
+            <Button onClick={() => setConfirmDelete(false)} variant="default">
+              取消
+            </Button>
+            <Button onClick={delMessageConfirm}>删除</Button>
+          </Group>
+        </Group>
+      </Modal>
     </>
   );
 };
