@@ -117,7 +117,7 @@ export default function PageTopic() {
       console.log("hash 解析错误", error);
     }
   };
-  const { messages, send } = useTopic(topicWallet);
+  const { messages, send, del } = useTopic(topicWallet);
   useEffect(() => {
     if (hash) {
       init(hash);
@@ -163,7 +163,7 @@ export default function PageTopic() {
         }
       />
       {topicWallet ? (
-        <Messages onSend={send} messages={messages} />
+        <Messages onSend={send} messages={messages} onDelete={del} />
       ) : (
         <JoinTopic onUpdate={init} />
       )}

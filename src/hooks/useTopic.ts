@@ -67,12 +67,12 @@ export const useTopic = (topicWallet: MostWallet | null) => {
     }
   };
 
-  const del = (timestamp: number) => {
+  const del = (message: Message) => {
     if (wallet && dotTopic) {
       // 更新数据
       dotTopic.put(
         DotKey,
-        messages.filter((item) => item.timestamp !== timestamp),
+        messages.filter((item) => item.timestamp !== message.timestamp),
         true
       );
     }

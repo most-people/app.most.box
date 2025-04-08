@@ -21,8 +21,8 @@ import { Message } from "@/hooks/useFriend";
 import { useUserStore } from "@/stores/userStore";
 import mp from "@/constants/mp";
 import { usePathname } from "next/navigation";
-import Link from "next/link";
 import { notifications } from "@mantine/notifications";
+import Link from "next/link";
 
 interface MessagesProps {
   messages: Message[];
@@ -30,13 +30,15 @@ interface MessagesProps {
   onDelete?: (message: Message) => void;
 }
 
+type MessagesType = "topic" | "friend";
+
 export const Messages = ({ messages, onSend, onDelete }: MessagesProps) => {
   const clipboard = useClipboard();
 
   const [text, setText] = useState("");
   const wallet = useUserStore((state) => state.wallet);
   const pathname = usePathname();
-  const type = pathname.split("/")[1];
+  const messagesType = pathname.split("/")[1] as MessagesType;
   const [longTimer, setLongTimer] = useState<NodeJS.Timeout | null>(null);
   const [activeMessage, setActiveMessage] = useState<number | null>(null);
 
@@ -99,7 +101,7 @@ export const Messages = ({ messages, onSend, onDelete }: MessagesProps) => {
                 setActiveMessage(message.timestamp);
               }}
             >
-              {type === "topic" && (
+              {messagesType === "topic" && (
                 <Box className="avatar">
                   {message.address !== wallet?.address &&
                     message.address !== messages[index + 1]?.address && (
@@ -128,6 +130,7 @@ export const Messages = ({ messages, onSend, onDelete }: MessagesProps) => {
                     复制
                   </Menu.Item>
                   <Menu.Item
+                    disabled={!isMe && messagesType === "friend"}
                     leftSection={<IconTrash size={20} />}
                     onClick={() => delMessage(message)}
                   >

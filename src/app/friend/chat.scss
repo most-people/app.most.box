@@ -29,6 +29,7 @@
         height: 38px;
         align-self: flex-end;
         margin-bottom: 5.5px;
+        flex-shrink: 0;
       }
       .message {
         border-radius: 12px 12px 12px 2px;

@@ -138,11 +138,11 @@ export const useFriend = (friendAddress: string) => {
     }
   };
 
-  const del = (timestamp: number) => {
+  const del = (message: Message) => {
     if (wallet && dot && friend) {
       // 更新数据
       const data = JSON.stringify(
-        myMessages.filter((item) => item.timestamp !== timestamp)
+        myMessages.filter((item) => item.timestamp !== message.timestamp)
       );
       dot.put(
         friendAddress,

@@ -161,7 +161,7 @@ export default function PageFriend() {
         }
       />
       {friend?.public_key ? (
-        <Messages onSend={send} messages={messages} />
+        <Messages onSend={send} messages={messages} onDelete={del} />
       ) : (
         <AddFriend />
       )}
