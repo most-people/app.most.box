@@ -26,6 +26,7 @@ import mp from "@/constants/mp";
 import { usePathname } from "next/navigation";
 import { notifications } from "@mantine/notifications";
 import Link from "next/link";
+import dayjs from "dayjs";
 
 interface MessagesProps {
   messages: Message[];
@@ -208,7 +209,10 @@ export const Messages = ({ messages, onSend, onDelete }: MessagesProps) => {
         {messageDelete && (
           <Stack>
             <Text size="xl">{messageDelete.text}</Text>
-            <Text c="dimmed">{mp.formatTime(messageDelete.timestamp)}</Text>
+            <Text c="dimmed">
+              {dayjs(messageDelete.timestamp).fromNow()}：
+              {mp.formatTime(messageDelete.timestamp)}
+            </Text>
           </Stack>
         )}
 

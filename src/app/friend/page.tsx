@@ -111,7 +111,10 @@ export default function PageFriend() {
 
   const { friend, messages, send, clear, del } = useFriend(friendAddress);
 
+  const [mounted, setMounted] = useState(false);
+
   useEffect(() => {
+    setMounted(true);
     if (hash) {
       if (isAddress(hash.slice(1))) {
         setFriendAddress(hash.slice(1));
@@ -163,11 +166,10 @@ export default function PageFriend() {
           </Menu>
         }
       />
-      {friend?.public_key ? (
+      {friend?.public_key && (
         <Messages onSend={send} messages={messages} onDelete={del} />
-      ) : (
-        <AddFriend />
       )}
+      {mounted && !friendAddress && <AddFriend />}
     </Box>
   );
 }

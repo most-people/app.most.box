@@ -118,7 +118,11 @@ export default function PageTopic() {
     }
   };
   const { messages, send, del } = useTopic(topicWallet);
+
+  const [mounted, setMounted] = useState(false);
+
   useEffect(() => {
+    setMounted(true);
     if (hash) {
       init(hash);
     }
@@ -162,11 +166,10 @@ export default function PageTopic() {
           </Menu>
         }
       />
-      {topicWallet ? (
+      {topicWallet && (
         <Messages onSend={send} messages={messages} onDelete={del} />
-      ) : (
-        <JoinTopic onUpdate={init} />
       )}
+      {mounted && !topicWallet && <JoinTopic onUpdate={init} />}
     </Box>
   );
 }
