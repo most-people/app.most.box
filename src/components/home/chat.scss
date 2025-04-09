@@ -40,10 +40,9 @@
   .chats {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(min(480px, 100%), 1fr));
-    gap: 10px;
     justify-content: start;
     .chat {
-      padding: 0 20px;
+      padding: 5px 20px;
       cursor: pointer;
       &:hover {
         background-color: var(--tab-background);

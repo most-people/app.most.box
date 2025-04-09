@@ -36,7 +36,7 @@ const JoinTopic = ({ onUpdate }: { onUpdate: (hash: string) => void }) => {
 
   const submit = () => {
     const hash = "#" + mp.topicJoin(name, password);
-    router.replace(`/topic${hash}`);
+    router.replace("/topic" + hash);
     onUpdate(hash);
   };
   return (
@@ -105,7 +105,7 @@ export default function PageTopic() {
 
   const init = (hash: string) => {
     try {
-      let [name, password] = mp.topicSplit(hash);
+      const [name, password] = mp.topicSplit(hash);
       const topicWallet = mostWallet(
         name,
         "most.box#" + password,
