@@ -213,7 +213,7 @@ export default function HomeChat() {
               key={topic.address}
               href={{
                 pathname: "/topic",
-                hash: mp.enBase64(JSON.stringify([topic.name, topic.password])),
+                hash: mp.topicJoin(topic.name, topic.password),
               }}
             >
               <Group wrap="nowrap" justify="space-between" className="chat">

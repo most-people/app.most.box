@@ -188,6 +188,17 @@ const login = (username: string, password: string): MostWallet | null => {
   return null;
 };
 
+const topicJoin = (name: string, password: string) => {
+  return password ? [name, password].join("➔") : name;
+};
+const topicSplit = (hash: string) => {
+  if (hash.startsWith("#")) {
+    hash = hash.substring(1);
+  }
+  const [name, password] = decodeURIComponent(hash).split("➔");
+  return [name || "", password || ""];
+};
+
 const mp = {
   topic,
   avatar,
@@ -201,6 +212,8 @@ const mp = {
   verifyJWT,
   login,
   ZeroAddress,
+  topicJoin,
+  topicSplit,
 };
 
 export default mp;

@@ -35,7 +35,7 @@ const JoinTopic = ({ onUpdate }: { onUpdate: (hash: string) => void }) => {
   const [isEncrypted, setIsEncrypted] = useState(false);
 
   const submit = () => {
-    const hash = "#" + mp.enBase64(JSON.stringify([name, password]));
+    const hash = "#" + mp.topicJoin(name, password);
     router.replace(`/topic${hash}`);
     onUpdate(hash);
   };
@@ -105,7 +105,7 @@ export default function PageTopic() {
 
   const init = (hash: string) => {
     try {
-      const [name, password] = JSON.parse(mp.deBase64(hash.slice(1)));
+      let [name, password] = mp.topicSplit(hash);
       const topicWallet = mostWallet(
         name,
         "most.box#" + password,
