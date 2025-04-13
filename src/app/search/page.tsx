@@ -1,10 +1,15 @@
 "use client";
-import { useSearchParams } from "next/navigation";
 import { AppHeader } from "@/components/AppHeader";
 import { Box, Center, Space, Text } from "@mantine/core";
+import { useEffect, useState } from "react";
 
 export default function UpdatePage() {
-  const query = useSearchParams();
+  const [keyword, setKeyword] = useState("");
+
+  useEffect(() => {
+    const query = new URLSearchParams(window.location.search);
+    setKeyword(query.get("q") || "");
+  }, []);
 
   return (
     <Box>
@@ -12,7 +17,7 @@ export default function UpdatePage() {
       <Center>
         <Text size="lg">Search</Text>
         <Space w={10}></Space>
-        <Text c="dimmed">{query.get("q")}</Text>
+        <Text c="dimmed">{keyword}</Text>
       </Center>
     </Box>
   );
