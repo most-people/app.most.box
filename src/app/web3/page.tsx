@@ -7,6 +7,7 @@ import {
   Anchor,
   ActionIcon,
   Group,
+  Divider,
 } from "@mantine/core";
 import { useUserStore } from "@/stores/userStore";
 import { AppHeader } from "@/components/AppHeader";
@@ -15,7 +16,14 @@ import Link from "next/link";
 
 export default function Web3Page() {
   const wallet = useUserStore((state) => state.wallet);
+  const dot = useUserStore((state) => state.dot);
   const [showX25519, setShowX25519] = useState(false);
+
+  const clearNotify = () => {
+    if (dot) {
+      dot.put("notify", {});
+    }
+  };
 
   return (
     <Container>
@@ -55,7 +63,13 @@ export default function Web3Page() {
             {showX25519 ? <IconEye size={16} /> : <IconEyeOff size={16} />}
           </ActionIcon>
         </Group>
-        <Text>{showX25519 ? wallet?.private_key : "-"}</Text>
+        <Text>{showX25519 ? wallet?.private_key || "-" : "-"}</Text>
+
+        <Divider my="md" />
+
+        <Anchor onClick={clearNotify}>
+          <Text>清除通知</Text>
+        </Anchor>
       </Stack>
     </Container>
   );

@@ -8,6 +8,13 @@ import { DotClient, type DotMethods } from "dot.most.box";
 import { HDNodeWallet } from "ethers";
 import { useEffect } from "react";
 
+// 播放提示音
+const playSound = () => {
+  const audio = new Audio("/sounds/notification.mp3"); // 替换为你的提示音文件路径
+  audio.play().catch(() => {});
+  navigator.vibrate(200); // 振动 200 毫秒
+};
+
 export default function AppProvider() {
   const setItem = useUserStore((state) => state.setItem);
   const initWallet = useUserStore((state) => state.initWallet);
@@ -74,6 +81,15 @@ export default function AppProvider() {
             });
           }
           dot.off("info");
+        });
+        let t = 0;
+        dot.on("notify", (data, timestamp) => {
+          if (timestamp > t) {
+            t = timestamp;
+            setItem("notify", data);
+            // 叮咚
+            playSound();
+          }
         });
       }
     }

@@ -1,18 +1,18 @@
 import "./chat.scss";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Box,
   Text,
   Group,
   Avatar,
   Tabs,
-  rem,
   Flex,
   Badge,
   ActionIcon,
   Menu,
   Button,
   Center,
+  Divider,
 } from "@mantine/core";
 import {
   IconSearch,
@@ -29,6 +29,59 @@ import mp from "@/constants/mp";
 import dayjs from "dayjs";
 import { useFriendStore } from "@/stores/friendStore";
 import { useUserStore } from "@/stores/userStore";
+import { Friend } from "@/hooks/useFriend";
+
+interface FriendItemProps {
+  friend: Friend;
+}
+
+export const FriendItem = ({ friend }: FriendItemProps) => {
+  const notify = useUserStore((state) => state.notify);
+  const readNotify = useUserStore((state) => state.readNotify);
+
+  return (
+    <Link
+      onClick={() => readNotify(friend.address)}
+      href={{
+        pathname: "/friend",
+        hash: friend.address,
+      }}
+    >
+      <Group wrap="nowrap" justify="space-between" className="chat">
+        <Group wrap="nowrap">
+          <Avatar src={mp.avatar(friend.address)} size="lg" radius="md" />
+          <Box>
+            <Group gap={8} wrap="nowrap">
+              <Text fw={500}>{friend.username}</Text>
+
+              {notify[friend.address] && (
+                <Box style={{ position: "relative" }}>
+                  <Badge
+                    color="red"
+                    size="xs"
+                    variant="filled"
+                    className="badge-notify"
+                  />
+                </Box>
+              )}
+            </Group>
+            <Text size="sm" c="dimmed">
+              {notify[friend.address]
+                ? notify[friend.address].value.text
+                : mp.formatAddress(friend.address)}
+            </Text>
+          </Box>
+        </Group>
+        <Flex direction="column" align="flex-end" gap={5}>
+          <Text size="xs" c="dimmed">
+            {notify[friend.address] &&
+              mp.formatDate(notify[friend.address].timestamp)}
+          </Text>
+        </Flex>
+      </Group>
+    </Link>
+  );
+};
 
 export default function HomeChat() {
   const [chatTab, setChatTab] = useState<string | null>("friends");
@@ -36,6 +89,7 @@ export default function HomeChat() {
   const topics = useTopicStore((state) => state.topics);
   const friends = useFriendStore((state) => state.friends);
   const wallet = useUserStore((state) => state.wallet);
+  const notify = useUserStore((state) => state.notify);
 
   const tabChange = (value: string | null) => {
     setChatTab(value);
@@ -47,6 +101,34 @@ export default function HomeChat() {
     setChatTab(activeTab || "friends");
   }, []);
 
+  const friendNotify = useMemo(() => {
+    for (const address in notify) {
+      const item = notify[address];
+      if (item.value.type === "friend") {
+        return 1;
+      }
+    }
+    return 0;
+  }, [notify]);
+
+  const greeters = useMemo(() => {
+    const list: Friend[] = [];
+    for (const address in notify) {
+      const item = notify[address];
+      if (item.value.type === "friend") {
+        if (friends.some((friend) => friend.address === address) === false) {
+          list.push({
+            address,
+            username: item.value.username,
+            public_key: item.value.public_key,
+            timestamp: item.timestamp,
+          });
+        }
+      }
+    }
+    return list;
+  }, [notify, friends]);
+
   return (
     <Tabs value={chatTab} onChange={tabChange} variant="outline">
       <Box className="chat-header">
@@ -55,22 +137,16 @@ export default function HomeChat() {
             value="friends"
             fw={500}
             rightSection={
-              <Box style={{ position: "relative" }}>
-                <Badge
-                  color="red"
-                  size="xs"
-                  variant="filled"
-                  style={{
-                    position: "absolute",
-                    top: -8,
-                    right: -8,
-                    padding: 0,
-                    width: rem(8),
-                    height: rem(8),
-                    borderRadius: rem(4),
-                  }}
-                />
-              </Box>
+              friendNotify > 0 && (
+                <Box style={{ position: "relative" }}>
+                  <Badge
+                    color="red"
+                    size="xs"
+                    variant="filled"
+                    className="badge-notify"
+                  />
+                </Box>
+              )
             }
           >
             好友
@@ -84,15 +160,7 @@ export default function HomeChat() {
                   color="red"
                   size="xs"
                   variant="filled"
-                  style={{
-                    position: "absolute",
-                    top: -8,
-                    right: -8,
-                    padding: 0,
-                    width: rem(8),
-                    height: rem(8),
-                    borderRadius: rem(4),
-                  }}
+                  className="badge-notify"
                 />
               </Box>
             }
@@ -158,43 +226,15 @@ export default function HomeChat() {
       <Tabs.Panel value="friends">
         <Box className="chats">
           {friends.map((friend) => (
-            <Link
-              key={friend.address}
-              href={{
-                pathname: "/friend",
-                hash: friend.address,
-              }}
-            >
-              <Group
-                key={friend.address}
-                wrap="nowrap"
-                justify="space-between"
-                className="chat"
-              >
-                <Group wrap="nowrap">
-                  <Avatar
-                    src={mp.avatar(friend.address)}
-                    size="lg"
-                    radius="md"
-                  />
-                  <Box>
-                    <Text fw={500}>{friend.username}</Text>
-                    <Text size="sm" c="dimmed">
-                      {mp.formatAddress(friend.address)}
-                    </Text>
-                  </Box>
-                </Group>
-                <Flex direction="column" align="flex-end" gap={5}>
-                  <Text size="xs" c="dimmed">
-                    {dayjs(friend.timestamp).fromNow()}
-                  </Text>
-
-                  <Badge color="red" size="md" variant="filled" radius="xl">
-                    {99}
-                  </Badge>
-                </Flex>
-              </Group>
-            </Link>
+            <FriendItem key={friend.address} friend={friend} />
+          ))}
+        </Box>
+        {greeters.length > 0 && (
+          <Divider my="lg" label="打招呼" labelPosition="center" />
+        )}
+        <Box className="chats">
+          {greeters.map((friend) => (
+            <FriendItem key={friend.address} friend={friend} />
           ))}
         </Box>
         {!wallet && (
@@ -222,10 +262,14 @@ export default function HomeChat() {
                   <Box>
                     <Group gap={8} wrap="nowrap">
                       <Text fw={500}>{topic.name}</Text>
-
-                      <Badge color="red" size="sm" variant="filled">
-                        18
-                      </Badge>
+                      <Box style={{ position: "relative" }}>
+                        <Badge
+                          color="red"
+                          size="xs"
+                          variant="filled"
+                          className="badge-notify"
+                        />
+                      </Box>
                     </Group>
                     <Text size="sm" c="dimmed">
                       100 人参与

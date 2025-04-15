@@ -15,7 +15,7 @@ export interface Friend {
   address: string;
   username: string;
   public_key: string;
-  timestamp?: number;
+  timestamp: number;
 }
 
 export const useFriend = (friendAddress: string) => {
@@ -106,7 +106,12 @@ export const useFriend = (friendAddress: string) => {
             // 成功获取，停止监听
             friendDot.off("info");
             addFriend(username, friendAddress, public_key);
-            setFriend({ address: friendAddress, username, public_key });
+            setFriend({
+              address: friendAddress,
+              username,
+              public_key,
+              timestamp,
+            });
           }
         }
       });
@@ -130,11 +135,21 @@ export const useFriend = (friendAddress: string) => {
         timestamp,
       };
       // 更新数据
-      const data = JSON.stringify([...myMessages, newMessage]);
       dot.put(
         friendAddress,
-        mostEncode(data, friend.public_key, wallet.private_key)
+        mostEncode(
+          JSON.stringify([...myMessages, newMessage]),
+          friend.public_key,
+          wallet.private_key
+        )
       );
+
+      dot.notify(friendAddress, {
+        type: "friend",
+        text,
+        public_key: wallet.public_key,
+        username: wallet.username,
+      });
     }
   };
 

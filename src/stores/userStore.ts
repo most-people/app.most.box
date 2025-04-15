@@ -9,6 +9,17 @@ export interface People {
   timestamp: number;
 }
 
+export interface Notify {
+  sig: string;
+  timestamp: number;
+  value: {
+    type: "friend";
+    text: string;
+    public_key: string;
+    username: string;
+  };
+}
+
 interface UserStore {
   wallet?: MostWallet;
   initWallet: () => void;
@@ -18,6 +29,8 @@ interface UserStore {
   firstPath: string;
   onlinePeople: Record<string, People>;
   onlineUpdate: (data?: Record<string, People>) => void;
+  notify: Record<string, Notify>;
+  readNotify: (address: string) => void;
 }
 
 interface State extends UserStore {
@@ -39,11 +52,6 @@ export const useUserStore = create<State>((set, get) => ({
   dotClient: null,
   dot: null,
   setItem: (key, value) => set((state) => ({ ...state, [key]: value })),
-  exit() {
-    set({ wallet: undefined, dot: null });
-    localStorage.removeItem("token");
-    localStorage.removeItem("tokenSecret");
-  },
   firstPath: "",
   onlinePeople: {},
   onlineUpdate(data?: Record<string, People>) {
@@ -70,5 +78,19 @@ export const useUserStore = create<State>((set, get) => ({
       }
       set({ onlinePeople: dict });
     }
+  },
+  notify: {},
+  readNotify(address: string) {
+    const dot = get().dot;
+    const newNotify = { ...get().notify };
+    if (newNotify[address] && dot) {
+      delete newNotify[address];
+      dot.put("notify", newNotify);
+    }
+  },
+  exit() {
+    set({ wallet: undefined, dot: null, notify: {} });
+    localStorage.removeItem("token");
+    localStorage.removeItem("tokenSecret");
   },
 }));
