@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { NotifyValue, useUserStore } from "@/stores/userStore";
+import { Notify, NotifyValue, useUserStore } from "@/stores/userStore";
 import { startTransition } from "react";
 import { type DotMethods } from "dot.most.box";
 
@@ -13,7 +13,7 @@ export interface Topic {
 interface TopicStore {
   inited: boolean;
   topics: Topic[];
-  topicInfo: Record<string, Record<string, NotifyValue>>;
+  topicInfo: Record<string, Record<string, Notify>>;
   join: (name: string, password: string, address: string) => void;
   quit: (address: string) => void;
   init: (dot: DotMethods) => void;
@@ -61,10 +61,10 @@ export const useTopicStore = create<State>((set, get) => ({
         const data: Topic = { name, password, address, timestamp };
         dot.put("topics", [data, ...topics], true);
         const value: NotifyValue = {
-          type: "join",
+          type: "topic",
           username: wallet.username,
           public_key: wallet.public_key,
-          text: "",
+          text: "来了",
         };
         dot.notify(address, value);
       }

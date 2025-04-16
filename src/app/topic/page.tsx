@@ -13,8 +13,9 @@ import {
   Switch,
   Group,
   Menu,
+  Flex,
 } from "@mantine/core";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import mp from "@/constants/mp";
 import { type MostWallet, mostWallet } from "dot.most.box";
 import { AppHeader } from "@/components/AppHeader";
@@ -23,8 +24,9 @@ import { useTopicStore } from "@/stores/topicStore";
 import "@/app/friend/chat.scss";
 import { useTopic } from "@/hooks/useTopic";
 import { Messages } from "@/components/Messages";
-import { IconDoorExit, IconTrash } from "@tabler/icons-react";
+import { IconDoorExit, IconTrash, IconUsers } from "@tabler/icons-react";
 import { useBack } from "@/hooks/useBack";
+import { Friend } from "@/hooks/useFriend";
 
 const JoinTopic = ({ onUpdate }: { onUpdate: (hash: string) => void }) => {
   const router = useRouter();
@@ -95,6 +97,7 @@ export default function PageTopic() {
   const [topicWallet, setTopicWallet] = useState<MostWallet | null>(null);
   const quit = useTopicStore((state) => state.quit);
   const join = useTopicStore((state) => state.join);
+  const topicInfo = useTopicStore((state) => state.topicInfo);
 
   const quitTopic = () => {
     if (topicWallet) {
@@ -120,6 +123,7 @@ export default function PageTopic() {
   const { messages, send, clear, del } = useTopic(topicWallet);
 
   const [mounted, setMounted] = useState(false);
+  const [showMember, setShowMember] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -127,6 +131,22 @@ export default function PageTopic() {
       init(hash);
     }
   }, [hash]);
+
+  const members = useMemo(() => {
+    const list: Friend[] = [];
+    if (topicInfo && topicWallet) {
+      for (const address in topicInfo[topicWallet.address]) {
+        const item = topicInfo[topicWallet.address][address];
+        list.push({
+          address,
+          username: item.value.username,
+          public_key: item.value.public_key,
+          timestamp: item.timestamp,
+        });
+      }
+    }
+    return list;
+  }, [topicInfo, topicWallet]);
 
   return (
     <Box id="page-chat">
@@ -157,18 +177,45 @@ export default function PageTopic() {
 
             <Menu.Dropdown>
               <Menu.Item
+                leftSection={<IconUsers size={24} />}
+                onClick={() => setShowMember(!showMember)}
+              >
+                <Text>{showMember ? "隐藏" : "显示"}成员</Text>
+              </Menu.Item>
+
+              <Menu.Item leftSection={<IconTrash size={24} />} onClick={clear}>
+                <Text>清空我的消息</Text>
+              </Menu.Item>
+
+              <Menu.Item
                 leftSection={<IconDoorExit size={24} />}
                 onClick={quitTopic}
               >
                 <Text>退出话题</Text>
               </Menu.Item>
-              <Menu.Item leftSection={<IconTrash size={24} />} onClick={clear}>
-                <Text>清空我的消息</Text>
-              </Menu.Item>
             </Menu.Dropdown>
           </Menu>
         }
       />
+
+      {showMember && (
+        <Group justify="center" pb={10} pt={10}>
+          {members.map((member) => {
+            return (
+              <Flex
+                key={member.address}
+                direction="column"
+                align="center"
+                gap={2}
+              >
+                <Avatar src={mp.avatar(member.address)} />
+                <Text size="sm">{member.username}</Text>
+              </Flex>
+            );
+          })}
+        </Group>
+      )}
+
       {topicWallet && (
         <Messages onSend={send} messages={messages} onDelete={del} />
       )}

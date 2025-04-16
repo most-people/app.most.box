@@ -118,7 +118,14 @@ export const Messages = ({ messages, onSend, onDelete }: MessagesProps) => {
               }}
             >
               {messagesType === "topic" && (
-                <Box className="avatar">
+                <Box
+                  className="avatar"
+                  component={Link}
+                  href={{
+                    pathname: "/friend",
+                    hash: message.address,
+                  }}
+                >
                   {message.address !== wallet?.address &&
                     message.address !== messages[index + 1]?.address && (
                       <Avatar src={mp.avatar(message.address)} />

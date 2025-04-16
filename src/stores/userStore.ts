@@ -10,7 +10,7 @@ export interface People {
 }
 
 export interface NotifyValue {
-  type: "friend" | "join";
+  type: "friend" | "topic";
   username: string;
   public_key: string;
   text: string;
