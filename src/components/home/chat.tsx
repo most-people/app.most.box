@@ -244,6 +244,14 @@ export default function HomeChat() {
             </Button>
           </Center>
         )}
+
+        {wallet && friends.length === 0 && greeters.length === 0 && (
+          <Center>
+            <Button variant="gradient" component={Link} href="/friend">
+              添加好友
+            </Button>
+          </Center>
+        )}
       </Tabs.Panel>
 
       <Tabs.Panel value="topics">
@@ -289,6 +297,14 @@ export default function HomeChat() {
           <Center>
             <Button variant="gradient" component={Link} href="/login">
               去登录
+            </Button>
+          </Center>
+        )}
+
+        {wallet && topics.length === 0 && (
+          <Center>
+            <Button variant="gradient" component={Link} href="/topic">
+              加入话题
             </Button>
           </Center>
         )}
