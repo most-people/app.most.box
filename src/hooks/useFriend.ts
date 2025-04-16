@@ -1,5 +1,5 @@
 import { useFriendStore } from "@/stores/friendStore";
-import { useUserStore } from "@/stores/userStore";
+import { NotifyValue, useUserStore } from "@/stores/userStore";
 import { DotMethods, mostDecode, mostEncode } from "dot.most.box";
 import { useRouter } from "next/navigation";
 import { startTransition, useEffect, useState } from "react";
@@ -143,13 +143,13 @@ export const useFriend = (friendAddress: string) => {
           wallet.private_key
         )
       );
-
-      dot.notify(friendAddress, {
+      const value: NotifyValue = {
         type: "friend",
-        text,
-        public_key: wallet.public_key,
         username: wallet.username,
-      });
+        public_key: wallet.public_key,
+        text,
+      };
+      dot.notify(friendAddress, value);
     }
   };
 

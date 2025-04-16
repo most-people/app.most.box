@@ -78,5 +78,16 @@ export const useTopic = (topicWallet: MostWallet | null) => {
     }
   };
 
-  return { messages, send, del };
+  const clear = () => {
+    if (wallet && dotTopic) {
+      // 过滤掉当前用户发送的所有消息
+      const filter = messages.filter(
+        (message) => message.address !== wallet.address
+      );
+      // 更新数据
+      dotTopic.put(DotKey, filter, true);
+    }
+  };
+
+  return { messages, send, clear, del };
 };

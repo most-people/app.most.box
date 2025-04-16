@@ -9,15 +9,17 @@ export interface People {
   timestamp: number;
 }
 
+export interface NotifyValue {
+  type: "friend" | "join";
+  username: string;
+  public_key: string;
+  text: string;
+}
+
 export interface Notify {
   sig: string;
   timestamp: number;
-  value: {
-    type: "friend";
-    text: string;
-    public_key: string;
-    username: string;
-  };
+  value: NotifyValue;
 }
 
 interface UserStore {

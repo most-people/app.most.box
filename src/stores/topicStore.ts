@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { useUserStore } from "@/stores/userStore";
+import { NotifyValue, useUserStore } from "@/stores/userStore";
 import { startTransition } from "react";
 import { type DotMethods } from "dot.most.box";
 
@@ -50,13 +50,21 @@ export const useTopicStore = create<State>((set, get) => ({
   join(name: string, password: string, address: string) {
     // 检查登录
     const dot = useUserStore.getState().dot;
-    if (dot) {
+    const wallet = useUserStore.getState().wallet;
+    if (dot && wallet) {
       // 检查是否已经存在，避免重复添加
       const topics = get().topics;
       if (!topics.some((e) => e.address === address)) {
         const timestamp = Date.now();
         const data: Topic = { name, password, address, timestamp };
         dot.put("topics", [data, ...topics], true);
+        const value: NotifyValue = {
+          type: "join",
+          username: wallet.username,
+          public_key: wallet.public_key,
+          text: "",
+        };
+        dot.notify(address, value);
       }
     }
   },

@@ -23,7 +23,7 @@ import { useTopicStore } from "@/stores/topicStore";
 import "@/app/friend/chat.scss";
 import { useTopic } from "@/hooks/useTopic";
 import { Messages } from "@/components/Messages";
-import { IconDoorExit } from "@tabler/icons-react";
+import { IconDoorExit, IconTrash } from "@tabler/icons-react";
 import { useBack } from "@/hooks/useBack";
 
 const JoinTopic = ({ onUpdate }: { onUpdate: (hash: string) => void }) => {
@@ -117,7 +117,7 @@ export default function PageTopic() {
       console.log("hash 解析错误", error);
     }
   };
-  const { messages, send, del } = useTopic(topicWallet);
+  const { messages, send, clear, del } = useTopic(topicWallet);
 
   const [mounted, setMounted] = useState(false);
 
@@ -161,6 +161,9 @@ export default function PageTopic() {
                 onClick={quitTopic}
               >
                 <Text>退出话题</Text>
+              </Menu.Item>
+              <Menu.Item leftSection={<IconTrash size={24} />} onClick={clear}>
+                <Text>清空我的消息</Text>
               </Menu.Item>
             </Menu.Dropdown>
           </Menu>
