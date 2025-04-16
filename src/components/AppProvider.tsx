@@ -9,10 +9,14 @@ import { HDNodeWallet } from "ethers";
 import { useEffect } from "react";
 
 // 播放提示音
-const playSound = () => {
-  const audio = new Audio("/sounds/notification.mp3"); // 替换为你的提示音文件路径
-  audio.play().catch(() => {});
-  navigator.vibrate(200); // 振动 200 毫秒
+const playSound = async () => {
+  try {
+    const audio = new Audio("/sounds/notification.mp3"); // 替换为你的提示音文件路径
+    await audio.play();
+    navigator.vibrate(200); // 振动 200 毫秒
+  } catch (error) {
+    console.log("播放提示音时出错:", error);
+  }
 };
 
 export default function AppProvider() {
