@@ -28,7 +28,7 @@ import { useTopicStore } from "@/stores/topicStore";
 import mp from "@/constants/mp";
 import dayjs from "dayjs";
 import { useFriendStore } from "@/stores/friendStore";
-import { useUserStore } from "@/stores/userStore";
+import { Notify, useUserStore } from "@/stores/userStore";
 import { Friend } from "@/hooks/useFriend";
 
 interface FriendItemProps {
@@ -130,6 +130,31 @@ export default function HomeChat() {
     }
     return list;
   }, [notify, friends]);
+
+  const getInfo = (address: string) => {
+    const info = {
+      members: 0,
+      time: "",
+      lastMessage: "",
+    };
+    if (topicInfo[address]) {
+      info.members = Object.keys(topicInfo[address]).length;
+      let notify: Notify | null = null;
+      let t = 0;
+      for (const key in topicInfo[address]) {
+        const item = topicInfo[address][key];
+        if (item.timestamp > t) {
+          t = item.timestamp;
+          notify = item;
+        }
+      }
+      if (notify) {
+        info.lastMessage = `${notify.value.username}: ${notify.value.text}`;
+        info.time = dayjs(notify.timestamp).fromNow();
+      }
+    }
+    return info;
+  };
 
   return (
     <Tabs value={chatTab} onChange={tabChange} variant="outline">
@@ -281,16 +306,18 @@ export default function HomeChat() {
                         />
                       </Box>
                     </Group>
-                    {topicInfo[topic.address] && (
-                      <Text size="sm" c="dimmed">
-                        {Object.keys(topicInfo[topic.address]).length} 人参与
-                      </Text>
-                    )}
+
+                    <Text size="sm" c="dimmed">
+                      {getInfo(topic.address).lastMessage}
+                    </Text>
                   </Box>
                 </Group>
                 <Flex direction="column" align="flex-end" gap={5}>
                   <Text size="xs" c="dimmed">
-                    {dayjs(topic.timestamp).fromNow()}
+                    {getInfo(topic.address).time}
+                  </Text>
+                  <Text size="xs" c="dimmed">
+                    {getInfo(topic.address).members} 人
                   </Text>
                 </Flex>
               </Group>
