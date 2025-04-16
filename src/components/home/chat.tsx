@@ -335,12 +335,17 @@ export default function HomeChat() {
                       )}
                     </Group>
 
-                    <Text size="sm" c="dimmed">
+                    <Text size="sm" c="dimmed" className="text-overflow-2">
                       {topicsInfo[topic.address]?.lastMessage}
                     </Text>
                   </Box>
                 </Group>
-                <Flex direction="column" align="flex-end" gap={5}>
+                <Flex
+                  direction="column"
+                  align="flex-end"
+                  gap={5}
+                  style={{ flexShrink: 0 }}
+                >
                   <Text size="xs" c="dimmed">
                     {topicsInfo[topic.address]?.time}
                   </Text>
