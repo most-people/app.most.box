@@ -13,6 +13,7 @@ export interface Topic {
 interface TopicStore {
   inited: boolean;
   topics: Topic[];
+  topicInfo: Record<string, Record<string, NotifyValue>>;
   join: (name: string, password: string, address: string) => void;
   quit: (address: string) => void;
   init: (dot: DotMethods) => void;
@@ -34,6 +35,7 @@ interface State extends TopicStore {
 export const useTopicStore = create<State>((set, get) => ({
   inited: false,
   topics: [],
+  topicInfo: {},
   setItem: (key, value) => set((state) => ({ ...state, [key]: value })),
   pushItem: (key, value) =>
     set((state) => {
@@ -94,7 +96,23 @@ export const useTopicStore = create<State>((set, get) => ({
             Array.isArray(data) &&
             data.every((item) => item.timestamp && item.name);
           if (check) {
-            startTransition(() => set({ topics: data }));
+            const topics: Topic[] = data;
+            startTransition(() => set({ topics }));
+            // 查询详情
+            const dotClient = useUserStore.getState().dotClient;
+            if (dotClient) {
+              for (const topic of topics) {
+                const topicDot = dotClient.dot(topic.address);
+                topicDot.on("notify", (data) => {
+                  if (data) {
+                    set((state) => ({
+                      topicInfo: { ...state.topicInfo, [topic.address]: data },
+                    }));
+                    topicDot.off("notify");
+                  }
+                });
+              }
+            }
           }
         }
       },

@@ -87,6 +87,7 @@ export default function HomeChat() {
   const [chatTab, setChatTab] = useState<string | null>("friends");
 
   const topics = useTopicStore((state) => state.topics);
+  const topicInfo = useTopicStore((state) => state.topicInfo);
   const friends = useFriendStore((state) => state.friends);
   const wallet = useUserStore((state) => state.wallet);
   const notify = useUserStore((state) => state.notify);
@@ -279,9 +280,11 @@ export default function HomeChat() {
                         />
                       </Box>
                     </Group>
-                    <Text size="sm" c="dimmed">
-                      100 人参与
-                    </Text>
+                    {topicInfo[topic.address] && (
+                      <Text size="sm" c="dimmed">
+                        {Object.keys(topicInfo[topic.address]).length} 人参与
+                      </Text>
+                    )}
                   </Box>
                 </Group>
                 <Flex direction="column" align="flex-end" gap={5}>
