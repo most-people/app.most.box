@@ -37,11 +37,11 @@ interface FriendItemProps {
 
 export const FriendItem = ({ friend }: FriendItemProps) => {
   const notify = useUserStore((state) => state.notify);
-  const readNotify = useUserStore((state) => state.readNotify);
+  const friendRead = useUserStore((state) => state.friendRead);
 
   return (
     <Link
-      onClick={() => readNotify(friend.address)}
+      onClick={() => friendRead(friend.address)}
       href={{
         pathname: "/friend",
         hash: friend.address,
@@ -89,6 +89,7 @@ export default function HomeChat() {
 
   const topics = useTopicStore((state) => state.topics);
   const topicInfo = useTopicStore((state) => state.topicInfo);
+  const topicRead = useTopicStore((state) => state.topicRead);
   const friends = useFriendStore((state) => state.friends);
   const wallet = useUserStore((state) => state.wallet);
   const notify = useUserStore((state) => state.notify);
@@ -131,30 +132,52 @@ export default function HomeChat() {
     return list;
   }, [notify, friends]);
 
-  const getInfo = (address: string) => {
-    const info = {
-      members: 0,
-      time: "",
-      lastMessage: "",
-    };
-    if (topicInfo[address]) {
-      info.members = Object.keys(topicInfo[address]).length;
-      let notify: Notify | null = null;
-      let t = 0;
-      for (const key in topicInfo[address]) {
-        const item = topicInfo[address][key];
-        if (item.timestamp > t) {
-          t = item.timestamp;
-          notify = item;
+  const topicsInfo = useMemo(() => {
+    const result: Record<
+      string,
+      {
+        members: number;
+        time: string;
+        lastMessage: string;
+        unread: boolean;
+      }
+    > = {};
+
+    // 预先计算所有话题的信息
+    for (const topic of topics) {
+      const address = topic.address;
+      const info = {
+        members: 0,
+        time: "",
+        lastMessage: "",
+        unread: false,
+      };
+
+      if (topicInfo[address]) {
+        info.members = Object.keys(topicInfo[address]).length;
+        let notify: Notify | null = null;
+        let t = 0;
+        for (const key in topicInfo[address]) {
+          const item = topicInfo[address][key];
+          if (item.timestamp > t) {
+            t = item.timestamp;
+            notify = item;
+          }
+        }
+        if (notify) {
+          info.lastMessage = `${notify.value.username}: ${notify.value.text}`;
+          info.time = dayjs(notify.timestamp).fromNow();
+        }
+        if (t) {
+          info.unread = topic.timestamp < t;
         }
       }
-      if (notify) {
-        info.lastMessage = `${notify.value.username}: ${notify.value.text}`;
-        info.time = dayjs(notify.timestamp).fromNow();
-      }
+
+      result[address] = info;
     }
-    return info;
-  };
+
+    return result;
+  }, [topicInfo, topics]);
 
   return (
     <Tabs value={chatTab} onChange={tabChange} variant="outline">
@@ -182,14 +205,16 @@ export default function HomeChat() {
             value="topics"
             fw={500}
             rightSection={
-              <Box style={{ position: "relative" }}>
-                <Badge
-                  color="red"
-                  size="xs"
-                  variant="filled"
-                  className="badge-notify"
-                />
-              </Box>
+              Object.values(topicsInfo).some((info) => info.unread) && (
+                <Box style={{ position: "relative" }}>
+                  <Badge
+                    color="red"
+                    size="xs"
+                    variant="filled"
+                    className="badge-notify"
+                  />
+                </Box>
+              )
             }
           >
             话题
@@ -286,6 +311,7 @@ export default function HomeChat() {
           {topics.map((topic) => (
             <Link
               key={topic.address}
+              onClick={() => topicRead(topic.address)}
               href={{
                 pathname: "/topic",
                 hash: mp.topicJoin(topic.name, topic.password),
@@ -297,27 +323,29 @@ export default function HomeChat() {
                   <Box>
                     <Group gap={8} wrap="nowrap">
                       <Text fw={500}>{topic.name}</Text>
-                      <Box style={{ position: "relative" }}>
-                        <Badge
-                          color="red"
-                          size="xs"
-                          variant="filled"
-                          className="badge-notify"
-                        />
-                      </Box>
+                      {topicsInfo[topic.address]?.unread && (
+                        <Box style={{ position: "relative" }}>
+                          <Badge
+                            color="red"
+                            size="xs"
+                            variant="filled"
+                            className="badge-notify"
+                          />
+                        </Box>
+                      )}
                     </Group>
 
                     <Text size="sm" c="dimmed">
-                      {getInfo(topic.address).lastMessage}
+                      {topicsInfo[topic.address]?.lastMessage}
                     </Text>
                   </Box>
                 </Group>
                 <Flex direction="column" align="flex-end" gap={5}>
                   <Text size="xs" c="dimmed">
-                    {getInfo(topic.address).time}
+                    {topicsInfo[topic.address]?.time}
                   </Text>
                   <Text size="xs" c="dimmed">
-                    {getInfo(topic.address).members} 人
+                    {topicsInfo[topic.address]?.members} 人
                   </Text>
                 </Flex>
               </Group>

@@ -32,7 +32,7 @@ interface UserStore {
   onlinePeople: Record<string, People>;
   onlineUpdate: (data?: Record<string, People>) => void;
   notify: Record<string, Notify>;
-  readNotify: (address: string) => void;
+  friendRead: (address: string) => void;
 }
 
 interface State extends UserStore {
@@ -82,7 +82,7 @@ export const useUserStore = create<State>((set, get) => ({
     }
   },
   notify: {},
-  readNotify(address: string) {
+  friendRead(address: string) {
     const dot = get().dot;
     const newNotify = { ...get().notify };
     if (newNotify[address] && dot) {

@@ -15,6 +15,7 @@ interface TopicStore {
   inited: boolean;
   topics: Topic[];
   topicInfo: Record<string, Record<string, Notify>>;
+  topicRead: (address: string) => void;
   join: (name: string, password: string, address: string) => void;
   quit: (address: string) => void;
   init: (dot: DotMethods) => void;
@@ -37,6 +38,26 @@ export const useTopicStore = create<State>((set, get) => ({
   inited: false,
   topics: [],
   topicInfo: {},
+  topicRead(address) {
+    const topics = get().topics;
+    const updatedTopics = topics.map((topic) => {
+      if (topic.address === address) {
+        return {
+          ...topic,
+          timestamp: Date.now(),
+        };
+      }
+      return topic;
+    });
+
+    // 更新状态
+    set({ topics: updatedTopics });
+
+    const dot = useUserStore.getState().dot;
+    if (dot) {
+      dot.put("topics", updatedTopics, true);
+    }
+  },
   setItem: (key, value) => set((state) => ({ ...state, [key]: value })),
   pushItem: (key, value) =>
     set((state) => {
