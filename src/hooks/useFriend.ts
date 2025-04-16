@@ -1,5 +1,6 @@
 import { useFriendStore } from "@/stores/friendStore";
 import { NotifyValue, useUserStore } from "@/stores/userStore";
+import { notifications } from "@mantine/notifications";
 import { DotMethods, mostDecode, mostEncode } from "dot.most.box";
 import { useRouter } from "next/navigation";
 import { startTransition, useEffect, useState } from "react";
@@ -176,6 +177,7 @@ export const useFriend = (friendAddress: string) => {
       );
       // 清空本地状态
       setMyMessages([]);
+      notifications.show({ message: "已清空", color: "gray" });
     }
   };
 

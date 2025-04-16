@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { Notify, NotifyValue, useUserStore } from "@/stores/userStore";
 import { startTransition } from "react";
 import { type DotMethods } from "dot.most.box";
+import mp from "@/constants/mp";
 
 export interface Topic {
   name: string;
@@ -103,12 +104,20 @@ export const useTopicStore = create<State>((set, get) => ({
             if (dotClient) {
               for (const topic of topics) {
                 const topicDot = dotClient.dot(topic.address);
-                topicDot.on("notify", (data) => {
-                  if (data) {
-                    set((state) => ({
-                      topicInfo: { ...state.topicInfo, [topic.address]: data },
-                    }));
-                    topicDot.off("notify");
+
+                let t = 0;
+                topicDot.on("notify", (data, timestamp) => {
+                  if (timestamp > t) {
+                    t = timestamp;
+                    if (data) {
+                      mp.playSound();
+                      set((state) => ({
+                        topicInfo: {
+                          ...state.topicInfo,
+                          [topic.address]: data,
+                        },
+                      }));
+                    }
                   }
                 });
               }

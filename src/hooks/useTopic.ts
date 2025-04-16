@@ -4,11 +4,13 @@ import { useUserStore } from "@/stores/userStore";
 import { HDNodeWallet } from "ethers";
 import { type Message } from "@/hooks/useFriend";
 import { useRouter } from "next/navigation";
+import { notifications } from "@mantine/notifications";
 
 const DotKey = "messages";
 
 export const useTopic = (topicWallet: MostWallet | null) => {
   const wallet = useUserStore((state) => state.wallet);
+  const dot = useUserStore((state) => state.dot);
   const dotClient = useUserStore((state) => state.dotClient);
   const router = useRouter();
 
@@ -64,6 +66,14 @@ export const useTopic = (topicWallet: MostWallet | null) => {
       };
       // 更新数据
       dotTopic.put(DotKey, [...messages, newMessage], true);
+      if (topicWallet && dot) {
+        dot.notify(topicWallet.address, {
+          type: "topic",
+          username: wallet.username,
+          public_key: wallet.public_key,
+          text,
+        });
+      }
     }
   };
 
@@ -86,6 +96,7 @@ export const useTopic = (topicWallet: MostWallet | null) => {
       );
       // 更新数据
       dotTopic.put(DotKey, filter, true);
+      notifications.show({ message: "已清空", color: "gray" });
     }
   };
 

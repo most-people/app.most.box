@@ -1,4 +1,5 @@
 "use client";
+import mp from "@/constants/mp";
 import Nodes, { ContractOnline } from "@/constants/nodes";
 import { useAccountStore } from "@/stores/accountStore";
 import { useFriendStore } from "@/stores/friendStore";
@@ -7,17 +8,6 @@ import { useUserStore } from "@/stores/userStore";
 import { DotClient, type DotMethods } from "dot.most.box";
 import { HDNodeWallet } from "ethers";
 import { useEffect } from "react";
-
-// 播放提示音
-const playSound = async () => {
-  try {
-    const audio = new Audio("/sounds/notification.mp3"); // 替换为你的提示音文件路径
-    await audio.play();
-    navigator.vibrate(200); // 振动 200 毫秒
-  } catch (error) {
-    console.log("播放提示音时出错:", error);
-  }
-};
 
 export default function AppProvider() {
   const setItem = useUserStore((state) => state.setItem);
@@ -92,7 +82,7 @@ export default function AppProvider() {
             t = timestamp;
             setItem("notify", data);
             // 叮咚
-            playSound();
+            mp.playSound();
           }
         });
       }

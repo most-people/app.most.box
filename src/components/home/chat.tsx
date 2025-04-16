@@ -74,8 +74,9 @@ export const FriendItem = ({ friend }: FriendItemProps) => {
         </Group>
         <Flex direction="column" align="flex-end" gap={5}>
           <Text size="xs" c="dimmed">
-            {notify[friend.address] &&
-              mp.formatDate(notify[friend.address].timestamp)}
+            {notify[friend.address]
+              ? mp.formatDate(notify[friend.address].timestamp)
+              : dayjs(friend.timestamp).fromNow()}
           </Text>
         </Flex>
       </Group>
