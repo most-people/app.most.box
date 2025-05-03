@@ -2,11 +2,11 @@ export const nodes = [
   // most
   "https://api.most.red",
   // pSea
-  "https://106.13.22.90:1976",
+  // "https://106.13.22.90:1976",
   // damon
   "https://damon.most.red",
   // night sky
-  "https://cellservice.world",
+  // "https://cellservice.world",
 ];
 
 // 在线合约 MOST
