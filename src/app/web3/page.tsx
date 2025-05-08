@@ -70,10 +70,6 @@ export default function Web3Page() {
         <Anchor onClick={clearNotify}>
           <Text>清除通知</Text>
         </Anchor>
-
-        <Anchor component={Link} href="/jy">
-          <Text>🤝</Text>
-        </Anchor>
       </Stack>
     </Container>
   );
