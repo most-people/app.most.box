@@ -70,6 +70,9 @@ export default function Web3Page() {
         <Anchor onClick={clearNotify}>
           <Text>清除通知</Text>
         </Anchor>
+        <Anchor component={Link} href="/web3/mega">
+          <Text>Mega ETH</Text>
+        </Anchor>
       </Stack>
     </Container>
   );

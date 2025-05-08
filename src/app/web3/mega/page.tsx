@@ -1,0 +1,115 @@
+"use client";
+
+import { AppHeader } from "@/components/AppHeader";
+import { Box, Button, Text } from "@mantine/core";
+import { useEffect, useState } from "react";
+import "./mega.scss";
+
+export default function Web3MegaPage() {
+  const [pressedKey, setPressedKey] = useState<string | null>(null);
+
+  // 监听键盘事件
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (
+        ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(event.key)
+      ) {
+        setPressedKey(event.key);
+        // 防止页面滚动
+        event.preventDefault();
+      }
+    };
+
+    const handleKeyUp = () => {
+      setPressedKey(null);
+    };
+
+    // 添加事件监听
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+
+    // 组件卸载时移除事件监听
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, []);
+
+  // 添加鼠标按下事件处理
+  const handleMouseDown = (key: string) => {
+    setPressedKey(key);
+  };
+
+  // 添加鼠标松开事件处理
+  const handleMouseUp = () => {
+    setPressedKey(null);
+  };
+
+  useEffect(() => {
+    if (pressedKey) {
+      console.log("按下按键", pressedKey);
+    }
+  }, [pressedKey]);
+
+  return (
+    <Box id="page-mega">
+      <AppHeader title="Mega ETH" />
+      <div className="keyboard-container">
+        <Text className="key-title" size="xl">
+          键盘控制器
+        </Text>
+
+        {/* 上下左右按键 */}
+        <div className="key-pad">
+          {/* 上键 */}
+          <Button
+            className={`direction-key up ${
+              pressedKey === "ArrowUp" ? "pressed" : ""
+            }`}
+            onMouseDown={() => handleMouseDown("ArrowUp")}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp} // 添加鼠标离开事件，防止鼠标拖出按钮时按钮仍保持按下状态
+          >
+            ↑
+          </Button>
+
+          {/* 左键 */}
+          <Button
+            className={`direction-key left ${
+              pressedKey === "ArrowLeft" ? "pressed" : ""
+            }`}
+            onMouseDown={() => handleMouseDown("ArrowLeft")}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+          >
+            ←
+          </Button>
+
+          {/* 下键 */}
+          <Button
+            className={`direction-key down ${
+              pressedKey === "ArrowDown" ? "pressed" : ""
+            }`}
+            onMouseDown={() => handleMouseDown("ArrowDown")}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+          >
+            ↓
+          </Button>
+
+          {/* 右键 */}
+          <Button
+            className={`direction-key right ${
+              pressedKey === "ArrowRight" ? "pressed" : ""
+            }`}
+            onMouseDown={() => handleMouseDown("ArrowRight")}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+          >
+            →
+          </Button>
+        </div>
+      </div>
+    </Box>
+  );
+}
