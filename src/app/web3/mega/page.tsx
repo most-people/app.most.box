@@ -1,9 +1,10 @@
 "use client";
 
 import { AppHeader } from "@/components/AppHeader";
-import { Box, Button, Text } from "@mantine/core";
+import { Box, Button } from "@mantine/core";
 import { useEffect, useState } from "react";
 import "./mega.scss";
+import { notifications } from "@mantine/notifications";
 
 export default function Web3MegaPage() {
   const [pressedKey, setPressedKey] = useState<string | null>(null);
@@ -47,18 +48,21 @@ export default function Web3MegaPage() {
 
   useEffect(() => {
     if (pressedKey) {
-      console.log("按下按键", pressedKey);
+      notifications.show({
+        title: "按下按键",
+        message: pressedKey,
+      });
     }
   }, [pressedKey]);
 
   return (
     <Box id="page-mega">
       <AppHeader title="Mega ETH" />
+      <p>
+        https://www.megaexplorer.xyz/address/0xBb2568557284b1daa75698c3B71A5dd7FC7Bc1bC
+      </p>
+      <p>https://carrot.megaeth.com/rpc</p>
       <div className="keyboard-container">
-        <Text className="key-title" size="xl">
-          键盘控制器
-        </Text>
-
         {/* 上下左右按键 */}
         <div className="key-pad">
           {/* 上键 */}
