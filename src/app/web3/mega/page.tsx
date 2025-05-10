@@ -3,10 +3,13 @@
 import { AppHeader } from "@/components/AppHeader";
 import { Box, Button } from "@mantine/core";
 import { useEffect, useState } from "react";
-import "./mega.scss";
+import { ethers } from "ethers";
 import { notifications } from "@mantine/notifications";
+import "./mega.scss";
+import { useUserStore } from "@/stores/userStore";
 
 export default function Web3MegaPage() {
+  const wallet = useUserStore((state) => state.wallet);
   const [pressedKey, setPressedKey] = useState<string | null>(null);
 
   // 监听键盘事件
@@ -46,14 +49,47 @@ export default function Web3MegaPage() {
     setPressedKey(null);
   };
 
+  const sendTransaction = async () => {
+    if (signer) {
+      // 发送一笔交易
+      const tx = await signer.sendTransaction({
+        to: signer.address,
+        value: ethers.parseEther("0"),
+      });
+      console.log("交易哈希:", tx.hash);
+      notifications.show({
+        color: "green",
+        title: "交易哈希",
+        message: tx.hash,
+      });
+    }
+  };
+
   useEffect(() => {
     if (pressedKey) {
+      console.log("按下按键:", pressedKey);
       notifications.show({
         title: "按下按键",
         message: pressedKey,
       });
+      // 发送一笔交易
+      sendTransaction();
     }
   }, [pressedKey]);
+
+  const [signer, setSigner] = useState<ethers.HDNodeWallet | null>(null);
+
+  // 通过 RPC 连接到以太坊网络
+  const provider = new ethers.JsonRpcProvider("https://carrot.megaeth.com/rpc");
+  useEffect(() => {
+    if (wallet) {
+      // 通过助记词 创建钱包实例
+      const w = ethers.Wallet.fromPhrase(wallet.mnemonic);
+      // 通过RPC 连接到以太坊网络
+      const signer = w.connect(provider);
+      setSigner(signer);
+    }
+  }, [wallet]);
 
   return (
     <Box id="page-mega">
