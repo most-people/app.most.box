@@ -4,6 +4,7 @@ import { AppHeader } from "@/components/AppHeader";
 import { Box, Button } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { ethers } from "ethers";
+import Link from "next/link";
 import { notifications } from "@mantine/notifications";
 import "./mega.scss";
 import { useUserStore } from "@/stores/userStore";
@@ -98,6 +99,12 @@ export default function Web3MegaPage() {
         https://www.megaexplorer.xyz/address/0xBb2568557284b1daa75698c3B71A5dd7FC7Bc1bC
       </p>
       <p>https://carrot.megaeth.com/rpc</p>
+      <p>
+        <Link href="https://faucet.monad.xyz">Monad 水龙头</Link>
+      </p>
+      <p>
+        <Link href="https://testnet.megaeth.com/#2">Mega ETH 水龙头</Link>
+      </p>
       <div className="keyboard-container">
         {/* 上下左右按键 */}
         <div className="key-pad">
