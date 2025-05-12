@@ -72,6 +72,22 @@ export default function Web3MegaPage() {
 
   const [signer, setSigner] = useState<ethers.HDNodeWallet | null>(null);
   const [provider, setProvider] = useState<ethers.JsonRpcProvider | null>(null);
+  const [megaNonce, setMegaNonce] = useState<number | null>(null);
+  const [monadNonce, setMonadNonce] = useState<number | null>(null);
+
+  // 获取当前网络的 nonce
+  const getCurrentNonce = () => {
+    return network === "mega" ? megaNonce : monadNonce;
+  };
+
+  // 设置当前网络的 nonce
+  const setCurrentNonce = (nonce: number) => {
+    if (network === "mega") {
+      setMegaNonce(nonce);
+    } else {
+      setMonadNonce(nonce);
+    }
+  };
 
   // 当网络变化时更新 provider
   useEffect(() => {
@@ -87,17 +103,43 @@ export default function Web3MegaPage() {
       // 通过RPC 连接到以太坊网络
       const signer = w.connect(provider);
       setSigner(signer);
+
+      // 获取当前 nonce
+      const fetchNonce = async () => {
+        try {
+          const nonce = await provider.getTransactionCount(signer.address);
+          setCurrentNonce(nonce);
+          console.log(`当前 ${networkConfig[network].name} 网络 nonce:`, nonce);
+
+          notifications.show({
+            color: "blue",
+            title: `${networkConfig[network].name} Nonce 已更新`,
+            message: `当前 nonce: ${nonce}`,
+          });
+        } catch (error) {
+          console.error("获取 nonce 失败:", error);
+        }
+      };
+
+      fetchNonce();
     }
   }, [wallet, provider]);
 
   const sendTransaction = async () => {
-    if (signer) {
+    if (signer && getCurrentNonce() !== null) {
       try {
-        // 发送一笔交易
+        const currentNonce = getCurrentNonce();
+
+        // 先将 nonce 加 1，为下一笔交易做准备
+        setCurrentNonce(currentNonce! + 1);
+
+        // 发送一笔交易，指定 nonce
         const tx = await signer.sendTransaction({
           to: signer.address,
           value: ethers.parseEther("0"),
+          nonce: currentNonce,
         });
+
         console.log("交易哈希:", tx.hash);
         notifications.show({
           color: "green",
@@ -106,9 +148,43 @@ export default function Web3MegaPage() {
         });
       } catch (error) {
         console.error("交易失败:", error);
+
+        // 如果是 nonce 错误，尝试重新获取正确的 nonce
+        if ((error as Error).message.includes("nonce") && provider) {
+          try {
+            const newNonce = await provider.getTransactionCount(signer.address);
+            setCurrentNonce(newNonce);
+            notifications.show({
+              color: "blue",
+              title: "Nonce 已更新",
+              message: `新的 nonce: ${newNonce}`,
+            });
+          } catch (e) {
+            console.error("更新 nonce 失败:", e);
+          }
+        } else {
+          notifications.show({
+            color: "red",
+            title: "交易失败",
+            message: (error as Error).message,
+          });
+        }
+      }
+    } else if (getCurrentNonce() === null && signer && provider) {
+      // 如果 nonce 未初始化，尝试获取
+      try {
+        const nonce = await provider.getTransactionCount(signer.address);
+        setCurrentNonce(nonce);
+        notifications.show({
+          color: "blue",
+          title: "Nonce 已初始化",
+          message: `当前 nonce: ${nonce}`,
+        });
+      } catch (error) {
+        console.error("获取 nonce 失败:", error);
         notifications.show({
           color: "red",
-          title: "交易失败",
+          title: "获取 nonce 失败",
           message: (error as Error).message,
         });
       }
