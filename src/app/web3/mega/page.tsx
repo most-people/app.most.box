@@ -1,7 +1,7 @@
 "use client";
 
 import { AppHeader } from "@/components/AppHeader";
-import { Box, Button, Tabs } from "@mantine/core";
+import { Box, Button } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import Link from "next/link";
@@ -70,72 +70,80 @@ export default function Web3MegaPage() {
     setPressedKey(null);
   };
 
-  const [signer, setSigner] = useState<ethers.HDNodeWallet | null>(null);
-  const [provider, setProvider] = useState<ethers.JsonRpcProvider | null>(null);
+  // 分别为两个网络创建 provider
+  const [megaProvider] = useState<ethers.JsonRpcProvider>(
+    new ethers.JsonRpcProvider(networkConfig.mega.rpc)
+  );
+  const [monadProvider] = useState<ethers.JsonRpcProvider>(
+    new ethers.JsonRpcProvider(networkConfig.monad.rpc)
+  );
+
+  // 获取当前网络的 provider
+  const getCurrentProvider = () => {
+    return network === "mega" ? megaProvider : monadProvider;
+  };
+
+  const [megaSigner, setMegaSigner] = useState<ethers.HDNodeWallet | null>(
+    null
+  );
+  const [monadSigner, setMonadSigner] = useState<ethers.HDNodeWallet | null>(
+    null
+  );
   const [megaNonce, setMegaNonce] = useState<number | null>(null);
   const [monadNonce, setMonadNonce] = useState<number | null>(null);
 
-  // 获取当前网络的 nonce
-  const getCurrentNonce = () => {
-    return network === "mega" ? megaNonce : monadNonce;
-  };
-
-  // 设置当前网络的 nonce
-  const setCurrentNonce = (nonce: number) => {
-    if (network === "mega") {
-      setMegaNonce(nonce);
-    } else {
-      setMonadNonce(nonce);
-    }
-  };
-
-  // 当网络变化时更新 provider
+  // 当 wallet 变化时更新 signer
   useEffect(() => {
-    const newProvider = new ethers.JsonRpcProvider(networkConfig[network].rpc);
-    setProvider(newProvider);
-  }, [network]);
-
-  // 当 provider 或 wallet 变化时更新 signer
-  useEffect(() => {
-    if (wallet && provider) {
-      // 通过助记词 创建钱包实例
+    if (wallet) {
+      // 创建钱包实例
       const w = ethers.Wallet.fromPhrase(wallet.mnemonic);
-      // 通过RPC 连接到以太坊网络
-      const signer = w.connect(provider);
-      setSigner(signer);
 
-      // 获取当前 nonce
-      const fetchNonce = async () => {
+      // 连接到 Mega ETH 网络
+      const megaWalletSigner = w.connect(megaProvider);
+      setMegaSigner(megaWalletSigner);
+
+      // 连接到 Monad 网络
+      const monadWalletSigner = w.connect(monadProvider);
+      setMonadSigner(monadWalletSigner);
+
+      // 获取各网络 nonce
+      const fetchNonces = async () => {
         try {
-          const nonce = await provider.getTransactionCount(signer.address);
-          setCurrentNonce(nonce);
-          console.log(`当前 ${networkConfig[network].name} 网络 nonce:`, nonce);
+          // 获取 Mega ETH nonce
+          const megaNonce = await megaProvider.getTransactionCount(w.address);
+          setMegaNonce(megaNonce);
+          console.log(`${networkConfig.mega.name} 网络 nonce:`, megaNonce);
 
-          notifications.show({
-            color: "blue",
-            title: `${networkConfig[network].name} Nonce 已更新`,
-            message: `当前 nonce: ${nonce}`,
-          });
+          // 获取 Monad nonce
+          const monadNonce = await monadProvider.getTransactionCount(w.address);
+          setMonadNonce(monadNonce);
+          console.log(`${networkConfig.monad.name} 网络 nonce:`, monadNonce);
         } catch (error) {
           console.error("获取 nonce 失败:", error);
         }
       };
 
-      fetchNonce();
+      fetchNonces();
     }
-  }, [wallet, provider]);
+  }, [wallet]);
 
   const sendTransaction = async () => {
-    if (signer && getCurrentNonce() !== null) {
-      try {
-        const currentNonce = getCurrentNonce();
+    const currentSigner = network === "mega" ? megaSigner : monadSigner;
+    const currentNonce = network === "mega" ? megaNonce : monadNonce;
+    const currentProvider = getCurrentProvider();
 
-        // 先将 nonce 加 1，为下一笔交易做准备
-        setCurrentNonce(currentNonce! + 1);
+    if (currentSigner && currentNonce !== null) {
+      try {
+        // 先将对应网络的 nonce 加 1，为下一笔交易做准备
+        if (network === "mega") {
+          setMegaNonce(currentNonce + 1);
+        } else {
+          setMonadNonce(currentNonce + 1);
+        }
 
         // 发送一笔交易，指定 nonce
-        const tx = await signer.sendTransaction({
-          to: signer.address,
+        const tx = await currentSigner.sendTransaction({
+          to: currentSigner.address,
           value: ethers.parseEther("0"),
           nonce: currentNonce,
         });
@@ -150,10 +158,17 @@ export default function Web3MegaPage() {
         console.error("交易失败:", error);
 
         // 如果是 nonce 错误，尝试重新获取正确的 nonce
-        if ((error as Error).message.includes("nonce") && provider) {
+        if ((error as Error).message.includes("nonce") && currentProvider) {
           try {
-            const newNonce = await provider.getTransactionCount(signer.address);
-            setCurrentNonce(newNonce);
+            const newNonce = await currentProvider.getTransactionCount(
+              currentSigner.address
+            );
+            if (network === "mega") {
+              setMegaNonce(newNonce);
+            } else {
+              setMonadNonce(newNonce);
+            }
+
             notifications.show({
               color: "blue",
               title: "Nonce 已更新",
@@ -170,11 +185,18 @@ export default function Web3MegaPage() {
           });
         }
       }
-    } else if (getCurrentNonce() === null && signer && provider) {
+    } else if (currentNonce === null && currentSigner && currentProvider) {
       // 如果 nonce 未初始化，尝试获取
       try {
-        const nonce = await provider.getTransactionCount(signer.address);
-        setCurrentNonce(nonce);
+        const nonce = await currentProvider.getTransactionCount(
+          currentSigner.address
+        );
+        if (network === "mega") {
+          setMegaNonce(nonce);
+        } else {
+          setMonadNonce(nonce);
+        }
+
         notifications.show({
           color: "blue",
           title: "Nonce 已初始化",
@@ -203,25 +225,36 @@ export default function Web3MegaPage() {
     }
   }, [pressedKey]);
 
+  // 获取当前网络的 signer
+  const getCurrentSigner = () => {
+    return network === "mega" ? megaSigner : monadSigner;
+  };
+
   return (
     <Box id="page-mega">
       <AppHeader title={`${networkConfig[network].name} 测试网`} />
 
-      <Tabs
-        value={network}
-        onChange={(value) => setNetwork(value as NetworkType)}
-        mb="md"
-      >
-        <Tabs.List>
-          <Tabs.Tab value="mega">Mega ETH</Tabs.Tab>
-          <Tabs.Tab value="monad">Monad</Tabs.Tab>
-        </Tabs.List>
-      </Tabs>
+      <div style={{ marginBottom: "15px" }}>
+        <Button.Group>
+          <Button
+            variant={network === "mega" ? "filled" : "outline"}
+            onClick={() => setNetwork("mega")}
+          >
+            Mega ETH
+          </Button>
+          <Button
+            variant={network === "monad" ? "filled" : "outline"}
+            onClick={() => setNetwork("monad")}
+          >
+            Monad
+          </Button>
+        </Button.Group>
+      </div>
 
-      {signer && (
+      {getCurrentSigner() && (
         <p>
-          {networkConfig[network].explorer}
-          {signer.address}
+          {networkConfig[network].explorer}/address/
+          {getCurrentSigner()?.address}
         </p>
       )}
       <p>{networkConfig[network].rpc}</p>
@@ -230,6 +263,8 @@ export default function Web3MegaPage() {
           {networkConfig[network].name} 水龙头
         </Link>
       </p>
+
+      <p>Nonce: {network === "mega" ? megaNonce : monadNonce}</p>
 
       <div className="keyboard-container">
         {/* 上下左右按键 */}
