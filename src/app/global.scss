@@ -45,9 +45,6 @@ body::after {
 a {
   text-decoration: none;
   color: var(--red);
-  &:hover {
-    text-decoration: underline;
-  }
 }
 
 #app {

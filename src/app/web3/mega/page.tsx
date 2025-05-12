@@ -92,6 +92,22 @@ export default function Web3MegaPage() {
   const [megaNonce, setMegaNonce] = useState<number | null>(null);
   const [monadNonce, setMonadNonce] = useState<number | null>(null);
 
+  // 获取各网络 nonce
+  const fetchNonces = async (address: string) => {
+    try {
+      // 获取 Mega ETH nonce
+      const megaNonce = await megaProvider.getTransactionCount(address);
+      setMegaNonce(megaNonce);
+      console.log(`${networkConfig.mega.name} 网络 nonce:`, megaNonce);
+
+      // 获取 Monad nonce
+      const monadNonce = await monadProvider.getTransactionCount(address);
+      setMonadNonce(monadNonce);
+      console.log(`${networkConfig.monad.name} 网络 nonce:`, monadNonce);
+    } catch (error) {
+      console.error("获取 nonce 失败:", error);
+    }
+  };
   // 当 wallet 变化时更新 signer
   useEffect(() => {
     if (wallet) {
@@ -106,24 +122,7 @@ export default function Web3MegaPage() {
       const monadWalletSigner = w.connect(monadProvider);
       setMonadSigner(monadWalletSigner);
 
-      // 获取各网络 nonce
-      const fetchNonces = async () => {
-        try {
-          // 获取 Mega ETH nonce
-          const megaNonce = await megaProvider.getTransactionCount(w.address);
-          setMegaNonce(megaNonce);
-          console.log(`${networkConfig.mega.name} 网络 nonce:`, megaNonce);
-
-          // 获取 Monad nonce
-          const monadNonce = await monadProvider.getTransactionCount(w.address);
-          setMonadNonce(monadNonce);
-          console.log(`${networkConfig.monad.name} 网络 nonce:`, monadNonce);
-        } catch (error) {
-          console.error("获取 nonce 失败:", error);
-        }
-      };
-
-      fetchNonces();
+      fetchNonces(w.address);
     }
   }, [wallet]);
 
@@ -148,7 +147,10 @@ export default function Web3MegaPage() {
           nonce: currentNonce,
         });
 
-        console.log("交易哈希:", tx.hash);
+        console.log(
+          "交易哈希:",
+          networkConfig[network].explorer + "/tx/" + tx.hash
+        );
         notifications.show({
           color: "green",
           title: `${networkConfig[network].name} 交易哈希`,
@@ -234,90 +236,98 @@ export default function Web3MegaPage() {
     <Box id="page-mega">
       <AppHeader title={`${networkConfig[network].name} 测试网`} />
 
-      <div style={{ marginBottom: "15px" }}>
-        <Button.Group>
-          <Button
-            variant={network === "mega" ? "filled" : "outline"}
-            onClick={() => setNetwork("mega")}
-          >
-            Mega ETH
-          </Button>
-          <Button
-            variant={network === "monad" ? "filled" : "outline"}
-            onClick={() => setNetwork("monad")}
-          >
-            Monad
-          </Button>
-        </Button.Group>
-      </div>
+      {!wallet ? (
+        <Button variant="gradient" component={Link} href="/login">
+          请先登录
+        </Button>
+      ) : (
+        <>
+          <div style={{ marginBottom: "15px" }}>
+            <Button.Group>
+              <Button
+                variant={network === "mega" ? "filled" : "outline"}
+                onClick={() => setNetwork("mega")}
+              >
+                Mega ETH
+              </Button>
+              <Button
+                variant={network === "monad" ? "filled" : "outline"}
+                onClick={() => setNetwork("monad")}
+              >
+                Monad
+              </Button>
+            </Button.Group>
+          </div>
 
-      {getCurrentSigner() && (
-        <p>
-          {networkConfig[network].explorer}/address/
-          {getCurrentSigner()?.address}
-        </p>
+          {getCurrentSigner() && (
+            <p>
+              {networkConfig[network].explorer}/address/
+              {getCurrentSigner()?.address}
+            </p>
+          )}
+          <p>{networkConfig[network].rpc}</p>
+          <p>
+            <Link href={networkConfig[network].faucet} target="_blank">
+              {networkConfig[network].name} 水龙头
+            </Link>
+          </p>
+
+          <p>Nonce: {network === "mega" ? megaNonce : monadNonce}</p>
+
+          <div className="keyboard-container">
+            {/* 上下左右按键 */}
+            <div className="key-pad">
+              {/* 上键 */}
+              <Button
+                className={`direction-key up ${
+                  pressedKey === "ArrowUp" ? "pressed" : ""
+                }`}
+                onMouseDown={() => handleMouseDown("ArrowUp")}
+                onMouseUp={handleMouseUp}
+                onMouseLeave={handleMouseUp} // 添加鼠标离开事件，防止鼠标拖出按钮时按钮仍保持按下状态
+              >
+                ↑
+              </Button>
+
+              {/* 左键 */}
+              <Button
+                className={`direction-key left ${
+                  pressedKey === "ArrowLeft" ? "pressed" : ""
+                }`}
+                onMouseDown={() => handleMouseDown("ArrowLeft")}
+                onMouseUp={handleMouseUp}
+                onMouseLeave={handleMouseUp}
+              >
+                ←
+              </Button>
+
+              {/* 下键 */}
+              <Button
+                className={`direction-key down ${
+                  pressedKey === "ArrowDown" ? "pressed" : ""
+                }`}
+                onMouseDown={() => handleMouseDown("ArrowDown")}
+                onMouseUp={handleMouseUp}
+                onMouseLeave={handleMouseUp}
+              >
+                ↓
+              </Button>
+
+              {/* 右键 */}
+              <Button
+                className={`direction-key right ${
+                  pressedKey === "ArrowRight" ? "pressed" : ""
+                }`}
+                onMouseDown={() => handleMouseDown("ArrowRight")}
+                onMouseUp={handleMouseUp}
+                onMouseLeave={handleMouseUp}
+              >
+                →
+              </Button>
+            </div>
+          </div>
+        </>
       )}
-      <p>{networkConfig[network].rpc}</p>
-      <p>
-        <Link href={networkConfig[network].faucet} target="_blank">
-          {networkConfig[network].name} 水龙头
-        </Link>
-      </p>
-
-      <p>Nonce: {network === "mega" ? megaNonce : monadNonce}</p>
-
-      <div className="keyboard-container">
-        {/* 上下左右按键 */}
-        <div className="key-pad">
-          {/* 上键 */}
-          <Button
-            className={`direction-key up ${
-              pressedKey === "ArrowUp" ? "pressed" : ""
-            }`}
-            onMouseDown={() => handleMouseDown("ArrowUp")}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseUp} // 添加鼠标离开事件，防止鼠标拖出按钮时按钮仍保持按下状态
-          >
-            ↑
-          </Button>
-
-          {/* 左键 */}
-          <Button
-            className={`direction-key left ${
-              pressedKey === "ArrowLeft" ? "pressed" : ""
-            }`}
-            onMouseDown={() => handleMouseDown("ArrowLeft")}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseUp}
-          >
-            ←
-          </Button>
-
-          {/* 下键 */}
-          <Button
-            className={`direction-key down ${
-              pressedKey === "ArrowDown" ? "pressed" : ""
-            }`}
-            onMouseDown={() => handleMouseDown("ArrowDown")}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseUp}
-          >
-            ↓
-          </Button>
-
-          {/* 右键 */}
-          <Button
-            className={`direction-key right ${
-              pressedKey === "ArrowRight" ? "pressed" : ""
-            }`}
-            onMouseDown={() => handleMouseDown("ArrowRight")}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseUp}
-          >
-            →
-          </Button>
-        </div>
-      </div>
     </Box>
   );
 }
