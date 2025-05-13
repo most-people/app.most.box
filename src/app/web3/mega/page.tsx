@@ -78,11 +78,6 @@ export default function Web3MegaPage() {
     new ethers.JsonRpcProvider(networkConfig.monad.rpc)
   );
 
-  // 获取当前网络的 provider
-  const getCurrentProvider = () => {
-    return network === "mega" ? megaProvider : monadProvider;
-  };
-
   const [megaSigner, setMegaSigner] = useState<ethers.HDNodeWallet | null>(
     null
   );
@@ -129,89 +124,42 @@ export default function Web3MegaPage() {
   const sendTransaction = async () => {
     const currentSigner = network === "mega" ? megaSigner : monadSigner;
     const currentNonce = network === "mega" ? megaNonce : monadNonce;
-    const currentProvider = getCurrentProvider();
 
-    if (currentSigner && currentNonce !== null) {
-      try {
-        // 先将对应网络的 nonce 加 1，为下一笔交易做准备
-        if (network === "mega") {
-          setMegaNonce(currentNonce + 1);
-        } else {
-          setMonadNonce(currentNonce + 1);
-        }
+    if (currentSigner === null || currentNonce === null) {
+      return;
+    }
 
-        // 发送一笔交易，指定 nonce
-        const tx = await currentSigner.sendTransaction({
-          to: currentSigner.address,
-          value: ethers.parseEther("0"),
-          nonce: currentNonce,
-        });
-
-        console.log(
-          "交易哈希:",
-          networkConfig[network].explorer + "/tx/" + tx.hash
-        );
-        notifications.show({
-          color: "green",
-          title: `${networkConfig[network].name} 交易哈希`,
-          message: tx.hash,
-        });
-      } catch (error) {
-        console.error("交易失败:", error);
-
-        // 如果是 nonce 错误，尝试重新获取正确的 nonce
-        if ((error as Error).message.includes("nonce") && currentProvider) {
-          try {
-            const newNonce = await currentProvider.getTransactionCount(
-              currentSigner.address
-            );
-            if (network === "mega") {
-              setMegaNonce(newNonce);
-            } else {
-              setMonadNonce(newNonce);
-            }
-
-            notifications.show({
-              color: "blue",
-              title: "Nonce 已更新",
-              message: `新的 nonce: ${newNonce}`,
-            });
-          } catch (e) {
-            console.error("更新 nonce 失败:", e);
-          }
-        } else {
-          notifications.show({
-            color: "red",
-            title: "交易失败",
-            message: (error as Error).message,
-          });
-        }
+    try {
+      // 先将对应网络的 nonce 加 1，为下一笔交易做准备
+      if (network === "mega") {
+        setMegaNonce(currentNonce + 1);
+      } else {
+        setMonadNonce(currentNonce + 1);
       }
-    } else if (currentNonce === null && currentSigner && currentProvider) {
-      // 如果 nonce 未初始化，尝试获取
-      try {
-        const nonce = await currentProvider.getTransactionCount(
-          currentSigner.address
-        );
-        if (network === "mega") {
-          setMegaNonce(nonce);
-        } else {
-          setMonadNonce(nonce);
-        }
 
-        notifications.show({
-          color: "blue",
-          title: "Nonce 已初始化",
-          message: `当前 nonce: ${nonce}`,
-        });
-      } catch (error) {
-        console.error("获取 nonce 失败:", error);
-        notifications.show({
-          color: "red",
-          title: "获取 nonce 失败",
-          message: (error as Error).message,
-        });
-      }
+      // 发送一笔交易，指定 nonce
+      const tx = await currentSigner.sendTransaction({
+        to: currentSigner.address,
+        value: ethers.parseEther("0"),
+        nonce: currentNonce,
+      });
+
+      console.log(
+        "交易哈希:",
+        networkConfig[network].explorer + "/tx/" + tx.hash
+      );
+      notifications.show({
+        color: "green",
+        title: `${networkConfig[network].name} 交易哈希`,
+        message: tx.hash,
+      });
+    } catch (error) {
+      console.error("交易失败:", error);
+      notifications.show({
+        color: "red",
+        title: "交易失败",
+        message: (error as Error).message,
+      });
     }
   };
 
