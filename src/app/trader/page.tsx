@@ -2,7 +2,7 @@
 import { Container, Group, Input, Stack, Text } from "@mantine/core";
 import { AppHeader } from "@/components/AppHeader";
 import { useState, useEffect } from "react";
-import "./jy.scss";
+import "./trader.scss";
 import { IconLockBitcoin } from "@tabler/icons-react";
 
 export default function PageTrader() {
