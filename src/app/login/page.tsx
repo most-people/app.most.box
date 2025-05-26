@@ -45,7 +45,7 @@ export default function PageLogin() {
       if (signer) {
         const address = await signer.getAddress();
         const sig = await signer.signMessage(address);
-        login(address, sig);
+        login(address.slice(-4), sig);
       }
     } catch (error) {
       setConnectLoading(false);
