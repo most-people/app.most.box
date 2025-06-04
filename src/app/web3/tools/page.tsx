@@ -9,6 +9,8 @@ import {
   Table,
   Avatar,
   Input,
+  Switch,
+  Textarea,
 } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { mostWallet } from "dot.most.box";
@@ -31,6 +33,11 @@ export default function Web3ToolPage() {
   const [showAddress, setShowAddress] = useState(false);
   const [showMnemonic, setShowMnemonic] = useState(false);
 
+  // 新增状态：模式切换和直接输入助记词
+  const [useMnemonicMode, setUseMnemonicMode] = useState(false);
+  const [inputMnemonic, setInputMnemonic] = useState("");
+  const [validatedMnemonic, setValidatedMnemonic] = useState(""); // 用于存储验证过的助记词
+
   const [deriveAddressList, setDeriveAddressList] = useState<DeriveAddress[]>(
     []
   );
@@ -39,25 +46,62 @@ export default function Web3ToolPage() {
   const [deriveShowAddress, setDeriveShowAddress] = useState(true);
   const [deriveShowPrivateKey, setDeriveShowPrivateKey] = useState(false);
 
-  useEffect(() => {
-    if (username) {
-      const danger = mostWallet(
-        username,
-        password,
-        "I know loss mnemonic will lose my wallet."
-      );
-      setAddress(danger.address);
-      setMnemonic(danger.mnemonic);
+  // 验证助记词的函数
+  const validateMnemonic = (mnemonicText: string) => {
+    if (mnemonicText.trim()) {
+      try {
+        const wallet = HDNodeWallet.fromPhrase(mnemonicText.trim());
+        setAddress(wallet.address);
+        setMnemonic(mnemonicText.trim());
+        setValidatedMnemonic(mnemonicText.trim());
+      } catch (error) {
+        console.error("无效助记词：", error);
+        notifications.show({
+          message: "无效助记词",
+          color: "red",
+        });
+        setAddress(mp.ZeroAddress);
+        setMnemonic("");
+        setValidatedMnemonic("");
+      }
     } else {
       setAddress(mp.ZeroAddress);
       setMnemonic("");
+      setValidatedMnemonic("");
+    }
+  };
+
+  useEffect(() => {
+    if (useMnemonicMode) {
+      // 助记词模式 - 使用已验证的助记词
+      if (validatedMnemonic) {
+        setAddress(HDNodeWallet.fromPhrase(validatedMnemonic).address);
+        setMnemonic(validatedMnemonic);
+      } else {
+        setAddress(mp.ZeroAddress);
+        setMnemonic("");
+      }
+    } else {
+      // 用户名密码模式
+      if (username) {
+        const danger = mostWallet(
+          username,
+          password,
+          "I know loss mnemonic will lose my wallet."
+        );
+        setAddress(danger.address);
+        setMnemonic(danger.mnemonic);
+      } else {
+        setAddress(mp.ZeroAddress);
+        setMnemonic("");
+      }
     }
     setDeriveAddressList([]);
     setDeriveIndex(0);
     setDeriveShowAddress(true);
     setDeriveShowAddress(true);
     setDeriveShowPrivateKey(false);
-  }, [username, password]);
+  }, [username, password, useMnemonicMode, validatedMnemonic]);
 
   const deriveNumber = 10;
 
@@ -78,6 +122,11 @@ export default function Web3ToolPage() {
     notifications.show({ message: `已派生 ${newIndex} 个地址` });
   };
 
+  // 判断是否有有效的钱包信息
+  const hasValidWallet = useMnemonicMode
+    ? validatedMnemonic && address !== mp.ZeroAddress
+    : username;
+
   return (
     <Container maw={1200} w="100%" mt={64} p={20}>
       <AppHeader title="工具集" />
@@ -85,11 +134,7 @@ export default function Web3ToolPage() {
         <Avatar
           size={100}
           radius="sm"
-          src={
-            username
-              ? mp.avatar(mostWallet(username, password).address)
-              : "/icons/pwa-512x512.png"
-          }
+          src={hasValidWallet ? mp.avatar(address) : "/icons/pwa-512x512.png"}
           alt="it's me"
         />
 
@@ -99,36 +144,75 @@ export default function Web3ToolPage() {
           开源代码：https://www.npmjs.com/package/dot.most.box?activeTab=code
         </Text>
 
-        <Input
-          placeholder="请输入用户名"
-          maxLength={36}
-          value={username}
-          onChange={(e) => setUsername(e.currentTarget.value)}
-          rightSectionPointerEvents="auto"
-          rightSection={
-            username ? (
-              <Input.ClearButton onClick={() => setUsername("")} />
-            ) : undefined
-          }
+        {/* 模式切换开关 */}
+        <Switch
+          label={useMnemonicMode ? "直接输入助记词" : "用户名+密码生成账户"}
+          size="md"
+          checked={useMnemonicMode}
+          onChange={(event) => {
+            setUseMnemonicMode(event.currentTarget.checked);
+            // 切换模式时清空相关状态
+            setUsername("");
+            setPassword("");
+            setInputMnemonic("");
+            setValidatedMnemonic("");
+            setShowAddress(false);
+            setShowMnemonic(false);
+          }}
         />
 
-        <Input
-          placeholder="请输入密码"
-          maxLength={100}
-          value={password}
-          onChange={(e) => setPassword(e.currentTarget.value)}
-          rightSectionPointerEvents="auto"
-          rightSection={
-            password ? (
-              <Input.ClearButton onClick={() => setPassword("")} />
-            ) : undefined
-          }
-        />
+        {/* 条件渲染：用户名密码输入或助记词输入 */}
+        {!useMnemonicMode ? (
+          // 用户名密码模式
+          <>
+            <Input
+              placeholder="请输入用户名"
+              maxLength={36}
+              value={username}
+              onChange={(e) => setUsername(e.currentTarget.value)}
+              rightSectionPointerEvents="auto"
+              rightSection={
+                username ? (
+                  <Input.ClearButton onClick={() => setUsername("")} />
+                ) : undefined
+              }
+            />
+
+            <Input
+              placeholder="请输入密码"
+              maxLength={100}
+              value={password}
+              onChange={(e) => setPassword(e.currentTarget.value)}
+              rightSectionPointerEvents="auto"
+              rightSection={
+                password ? (
+                  <Input.ClearButton onClick={() => setPassword("")} />
+                ) : undefined
+              }
+            />
+          </>
+        ) : (
+          // 助记词模式
+          <>
+            <Text c="var(--red)">
+              请确保在安全环境中输入助记词，任何拥有您助记词的人都可以控制您的钱包！
+            </Text>
+            <Textarea
+              placeholder="请输入助记词（12或24个单词，用空格分隔）"
+              value={inputMnemonic}
+              onChange={(e) => setInputMnemonic(e.currentTarget.value)}
+              onBlur={(e) => validateMnemonic(e.currentTarget.value)}
+              minRows={3}
+              maxRows={5}
+              autosize
+            />
+          </>
+        )}
 
         <Button
           color="gray"
           variant="light"
-          disabled={!username}
+          disabled={!hasValidWallet}
           onClick={() => setShowAddress(!showAddress)}
         >
           {showAddress ? "隐藏二维码" : "显示二维码"}
@@ -153,14 +237,15 @@ export default function Web3ToolPage() {
         <Button
           color="gray"
           onClick={() => setShowMnemonic(!showMnemonic)}
-          disabled={!username}
+          disabled={!hasValidWallet}
         >
           {showMnemonic ? "隐藏助记词" : "显示助记词"}
         </Button>
 
         <Paper p="md" bg="red.1" c="var(--red)">
           {showMnemonic
-            ? mnemonic || "请输入用户名"
+            ? mnemonic ||
+              (useMnemonicMode ? "请输入有效的助记词" : "请输入用户名")
             : "任何拥有您助记词的人都可以窃取您账户中的任何资产，切勿泄露！！！"}
         </Paper>
 
